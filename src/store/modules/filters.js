@@ -3,8 +3,6 @@ export default {
   state: {
     limit: 50,
     search: null,
-    localGroups: [],
-    workingGroups: [],
     timeCommitmentRange: [0, 40],
     selectedTimeCommitment: [0, 40],
     roleAmount: 0,
@@ -12,19 +10,14 @@ export default {
   mutations: {
     update(state, { key, value }) {
       // console.log('[UPDATE]', key, value);
-      if (key === 'localGroup' || key === 'workingGroup') {
-        state[`${key}s`] = value;
-      } else if (key === 'text') {
+      if (key === 'text') {
         state.search = `%${value}%`;
       } else if (key === 'timeCommitmentRange') {
         state.timeCommitmentRange = value;
       } else if (key === 'selectedTimeCommitment') {
         state.selectedTimeCommitment = value;
       } else if (key === 'reset') {
-        state.limit = 50;
         state.search = null;
-        state.localGroups = null;
-        state.workingGroups = null;
         state.selectedTimeCommitment = [0, 40];
       } else {
         state[key] = value;

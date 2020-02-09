@@ -10,13 +10,7 @@ const httpLink = createHttpLink({
 const cache = new InMemoryCache()
 
 const typeDefs = gql`
-  type Group {
-    name: String!,
-    id: Int!,
-  },
   type FilterSettings {
-    localGroupData: Group,
-    workingGroupData: Group,
     localGroupNames: [String]
     workingGroupNames: [String]
   },
@@ -30,6 +24,8 @@ cache.writeData({
   data: {
     localGroupNames: [],
     workingGroupNames: [],
+    localGroupIds: [],
+    workingGroupIds: [],
   },
 });
 

@@ -37,13 +37,13 @@
       <template v-slot:title>Groups</template>
       <flex-wrapper direction="column">
         <autocomplete-custom
-          :value="localGroups"
+          :value="localGroupNames"
           :items="localGroupItems"
           label="Local Group"
           @change="id => onSetFilter(id, 'localGroup')"
         />
         <autocomplete-custom
-          :value="workingGroups"
+          :value="workingGroupNames"
           :items="workingGroupItems"
           label="Working Group"
           @change="id => onSetFilter(id, 'workingGroup')"
@@ -92,17 +92,17 @@ export default {
   },
   data: () => ({}),
   apollo: {
-    localGroups: {
+    localGroupNames: {
       query: gql`
-        query lc {
+        query localGroups {
           localGroupNames @client
         }
       `,
       update: ({ localGroupNames }) => localGroupNames
     },
-    workingGroups: {
+    workingGroupNames: {
       query: gql`
-        query lc {
+        query workingGroups {
           workingGroupNames @client
         }
       `,
@@ -110,7 +110,7 @@ export default {
     },
     localGroupItems: {
       query: gql`
-        query localGroups {
+        query localGroupItems {
           local_group {
             id
             name
