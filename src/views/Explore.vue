@@ -8,23 +8,43 @@
             <span class="xr-title">Extinction Rebellion Nederland.</span>
           </h1>
         </div>
-        <div v-if="$vuetify.breakpoint.smAndDown" class="mb-8">
+        <div
+          v-if="$vuetify.breakpoint.smAndDown"
+          class="mb-8"
+        >
           <v-divider />
           <div class="d-flex justify-end pa-3">
-            <v-btn text color="primary" @click="drawer = true">Filter</v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="drawer = true"
+            >
+              Filter
+            </v-btn>
           </div>
           <v-divider />
         </div>
       </div>
       <div class="d-flex flex-wrap justify-center">
-        <role-card v-for="role in roles" :key="role.id" :role="role" />
-        <div v-if="roleAmount < 1" class="pa-5 text-center">
+        <role-card
+          v-for="role in roles"
+          :key="role.id"
+          :role="role"
+        />
+        <div
+          v-if="roleAmount < 1"
+          class="pa-5 text-center"
+        >
           <h3>No results.</h3>
           <p>Try removing filters.</p>
         </div>
       </div>
     </div>
-    <filter-drawer v-model="drawer" :width="drawerWidth" :roleAmount="roleAmount" />
+    <filter-drawer
+      v-model="drawer"
+      :width="drawerWidth"
+      :role-amount="roleAmount"
+    />
   </div>
 </template>
 
@@ -48,8 +68,7 @@ export default {
     ...mapState("filters", [
       "limit",
       "search",
-      "roleAmount",
-      "selectedTimeCommitment"
+      "roleAmount"
     ]),
     containerMargin: function() {
       if (this.drawer && !this.isMobile) {
@@ -65,7 +84,7 @@ export default {
   apollo: {
     localGroups: {
       query: gql`
-        query lc {
+        query localGroupNames {
           localGroupNames @client
         }
       `,
@@ -73,7 +92,7 @@ export default {
     },
     workingGroups: {
       query: gql`
-        query lc {
+        query workingGroupNames {
           workingGroupNames @client
         }
       `,
@@ -184,7 +203,6 @@ export default {
       }
     }
   },
-  methods: {},
   watch: {
     isMobile: function() {
       this.drawer = !this.isMobile;
@@ -192,7 +210,8 @@ export default {
   },
   created: function() {
     this.drawer = !this.isMobile;
-  }
+  },
+  methods: {}
 };
 </script>
 
