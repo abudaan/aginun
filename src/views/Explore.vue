@@ -46,8 +46,6 @@ export default {
   }),
   computed: {
     ...mapState("filters", [
-      "localGroupIds",
-      "workingGroupIds",
       "limit",
       "search",
       "roleAmount",
@@ -65,6 +63,22 @@ export default {
     }
   },
   apollo: {
+    localGroups: {
+      query: gql`
+        query lc {
+          localGroupNames @client
+        }
+      `,
+      update: ({ localGroupNames }) => localGroupNames
+    },
+    workingGroups: {
+      query: gql`
+        query lc {
+          workingGroupNames @client
+        }
+      `,
+      update: ({ workingGroupNames }) => workingGroupNames
+    },
     roles: {
       query: gql`
         query getRoles(
@@ -133,9 +147,43 @@ export default {
       error: error => {
         console.error("[GraphQL]", error);
       }
+    },
+    localGroupIds: {
+      query: gql`
+        query getLocalGroupIds($selectedNames: [String!]) {
+          local_group(where: { name: { _in: $selectedNames } }) {
+            id
+          }
+        }
+      `,
+      variables: function() {
+        return {
+          selectedNames: this.localGroups.length === 0 ? null : this.localGroups
+        };
+      },
+      update: function(data) {
+        return data.local_group.map(({ id }) => id);
+      }
+    },
+    workingGroupIds: {
+      query: gql`
+        query getWorkingGroupIds($selectedNames: [String!]) {
+          working_group(where: { name: { _in: $selectedNames } }) {
+            id
+          }
+        }
+      `,
+      variables: function() {
+        return {
+          selectedNames:
+            this.workingGroups.length === 0 ? null : this.workingGroups
+        };
+      },
+      update: function(data) {
+        return data.working_group.map(({ id }) => id);
+      }
     }
   },
-
   methods: {},
   watch: {
     isMobile: function() {

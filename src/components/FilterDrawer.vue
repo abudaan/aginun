@@ -37,14 +37,14 @@
       <template v-slot:title>Groups</template>
       <flex-wrapper direction="column">
         <autocomplete-custom
-          :value="localGroups || []"
-          :items="localGroupsIdByName"
+          :value="localGroups"
+          :items="localGroupItems"
           label="Local Group"
           @change="id => onSetFilter(id, 'localGroup')"
         />
         <autocomplete-custom
-          :value="workingGroups || []"
-          :items="workingGroupsIdByName"
+          :value="workingGroups"
+          :items="workingGroupItems"
           label="Working Group"
           @change="id => onSetFilter(id, 'workingGroup')"
         />
@@ -92,7 +92,23 @@ export default {
   },
   data: () => ({}),
   apollo: {
-    localGroupsIdByName: {
+    localGroups: {
+      query: gql`
+        query lc {
+          localGroupNames @client
+        }
+      `,
+      update: ({ localGroupNames }) => localGroupNames
+    },
+    workingGroups: {
+      query: gql`
+        query lc {
+          workingGroupNames @client
+        }
+      `,
+      update: ({ workingGroupNames }) => workingGroupNames
+    },
+    localGroupItems: {
       query: gql`
         query localGroups {
           local_group {
@@ -101,15 +117,10 @@ export default {
           }
         }
       `,
-      update: function(data) {
-        this.$store.commit("filters/storeGroups", {
-          groups: data.local_group,
-          type: "localGroup"
-        });
-        return data.local_group.map(({ id, name }) => ({ id, text: name }));
-      }
+      update: data =>
+        data.local_group.map(({ id, name }) => ({ id, text: name }))
     },
-    workingGroupsIdByName: {
+    workingGroupItems: {
       query: gql`
         query workingGroups {
           working_group {
@@ -118,13 +129,8 @@ export default {
           }
         }
       `,
-      update: function(data) {
-        this.$store.commit("filters/storeGroups", {
-          groups: data.working_group,
-          type: "workingGroup"
-        });
-        return data.working_group.map(wg => wg.name);
-      }
+      update: data =>
+        data.working_group.map(({ id, name }) => ({ id, text: name }))
     },
     timeCommitmentRange: {
       query: gql`
@@ -178,18 +184,30 @@ export default {
       }
       return styles;
     },
-    ...mapState("filters", [
-      "localGroups",
-      "workingGroups",
-      "limit",
-      "search",
-      "timeCommitmentRange",
-      "roleAmount"
-    ])
+    ...mapState("filters", ["search", "timeCommitmentRange", "roleAmount"])
   },
   methods: {
     onSetFilter: function(value, key) {
       this.$store.commit("filters/update", { key, value });
+      if (key === "localGroup") {
+        this.$apollo.mutate({
+          mutation: gql`
+            mutation update($value: [String!]) {
+              updateLocalGroupNames(value: $value) @client
+            }
+          `,
+          variables: { value }
+        });
+      } else if (key === "workingGroup") {
+        this.$apollo.mutate({
+          mutation: gql`
+            mutation update($value: [String!]) {
+              updateWorkingGroupNames(value: $value) @client
+            }
+          `,
+          variables: { value }
+        });
+      }
     }
   }
 };
