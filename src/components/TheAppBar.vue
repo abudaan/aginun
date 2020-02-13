@@ -6,7 +6,10 @@
     class="bottom-border"
   >
     <v-spacer />
-    <v-btn icon @click="toggleDarkMode">
+    <v-btn
+      icon
+      @click="toggleDarkMode"
+    >
       <v-icon>mdi-invert-colors</v-icon>
     </v-btn>
   </v-app-bar>

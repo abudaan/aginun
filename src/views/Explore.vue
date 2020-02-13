@@ -52,7 +52,10 @@
 import RoleCard from "@/components/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
 import { mapGetters, mapState, mapMutations } from "vuex";
+import {localGroupNames, workingGroupNames, getLocalGroupIds, getWorkingGroupIds} from "@/gql/queries_local.gql";
+import { getRoles } from "@/gql/queries_remote.gql";
 import gql from "graphql-tag";
+
 
 export default {
   name: "Explore",
@@ -83,57 +86,15 @@ export default {
   },
   apollo: {
     localGroups: {
-      query: gql`
-        query localGroupNames {
-          localGroupNames @client
-        }
-      `,
+      query: localGroupNames,
       update: ({ localGroupNames }) => localGroupNames
     },
     workingGroups: {
-      query: gql`
-        query workingGroupNames {
-          workingGroupNames @client
-        }
-      `,
+      query: workingGroupNames,
       update: ({ workingGroupNames }) => workingGroupNames
     },
     roles: {
-      query: gql`
-        query getRoles(
-          $limit: Int
-          $search: String
-          $localGroupIds: [Int!]
-          $workingGroupIds: [Int!]
-          $timeCommitmentMin: Int
-          $timeCommitmentMax: Int
-        ) {
-          role(
-            where: {
-              name: { _ilike: $search }
-              local_group: { id: { _in: $localGroupIds } }
-              working_group: { id: { _in: $workingGroupIds } }
-              time_commitment_min: { _gte: $timeCommitmentMin }
-              time_commitment_max: { _lte: $timeCommitmentMax }
-            }
-            limit: $limit
-          ) {
-            id
-            name
-            location
-            time_commitment_min
-            time_commitment_max
-            local_group {
-              id
-              name
-            }
-            working_group {
-              id
-              name
-            }
-          }
-        }
-      `,
+      query: getRoles,
       update: function(data) {
         const roles = data.role.map(role => ({
           id: role.id,
@@ -168,13 +129,7 @@ export default {
       }
     },
     localGroupIds: {
-      query: gql`
-        query getLocalGroupIds($selectedNames: [String!]) {
-          local_group(where: { name: { _in: $selectedNames } }) {
-            id
-          }
-        }
-      `,
+      query: getLocalGroupIds,
       variables: function() {
         return {
           selectedNames: this.localGroups.length === 0 ? null : this.localGroups
@@ -185,13 +140,7 @@ export default {
       }
     },
     workingGroupIds: {
-      query: gql`
-        query getWorkingGroupIds($selectedNames: [String!]) {
-          working_group(where: { name: { _in: $selectedNames } }) {
-            id
-          }
-        }
-      `,
+      query: getWorkingGroupIds,
       variables: function() {
         return {
           selectedNames:

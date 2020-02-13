@@ -1,23 +1,38 @@
 <template>
-  <v-hover v-slot:default="{ hover }" class="pointer">
-    <v-card :elevation="hover ? 12 : 2" width="300" height="200" class="card">
+  <v-hover
+    v-slot:default="{ hover }"
+    class="pointer"
+  >
+    <v-card
+      :elevation="hover ? 12 : 2"
+      width="300"
+      height="200"
+      class="card"
+    >
       <div
         class="transition-wrapper d-flex flex-column full-height"
         :class="{ lighter: hover && $vuetify.theme.dark }"
       >
         <div class="d-flex justify-space-between align-center pa-3">
           <span>{{ role.workingGroup.text }}</span>
-          <v-icon color="primary">mdi-police-badge</v-icon>
+          <v-icon color="primary">
+            mdi-police-badge
+          </v-icon>
         </div>
         <v-divider />
         <div class="pa-3 d-flex flex-column flex-grow-1 justify-space-between">
           <div>
             <h3>{{ role.title }}</h3>
-            <div class="caption">{{ role.localGroup.text }}, {{ role.location }}</div>
+            <div class="caption">
+              {{ role.localGroup.text }}, {{ role.location }}
+            </div>
           </div>
           <div class="d-flex flex-wrap justify-space-between align-end mt-5">
             <span class="d-flex flex-column justify-center">
-              <span class="title flex-grow-0" style="line-height: 1rem">
+              <span
+                class="title flex-grow-0"
+                style="line-height: 1rem"
+              >
                 {{ role.timeCommitment[0] }} -
                 {{ role.timeCommitment[1] }}
               </span>

@@ -1,20 +1,35 @@
 <template>
-  <div class="drawer" :style="drawerStyle" :class="{ active: value }" :value="value">
+  <div
+    class="drawer"
+    :style="drawerStyle"
+    :class="{ active: value }"
+    :value="value"
+  >
     <div
       v-if="this.$vuetify.breakpoint.smAndDown"
       :style="{ height: $store.state.styles.navbarHeight }"
       class="d-flex justify-space-between align-center pa-3 bottom-border"
     >
       <div class="d-flex align-center">
-        <v-btn icon @click="$emit('input', false)">
-          <v-icon color="primary">mdi-arrow-left</v-icon>
+        <v-btn
+          icon
+          @click="$emit('input', false)"
+        >
+          <v-icon color="primary">
+            mdi-arrow-left
+          </v-icon>
         </v-btn>
         <span>
           <strong class="primary--text">{{ roleAmount }}</strong>
           positions found
         </span>
       </div>
-      <v-btn text color="primary">Clear filters</v-btn>
+      <v-btn
+        text
+        color="primary"
+      >
+        Clear filters
+      </v-btn>
     </div>
     <div class="px-4 py-5 pb-0">
       <div class="d-flex justify-space-between align-center">
@@ -24,7 +39,9 @@
           text
           color="primary"
           @click="() => onSetFilter(null, 'reset')"
-        >Clear filters</v-btn>
+        >
+          Clear filters
+        </v-btn>
       </div>
       <v-text-field
         :value="search"
@@ -34,7 +51,9 @@
       />
     </div>
     <filter-section>
-      <template v-slot:title>Groups</template>
+      <template v-slot:title>
+        Groups
+      </template>
       <flex-wrapper direction="column">
         <autocomplete-custom
           :value="localGroupNames"
@@ -51,7 +70,9 @@
       </flex-wrapper>
     </filter-section>
     <filter-section>
-      <template v-slot:title>Time commitment</template>
+      <template v-slot:title>
+        Time commitment
+      </template>
       <v-range-slider
         v-model="selectedTimeCommitment"
         :min="timeCommitmentRange[0]"
@@ -71,6 +92,9 @@ import AutocompleteCustom from "@/components/AutocompleteCustom";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
 import gql from "graphql-tag";
+import {localGroupNames, workingGroupNames} from "../gql/queries_local.gql";
+import {timeCommitmentRange, localGroupItems, workingGroupItems} from "../gql/queries_remote.gql";
+
 
 export default {
   name: "TheFilterDrawer",
@@ -93,60 +117,28 @@ export default {
   data: () => ({}),
   apollo: {
     localGroupNames: {
-      query: gql`
-        query localGroups {
-          localGroupNames @client
-        }
-      `,
-      update: ({ localGroupNames }) => localGroupNames
+      query: localGroupNames,
+      update: ({ localGroupNames }) => {
+        console.log('@client', localGroupNames);
+        return localGroupNames;
+      }
     },
     workingGroupNames: {
-      query: gql`
-        query workingGroups {
-          workingGroupNames @client
-        }
-      `,
+      query: workingGroupNames,
       update: ({ workingGroupNames }) => workingGroupNames
     },
     localGroupItems: {
-      query: gql`
-        query localGroupItems {
-          local_group {
-            id
-            name
-          }
-        }
-      `,
+      query: localGroupItems,
       update: data =>
         data.local_group.map(({ id, name }) => ({ id, text: name }))
     },
     workingGroupItems: {
-      query: gql`
-        query workingGroups {
-          working_group {
-            id
-            name
-          }
-        }
-      `,
+      query: workingGroupItems,
       update: data =>
         data.working_group.map(({ id, name }) => ({ id, text: name }))
     },
     timeCommitmentRange: {
-      query: gql`
-        query timeCommitmentRange {
-          role_aggregate {
-            aggregate {
-              min {
-                time_commitment_min
-              }
-              max {
-                time_commitment_max
-              }
-            }
-          }
-        }
-      `,
+      query: timeCommitmentRange,
       update: function(data) {
         const range = [
           data.role_aggregate.aggregate.min.time_commitment_min,

@@ -6,7 +6,7 @@
       }`
     "
   >
-    <slot></slot>
+    <slot />
   </div>
 </template>
 <script>
