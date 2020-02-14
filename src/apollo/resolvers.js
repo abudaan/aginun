@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { selectedLocalGroups, selectedWorkingGroups } from "../gql/client.gql";
+import { selectedLocalGroups, selectedWorkingGroups,selectedTimeCommitment } from "../gql/client.gql";
 import { allLocalGroups, allWorkingGroups } from "../gql/server.gql";
 
 const mapNames = (names, groups) => {
@@ -18,7 +18,7 @@ const mapNames = (names, groups) => {
 
 export const resolvers = {
   Mutation: {
-    updateLocalGroups(_, { names }, { cache, getCacheKey, client }, info) {
+    async updateLocalGroups(_, { names }, { cache, getCacheKey, client }, info) {
       const {local_group: groups} = cache.readQuery({
         query: allLocalGroups
       });
@@ -38,6 +38,13 @@ export const resolvers = {
       })
       // console.log(cache.data.data.ROOT_QUERY.selectedWorkingGroups);
     },
+    updateTimeCommitmentRange(_, { range }, { cache }) {
+      cache.writeQuery({
+        query: selectedTimeCommitment,
+        data: {selectedTimeCommitment: range}
+      })
+      // console.log(cache.data.data.ROOT_QUERY.selectedTimeCommitment);
+    }
     // updateAmountRoles: (_, { value }, { cache }) => {
     //   cache.writeQuery({
     //     query: amountRoles,
@@ -48,13 +55,13 @@ export const resolvers = {
     // }
   },
 
-  // Query: {
-  //   getLocalGroups(_, data, data1, data2){
-  //     console.log(_, data, data1, data2);
-  //     return {
-  //       id: 666,
-  //       name: "XR Apeldoorn"
-  //     }
-  //   }
-  // }
+  Query: {
+    getFilters(_, data, data1, data2){
+      console.log(_, data, data1, data2);
+      return {
+        id: 666,
+        name: "XR Apeldoorn"
+      }
+    }
+  }
 }

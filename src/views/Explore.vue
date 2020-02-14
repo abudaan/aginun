@@ -43,7 +43,7 @@
     <filter-drawer
       v-model="drawer"
       :width="drawerWidth"
-      :role-amount="roleAmount"
+      :roleAmount="roleAmount"
     />
   </div>
 </template>
@@ -52,7 +52,7 @@
 import RoleCard from "@/components/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
 import { mapGetters, mapState, mapMutations } from "vuex";
-import {localGroupNames, workingGroupNames, getLocalGroupIds, getWorkingGroupIds} from "@/gql/client.gql";
+import {localGroupNames, workingGroupNames, getLocalGroupIds, getWorkingGroupIds, getFilters} from "@/gql/client.gql";
 import { getRoles } from "@/gql/server.gql";
 import gql from "graphql-tag";
 
@@ -66,13 +66,10 @@ export default {
     drawer: null,
     drawerWidth: 400,
     roles: [],
+    roleAmount: 0,
+    // filters: {},
   }),
   computed: {
-    ...mapState("filters", [
-      "limit",
-      "search",
-      "roleAmount"
-    ]),
     containerMargin: function() {
       if (this.drawer && !this.isMobile) {
         return { "margin-right": this.drawerWidth + "px" };
@@ -84,70 +81,50 @@ export default {
       return this.$vuetify.breakpoint.smAndDown;
     }
   },
-  // apollo: {
-  //   localGroups: {
-  //     query: localGroupNames,
-  //     update: ({ localGroupNames }) => localGroupNames
-  //   },
-  //   workingGroups: {
-  //     query: workingGroupNames,
-  //     update: ({ workingGroupNames }) => workingGroupNames
-  //   },
-  //   roles: {
-  //     query: getRoles,
-  //     update: function(data) {
-  //       const roles = data.role.map(role => ({
-  //         id: role.id,
-  //         title: role.name,
-  //         timeCommitment: [role.time_commitment_min, role.time_commitment_max],
-  //         localGroup: {
-  //           text: role.local_group.name
-  //         },
-  //         workingGroup: {
-  //           text: role.working_group.name
-  //         },
-  //         location: role.location
-  //       }));
-  //       this.$store.commit("filters/update", {
-  //         key: "roleAmount",
-  //         value: roles.length
-  //       });
-  //       return roles;
-  //     },
-  //     variables: function() {
-  //       return {
-  //         limit: this.limit,
-  //         search: this.search,
-  //         localGroupIds: this.localGroupIds,
-  //         workingGroupIds: this.workingGroupIds,
-  //         timeCommitmentMin: this.selectedTimeCommitment[0],
-  //         timeCommitmentMax: this.selectedTimeCommitment[1]
-  //       };
-  //     },
-  //     error: error => {
-  //       console.error("[GraphQL]", error);
-  //     }
-  //   },
-  //   localGroupIds: {
-  //     query: getLocalGroupIds,
-  //     variables: function() {
-  //       return {
-  //         selectedNames: this.localGroups.length === 0 ? null : this.localGroups
-  //       };
-  //     },
-  //     update: data => data.local_group.map(({ id }) => id)
-  //   },
-  //   workingGroupIds: {
-  //     query: getWorkingGroupIds,
-  //     variables: function() {
-  //       return {
-  //         selectedNames:
-  //           this.workingGroups.length === 0 ? null : this.workingGroups
-  //       };
-  //     },
-  //     update: data => data.working_group.map(({ id }) => id)
-  //   }
-  // },
+   apollo: {
+     filters: {
+       query: getFilters,
+       update: data => {
+        console.log(data.selectedLocalGroups);
+        return data;
+}
+     },
+    roles: {
+      query: getRoles,
+      update: function(data) {
+        const roles = data.role.map(role => ({
+          id: role.id,
+          title: role.name,
+          timeCommitment: [role.time_commitment_min, role.time_commitment_max],
+          localGroup: {
+            text: role.local_group.name
+          },
+          workingGroup: {
+            text: role.working_group.name
+          },
+          location: role.location
+        }));
+        // this.$store.commit("filters/update", {
+        //   key: "roleAmount",
+        //   value: roles.length
+        // });
+        return roles;
+      },
+      variables: function() {
+        return {
+          limit: 50,
+          search: this.filters.searchText,
+          localGroupIds: this.filters.selectedLocalGroups.map(({id}) => id),
+          workingGroupIds: this.filters.selectedWorkingGroups.map(({id}) => id),
+          timeCommitmentMin: this.filters.selectedTimeCommitment[0],
+          timeCommitmentMax: this.filters.selectedTimeCommitment[1]
+        };
+      },
+      error: error => {
+        console.error("[GraphQL]", error);
+      }
+    },
+  },
   watch: {
     isMobile: function() {
       this.drawer = !this.isMobile;

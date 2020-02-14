@@ -20,9 +20,10 @@ cache.writeData({
   data: {
     selectedLocalGroups: [],
     selectedWorkingGroups: [],
-    amountRoles: 0,
+    selectedTimeCommitment: [],
+    roleAmount: 0,
+    searchString: '',
     limit: 20,
-    search: '',
   },
 });
 

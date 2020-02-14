@@ -12,11 +12,14 @@ type working_group {
 type Mutation {
   updateLocalGroups(names:[String!]):[local_group!]
   updateWorkingGroups(names:[String!]):[working_group!]
+  updateTimeCommitmentRange(range: [Int!]):boolean
 }
 
-# type Query {
-#  getWorkingGroupIds(names: [String!]): [Int!]
-# }
+type Query {
+  selectedTimeCommitment: [Int!]
+  roleAmount: Int
+  searchString: Int
+}
 
 schema {
   query: Query

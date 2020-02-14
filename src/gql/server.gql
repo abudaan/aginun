@@ -47,7 +47,7 @@ query allLocalGroups {
   }
 }
 
-query timeCommitmentRange {
+query boundsTimeCommitmentRange {
   role_aggregate {
     aggregate {
       min {

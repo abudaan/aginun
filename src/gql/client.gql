@@ -6,6 +6,25 @@ query selectedWorkingGroups {
   selectedWorkingGroups @client
 }
 
+query selectedTimeCommitment {
+  selectedTimeCommitment @client
+}
+
+query roleAmount {
+  roleAmount @client
+}
+
+query searchString {
+  searchString @client
+}
+
+query getFilters @client {
+  searchString
+  selectedLocalGroups
+  selectedWorkingGroups
+  selectedTimeCommitment
+}
+
 mutation updateLocalGroups($names: [String!]) {
   updateLocalGroups(names: $names) @client
 }
@@ -14,3 +33,6 @@ mutation updateWorkingGroups($names: [String!]) {
   updateWorkingGroups(names: $names) @client
 }
 
+mutation updateTimeCommitmentRange($range: [Int!]) {
+  updateTimeCommitmentRange(range: $range) @client
+}

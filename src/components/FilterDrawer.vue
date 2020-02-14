@@ -44,7 +44,7 @@
         </v-btn>
       </div>
       <v-text-field
-        :value="search"
+        :value="searchString"
         label="Facilitator, Writer, Photographer..."
         class="mt-3"
         @input="value => onSetFilter(value, 'text')"
@@ -72,7 +72,7 @@
         Time commitment
       </template>
       <v-range-slider
-        v-model="selectedTimeCommitment"
+        :value="timeCommitmentRange"
         :min="timeCommitmentRange[0]"
         :max="timeCommitmentRange[1]"
         class="mt-12"
@@ -90,8 +90,8 @@ import AutocompleteCustom from "@/components/AutocompleteCustom";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
 import gql from "graphql-tag";
-import {updateLocalGroups, updateWorkingGroups} from "../gql/client.gql";
-import {timeCommitmentRange, allLocalGroups, allWorkingGroups} from "../gql/server.gql";
+import {updateLocalGroups, updateWorkingGroups, updateTimeCommitmentRange, selectedTimeCommitment, roleAmount, searchString} from "../gql/client.gql";
+import {boundsTimeCommitmentRange, allLocalGroups, allWorkingGroups} from "../gql/server.gql";
 
 export default {
   name: "TheFilterDrawer",
@@ -111,8 +111,18 @@ export default {
       default: 400
     }
   },
-  data: () => ({}),
+  data: () => ({
+    timeCommitmentRange: [],
+  }),
   apollo: {
+    searchString: {
+      query: searchString,
+      update: data => data.searchString
+    },
+    roleAmount: {
+      query: roleAmount,
+      update: data => data.roleAmount
+    },
     allLocalGroups: {
       query: allLocalGroups,
       update: data =>
@@ -124,36 +134,21 @@ export default {
         data.working_group.map(({ id, name }) => ({ id, text: name }))
     },
     timeCommitmentRange: {
-      query: timeCommitmentRange,
+      query: boundsTimeCommitmentRange,
       update: function(data) {
         const range = [
           data.role_aggregate.aggregate.min.time_commitment_min,
           data.role_aggregate.aggregate.max.time_commitment_max
         ];
-        this.$store.commit("filters/update", {
-          key: "timeCommitmentRange",
-          value: range
-        });
-        this.$store.commit("filters/update", {
-          key: "selectedTimeCommitment",
-          value: range
+        this.$apollo.mutate({
+          mutation:updateTimeCommitmentRange,
+          variables: { range }
         });
         return range;
       }
     }
   },
   computed: {
-    selectedTimeCommitment: {
-      get() {
-        return this.$store.state.filters.selectedTimeCommitment;
-      },
-      set(value) {
-        this.$store.commit("filters/update", {
-          key: "selectedTimeCommitment",
-          value
-        });
-      }
-    },
     drawerStyle: function() {
       let styles = {};
       if (!this.$vuetify.breakpoint.smAndDown) {
@@ -161,12 +156,11 @@ export default {
         styles["max-width"] = this.width + "px";
       }
       return styles;
-    },
-    ...mapState("filters", ["search", "timeCommitmentRange", "roleAmount"])
+    }
   },
   methods: {
     onSetFilter: function(value, key) {
-      this.$store.commit("filters/update", { key, value });
+      // console.log(key, value);
       if (key === "localGroup") {
         this.$apollo.mutate({
           mutation: updateLocalGroups,
@@ -176,6 +170,11 @@ export default {
         this.$apollo.mutate({
           mutation:updateWorkingGroups,
           variables: { names: value }
+        });
+      } else if (key === "timeCommitment") {
+        this.$apollo.mutate({
+          mutation: updateTimeCommitmentRange,
+          variables: { range: value }
         });
       }
     }
