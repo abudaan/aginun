@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import VueApollo from 'vue-apollo'
 import { createHttpLink } from 'apollo-link-http'
-import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client'
-import gql from 'graphql-tag';
-import {resolvers} from "./apollo-resolvers";
 import { InMemoryCache } from 'apollo-cache-inmemory'
-
-
+import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client'
+import * as scheme from '@/gql/scheme.gql';
+import {resolvers} from "./resolvers";
 
 // Install the vue plugin
 Vue.use(VueApollo)
@@ -17,29 +15,16 @@ const AUTH_TOKEN = 'apollo-token'
 // Http endpoint
 const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'https://xr-volunteer-app.herokuapp.com/v1/graphql'
 
-
-const typeDefs = gql`
-  type FilterSettings {
-    localGroupNames: [String]
-    workingGroupNames: [String]
-  },
-  type Mutation {
-    updateLocalGroupNames(names:[String!]):[String!]
-    updateWorkingGroupNames(names:[String!]):[String!]
-  }
-`
-
 const cache = new InMemoryCache();
 cache.writeData({
   data: {
-    localGroupNames: [],
-    workingGroupNames: [],
+    selectedLocalGroups: [],
+    selectedWorkingGroups: [],
     amountRoles: 0,
     limit: 20,
     search: '',
   },
 });
-
 
 const httpLink = createHttpLink({
   uri: 'https://xr-volunteer-app.herokuapp.com/v1/graphql',
@@ -58,7 +43,7 @@ const defaultOptions = {
   persisting: false,
   // Use websockets for everything (no HTTP)
   // You need to pass a `wsEndpoint` for this to work
-  websocketsOnly: false,
+  // websocketsOnly: false,
   // Is being rendered on the server?
   ssr: false,
 
@@ -76,7 +61,7 @@ const defaultOptions = {
   // Additional ApolloClient options
   // apollo: { ... }
 
-  typeDefs,
+  typeDefs: scheme,
   resolvers,
 }
 
@@ -101,10 +86,10 @@ export function createProvider (options = {}) {
       // eslint-disable-next-line no-console
       console.log('%cError', 'background: red; color: white; padding: 2px 4px; border-radius: 3px; font-weight: bold;', error.message)
     },
-    watchLoading (isLoading, countModifier) {
-      // loading += countModifier
-      console.log('Global loading', isLoading, countModifier)
-    },
+    // watchLoading (isLoading, countModifier) {
+    //   // loading += countModifier
+    //   console.log('Global loading', isLoading, countModifier)
+    // },
   })
 
   return apolloProvider

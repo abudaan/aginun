@@ -1,6 +1,5 @@
 <template>
   <v-autocomplete
-    :value="value"
     :items="items"
     chips
     multiple
@@ -26,10 +25,6 @@ export default {
   name: "AutocompleteCustom",
   props: {
     items: {
-      type: Array,
-      required: true
-    },
-    value: {
       type: Array,
       required: true
     },

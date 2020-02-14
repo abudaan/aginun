@@ -33,14 +33,14 @@ query getRoles(
   }
 }
 
-query workingGroupItems {
+query allWorkingGroups {
   working_group {
     id
     name
   }
 }
 
-query localGroupItems {
+query allLocalGroups {
   local_group {
     id
     name

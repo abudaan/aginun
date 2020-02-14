@@ -56,14 +56,12 @@
       </template>
       <flex-wrapper direction="column">
         <autocomplete-custom
-          :value="localGroupNames"
-          :items="localGroupItems"
+          :items="allLocalGroups"
           label="Local Group"
           @change="id => onSetFilter(id, 'localGroup')"
         />
         <autocomplete-custom
-          :value="workingGroupNames"
-          :items="workingGroupItems"
+          :items="allWorkingGroups"
           label="Working Group"
           @change="id => onSetFilter(id, 'workingGroup')"
         />
@@ -92,9 +90,8 @@ import AutocompleteCustom from "@/components/AutocompleteCustom";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
 import gql from "graphql-tag";
-import {localGroupNames, workingGroupNames} from "../gql/queries_local.gql";
-import {timeCommitmentRange, localGroupItems, workingGroupItems} from "../gql/queries_remote.gql";
-
+import {updateLocalGroups, updateWorkingGroups} from "../gql/client.gql";
+import {timeCommitmentRange, allLocalGroups, allWorkingGroups} from "../gql/server.gql";
 
 export default {
   name: "TheFilterDrawer",
@@ -116,24 +113,13 @@ export default {
   },
   data: () => ({}),
   apollo: {
-    localGroupNames: {
-      query: localGroupNames,
-      update: ({ localGroupNames }) => {
-        console.log('@client', localGroupNames);
-        return localGroupNames;
-      }
-    },
-    workingGroupNames: {
-      query: workingGroupNames,
-      update: ({ workingGroupNames }) => workingGroupNames
-    },
-    localGroupItems: {
-      query: localGroupItems,
+    allLocalGroups: {
+      query: allLocalGroups,
       update: data =>
         data.local_group.map(({ id, name }) => ({ id, text: name }))
     },
-    workingGroupItems: {
-      query: workingGroupItems,
+    allWorkingGroups: {
+      query: allWorkingGroups,
       update: data =>
         data.working_group.map(({ id, name }) => ({ id, text: name }))
     },
@@ -183,21 +169,13 @@ export default {
       this.$store.commit("filters/update", { key, value });
       if (key === "localGroup") {
         this.$apollo.mutate({
-          mutation: gql`
-            mutation update($value: [String!]) {
-              updateLocalGroupNames(value: $value) @client
-            }
-          `,
-          variables: { value }
+          mutation: updateLocalGroups,
+          variables: { names: value }
         });
       } else if (key === "workingGroup") {
         this.$apollo.mutate({
-          mutation: gql`
-            mutation update($value: [String!]) {
-              updateWorkingGroupNames(value: $value) @client
-            }
-          `,
-          variables: { value }
+          mutation:updateWorkingGroups,
+          variables: { names: value }
         });
       }
     }

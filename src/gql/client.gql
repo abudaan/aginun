@@ -1,0 +1,16 @@
+query selectedLocalGroups {
+  selectedLocalGroups @client
+}
+
+query selectedWorkingGroups {
+  selectedWorkingGroups @client
+}
+
+mutation updateLocalGroups($names: [String!]) {
+  updateLocalGroups(names: $names) @client
+}
+
+mutation updateWorkingGroups($names: [String!]) {
+  updateWorkingGroups(names: $names) @client
+}
+

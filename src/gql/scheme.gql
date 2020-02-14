@@ -1,0 +1,24 @@
+
+type local_group {
+  id: Int
+  name: string
+}
+
+type working_group {
+  id: Int
+  name: string
+}
+
+type Mutation {
+  updateLocalGroups(names:[String!]):[local_group!]
+  updateWorkingGroups(names:[String!]):[working_group!]
+}
+
+# type Query {
+#  getWorkingGroupIds(names: [String!]): [Int!]
+# }
+
+schema {
+  query: Query
+  mutation: Mutation
+}
