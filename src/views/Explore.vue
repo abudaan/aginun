@@ -65,7 +65,7 @@ export default {
   data: () => ({
     drawer: null,
     drawerWidth: 400,
-    roles: [],
+    // roles: [],
     roleAmount: 0,
     // filters: {},
   }),
@@ -85,10 +85,14 @@ export default {
      filters: {
        query: getFilters,
        update: data => {
-        console.log(data.selectedLocalGroups);
-        return data;
-}
-     },
+        // console.log(data.selectedLocalGroups);
+        return {
+          ...data,
+          selectedLocalGroups: data.selectedLocalGroups.length ? data.selectedLocalGroups.map(({id}) => id) : null,
+          selectedWorkingGroups: data.selectedWorkingGroups.length ? data.selectedWorkingGroups.map(({id}) => id) : null,
+        }
+      }
+    },
     roles: {
       query: getRoles,
       update: function(data) {
@@ -111,14 +115,16 @@ export default {
         return roles;
       },
       variables: function() {
-        return {
+        const v = {
           limit: 50,
-          search: this.filters.searchText,
-          localGroupIds: this.filters.selectedLocalGroups.map(({id}) => id),
-          workingGroupIds: this.filters.selectedWorkingGroups.map(({id}) => id),
+          // search: this.filters.searchString,
+          localGroupIds: this.filters.selectedLocalGroups,
+          workingGroupIds: this.filters.selectedWorkingGroups,
           timeCommitmentMin: this.filters.selectedTimeCommitment[0],
           timeCommitmentMax: this.filters.selectedTimeCommitment[1]
         };
+        console.log(v);
+        return v;
       },
       error: error => {
         console.error("[GraphQL]", error);
