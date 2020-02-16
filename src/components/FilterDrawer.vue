@@ -1,35 +1,20 @@
 <template>
-  <div
-    class="drawer"
-    :style="drawerStyle"
-    :class="{ active: value }"
-    :value="value"
-  >
+  <div class="drawer" :style="drawerStyle" :class="{ active: value }" :value="value">
     <div
       v-if="this.$vuetify.breakpoint.smAndDown"
       :style="{ height: $store.state.styles.navbarHeight }"
       class="d-flex justify-space-between align-center pa-3 bottom-border"
     >
       <div class="d-flex align-center">
-        <v-btn
-          icon
-          @click="$emit('input', false)"
-        >
-          <v-icon color="primary">
-            mdi-arrow-left
-          </v-icon>
+        <v-btn icon @click="$emit('input', false)">
+          <v-icon color="primary">mdi-arrow-left</v-icon>
         </v-btn>
         <span>
           <strong class="primary--text">{{ roleAmount }}</strong>
           positions found
         </span>
       </div>
-      <v-btn
-        text
-        color="primary"
-      >
-        Clear filters
-      </v-btn>
+      <v-btn text color="primary">Clear filters</v-btn>
     </div>
     <div class="px-4 py-5 pb-0">
       <div class="d-flex justify-space-between align-center">
@@ -39,9 +24,7 @@
           text
           color="primary"
           @click="() => onSetFilter(null, 'reset')"
-        >
-          Clear filters
-        </v-btn>
+        >Clear filters</v-btn>
       </div>
       <v-text-field
         :value="searchString"
@@ -51,9 +34,7 @@
       />
     </div>
     <filter-section>
-      <template v-slot:title>
-        Groups
-      </template>
+      <template v-slot:title>Groups</template>
       <flex-wrapper direction="column">
         <autocomplete-custom
           :items="allLocalGroups"
@@ -68,9 +49,7 @@
       </flex-wrapper>
     </filter-section>
     <filter-section>
-      <template v-slot:title>
-        Time commitment
-      </template>
+      <template v-slot:title>Time commitment</template>
       <v-range-slider
         :value="timeCommitmentRange"
         :min="timeCommitmentRange[0]"
@@ -90,8 +69,20 @@ import AutocompleteCustom from "@/components/AutocompleteCustom";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
 import gql from "graphql-tag";
-import {updateLocalGroups, updateWorkingGroups, updateTimeCommitmentRange, selectedTimeCommitment, roleAmount, searchString} from "../gql/client.gql";
-import {boundsTimeCommitmentRange, allLocalGroups, allWorkingGroups} from "../gql/server.gql";
+import {
+  updateLocalGroups,
+  updateWorkingGroups,
+  updateTimeCommitmentRange,
+  selectedTimeCommitment,
+  roleAmount,
+  searchString,
+  LocalGroupById
+} from "../gql/client.gql";
+import {
+  boundsTimeCommitmentRange,
+  allLocalGroups,
+  allWorkingGroups
+} from "../gql/server.gql";
 
 export default {
   name: "TheFilterDrawer",
@@ -112,9 +103,16 @@ export default {
     }
   },
   data: () => ({
-    timeCommitmentRange: [],
+    timeCommitmentRange: []
   }),
   apollo: {
+    test: {
+      query: LocalGroupById,
+      variables: { id: 111 },
+      update: data => {
+        console.log("Local Query", data);
+      }
+    },
     searchString: {
       query: searchString,
       update: data => data.searchString
@@ -141,7 +139,7 @@ export default {
           data.role_aggregate.aggregate.max.time_commitment_max
         ];
         this.$apollo.mutate({
-          mutation:updateTimeCommitmentRange,
+          mutation: updateTimeCommitmentRange,
           variables: { range }
         });
         return range;
@@ -168,7 +166,7 @@ export default {
         });
       } else if (key === "workingGroup") {
         this.$apollo.mutate({
-          mutation:updateWorkingGroups,
+          mutation: updateWorkingGroups,
           variables: { names: value }
         });
       } else if (key === "timeCommitment") {

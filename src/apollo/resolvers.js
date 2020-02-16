@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { selectedLocalGroups, selectedWorkingGroups,selectedTimeCommitment } from "../gql/client.gql";
+import { selectedLocalGroups, selectedWorkingGroups,selectedTimeCommitment, LocalGroupById } from "../gql/client.gql";
 import { allLocalGroups, allWorkingGroups } from "../gql/server.gql";
 
 const mapNames = (names, groups) => {
@@ -19,6 +19,13 @@ const mapNames = (names, groups) => {
 export const resolvers = {
   Mutation: {
     async updateLocalGroups(_, { names }, { cache, getCacheKey, client }, info) {
+
+      const data = await client.query({
+        query: LocalGroupById,
+        variables: {id: 1}
+      })
+      console.log(data);
+
       const {local_group: groups} = cache.readQuery({
         query: allLocalGroups
       });
@@ -62,6 +69,14 @@ export const resolvers = {
         id: 666,
         name: "XR Apeldoorn"
       }
+    },
+    localGroupById(parent, variables, { cache, getCacheKey, client }, info) {
+      console.log(parent, variables, info)
+      return [{
+        __typename: 'LocalGroup',
+        id: 555,
+        name: "XR Apeldoorn"
+      }]
     }
   }
 }

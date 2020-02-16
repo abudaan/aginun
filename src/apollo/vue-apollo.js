@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client'
-import * as scheme from '@/gql/scheme.gql';
+import * as typeDefs from '@/gql/typedefs.gql';
 import {resolvers} from "./resolvers";
 
 // Install the vue plugin
@@ -62,7 +62,7 @@ const defaultOptions = {
   // Additional ApolloClient options
   // apollo: { ... }
 
-  typeDefs: scheme,
+  typeDefs,
   resolvers,
 }
 

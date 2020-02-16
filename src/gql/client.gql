@@ -25,6 +25,13 @@ query getFilters @client {
   selectedTimeCommitment
 }
 
+query LocalGroupById($id: Int!) {
+  localGroupById(id: $id) @client {
+    id
+    name
+  }
+}
+
 mutation updateLocalGroups($names: [String!]) {
   updateLocalGroups(names: $names) @client
 }
