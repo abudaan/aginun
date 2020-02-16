@@ -2,7 +2,7 @@
   <div class="drawer" :style="drawerStyle" :class="{ active: value }" :value="value">
     <div
       v-if="this.$vuetify.breakpoint.smAndDown"
-      :style="{ height: $store.state.styles.navbarHeight }"
+      :style="{height: navbarHeight}"
       class="d-flex justify-space-between align-center pa-3 bottom-border"
     >
       <div class="d-flex align-center">
@@ -76,7 +76,8 @@ import {
   SelectedTimeCommitment,
   RoleAmount,
   SearchString,
-  LocalGroupById
+  LocalGroupById,
+  NavbarHeight
 } from "../gql/client.gql";
 import {
   LocalGroups,
@@ -113,6 +114,10 @@ export default {
     //     console.log("Local Query", data);
     //   }
     // },
+    navbarHeight: {
+      query: NavbarHeight,
+      update: data => data.navbarHeight
+    },
     searchString: {
       query: SearchString,
       update: data => data.searchString
@@ -150,7 +155,7 @@ export default {
     drawerStyle: function() {
       let styles = {};
       if (!this.$vuetify.breakpoint.smAndDown) {
-        styles.top = this.$store.state.styles.navbarHeight;
+        styles.top = this.navbarHeight;
         styles["max-width"] = this.width + "px";
       }
       return styles;

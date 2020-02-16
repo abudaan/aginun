@@ -15,5 +15,6 @@ extend type Query {
   roleAmount: Int!
   searchString: String!
   localGroupById(id: Int!): LocalGroup
+  navbarHeight: Int!
 }
 

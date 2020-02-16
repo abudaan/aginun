@@ -25,6 +25,10 @@ query Filters @client {
   selectedTimeCommitment
 }
 
+query NavbarHeight {
+  navbarHeight @client
+}
+
 query LocalGroupById($id: Int!) {
   localGroupById(id: $id) @client {
     id
