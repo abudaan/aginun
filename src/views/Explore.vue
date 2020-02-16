@@ -8,43 +8,23 @@
             <span class="xr-title">Extinction Rebellion Nederland.</span>
           </h1>
         </div>
-        <div
-          v-if="$vuetify.breakpoint.smAndDown"
-          class="mb-8"
-        >
+        <div v-if="$vuetify.breakpoint.smAndDown" class="mb-8">
           <v-divider />
           <div class="d-flex justify-end pa-3">
-            <v-btn
-              text
-              color="primary"
-              @click="drawer = true"
-            >
-              Filter
-            </v-btn>
+            <v-btn text color="primary" @click="drawer = true">Filter</v-btn>
           </div>
           <v-divider />
         </div>
       </div>
       <div class="d-flex flex-wrap justify-center">
-        <role-card
-          v-for="role in roles"
-          :key="role.id"
-          :role="role"
-        />
-        <div
-          v-if="roleAmount < 1"
-          class="pa-5 text-center"
-        >
+        <role-card v-for="role in roles" :key="role.id" :role="role" />
+        <div v-if="roleAmount < 1" class="pa-5 text-center">
           <h3>No results.</h3>
           <p>Try removing filters.</p>
         </div>
       </div>
     </div>
-    <filter-drawer
-      v-model="drawer"
-      :width="drawerWidth"
-      :roleAmount="roleAmount"
-    />
+    <filter-drawer v-model="drawer" :width="drawerWidth" :roleAmount="roleAmount" />
   </div>
 </template>
 
@@ -52,8 +32,8 @@
 import RoleCard from "@/components/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
 import { mapGetters, mapState, mapMutations } from "vuex";
-import {localGroupNames, workingGroupNames, getLocalGroupIds, getWorkingGroupIds, getFilters} from "@/gql/client.gql";
-import { getRoles } from "@/gql/server.gql";
+import { Filters, UpdateRoleAmount } from "@/gql/client.gql";
+import { Roles } from "@/gql/server.gql";
 import gql from "graphql-tag";
 
 export default {
@@ -65,9 +45,7 @@ export default {
   data: () => ({
     drawer: null,
     drawerWidth: 400,
-    // roles: [],
-    roleAmount: 0,
-    // filters: {},
+    roleAmount: 0
   }),
   computed: {
     containerMargin: function() {
@@ -81,20 +59,23 @@ export default {
       return this.$vuetify.breakpoint.smAndDown;
     }
   },
-   apollo: {
-     filters: {
-       query: getFilters,
-       update: data => {
-        // console.log(data.selectedLocalGroups);
+  apollo: {
+    filters: {
+      query: Filters,
+      update: data => {
         return {
           ...data,
-          selectedLocalGroups: data.selectedLocalGroups.length ? data.selectedLocalGroups.map(({id}) => id) : null,
-          selectedWorkingGroups: data.selectedWorkingGroups.length ? data.selectedWorkingGroups.map(({id}) => id) : null,
-        }
+          selectedLocalGroups: data.selectedLocalGroups.length
+            ? data.selectedLocalGroups.map(({ id }) => id)
+            : null,
+          selectedWorkingGroups: data.selectedWorkingGroups.length
+            ? data.selectedWorkingGroups.map(({ id }) => id)
+            : null
+        };
       }
     },
     roles: {
-      query: getRoles,
+      query: Roles,
       update: function(data) {
         const roles = data.role.map(role => ({
           id: role.id,
@@ -108,10 +89,11 @@ export default {
           },
           location: role.location
         }));
-        // this.$store.commit("filters/update", {
-        //   key: "roleAmount",
-        //   value: roles.length
-        // });
+        this.$apollo.mutate({
+          mutation: UpdateRoleAmount,
+          variables: { amount: roles.length }
+        });
+        this.roleAmount = roles.length;
         return roles;
       },
       variables: function() {
@@ -123,13 +105,13 @@ export default {
           timeCommitmentMin: this.filters.selectedTimeCommitment[0],
           timeCommitmentMax: this.filters.selectedTimeCommitment[1]
         };
-        console.log(v);
+        // console.log(v);
         return v;
       },
       error: error => {
         console.error("[GraphQL]", error);
       }
-    },
+    }
   },
   watch: {
     isMobile: function() {

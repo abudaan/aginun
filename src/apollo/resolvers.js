@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
-import { selectedLocalGroups, selectedWorkingGroups,selectedTimeCommitment, LocalGroupById } from "../gql/client.gql";
-import { allLocalGroups, allWorkingGroups } from "../gql/server.gql";
+import { SelectedLocalGroups, SelectedWorkingGroups, SelectedTimeCommitment, LocalGroupById, RoleAmount} from "../gql/client.gql";
+import { LocalGroups, WorkingGroups } from "../gql/server.gql";
 
 const mapNames = (names, groups) => {
   const matched = names.map(name => {
@@ -16,60 +16,65 @@ const mapNames = (names, groups) => {
   return matched;
 }
 
+const testLocalQuery = async() => {
+  const data = await client.query({
+    query: LocalGroupById,
+    variables: {id: 1}
+  })
+  console.log(data);
+}
+
+const updateLocalGroups = (_, { names }, { cache, getCacheKey, client }, info) => {
+  const {local_group: groups} = cache.readQuery({
+    query: LocalGroups
+  });
+  cache.writeQuery({
+    query: SelectedLocalGroups,
+    data: { selectedLocalGroups: mapNames(names, groups) }
+  })
+  // console.log(cache.data.data.ROOT_QUERY.selectedLocalGroups);
+  return null;
+}
+
+const updateWorkingGroups = (_, { names }, { cache, getCacheKey, client }, info) => {
+  const {working_group: groups} = cache.readQuery({
+    query: WorkingGroups
+  });
+  cache.writeQuery({
+    query: SelectedWorkingGroups,
+    data: { selectedWorkingGroups: mapNames(names, groups) }
+  })
+  // console.log(cache.data.data.ROOT_QUERY.selectedWorkingGroups);
+  return null;
+}
+
+const updateTimeCommitmentRange = (_, { range }, { cache }) => {
+  cache.writeQuery({
+    query: SelectedTimeCommitment,
+    data: { selectedTimeCommitment: range }
+  })
+  // console.log(cache.data.data.ROOT_QUERY.selectedTimeCommitment);
+  return null;
+}
+
+const updateRoleAmount = (_, { amount }, { cache }) => {
+  cache.writeQuery({
+    query: RoleAmount,
+    data: { roleAmount: amount }
+  })
+  // console.log(cache.data.data.ROOT_QUERY.roleAmount);
+  return null;
+}
+
 export const resolvers = {
   Mutation: {
-    async updateLocalGroups(_, { names }, { cache, getCacheKey, client }, info) {
-
-      const data = await client.query({
-        query: LocalGroupById,
-        variables: {id: 1}
-      })
-      console.log(data);
-
-      const {local_group: groups} = cache.readQuery({
-        query: allLocalGroups
-      });
-      cache.writeQuery({
-        query: selectedLocalGroups,
-        data: { selectedLocalGroups: mapNames(names, groups) }
-      })
-      // console.log(cache.data.data.ROOT_QUERY.selectedLocalGroups);
-    },
-    updateWorkingGroups(_, { names }, { cache }) {
-      const {working_group: groups} = cache.readQuery({
-        query: allWorkingGroups
-      });
-      cache.writeQuery({
-        query: selectedWorkingGroups,
-        data: { selectedWorkingGroups: mapNames(names, groups) }
-      })
-      // console.log(cache.data.data.ROOT_QUERY.selectedWorkingGroups);
-    },
-    updateTimeCommitmentRange(_, { range }, { cache }) {
-      cache.writeQuery({
-        query: selectedTimeCommitment,
-        data: {selectedTimeCommitment: range}
-      })
-      // console.log(cache.data.data.ROOT_QUERY.selectedTimeCommitment);
-    }
-    // updateAmountRoles: (_, { value }, { cache }) => {
-    //   cache.writeQuery({
-    //     query: amountRoles,
-    //     data: { amountRoles: value }
-    //   })
-    //   console.log(cache.data.data.ROOT_QUERY);
-    //   return true;
-    // }
+    updateLocalGroups,
+    updateWorkingGroups,
+    updateTimeCommitmentRange,
+    updateRoleAmount,
   },
 
   Query: {
-    getFilters(_, data, data1, data2){
-      console.log(_, data, data1, data2);
-      return {
-        id: 666,
-        name: "XR Apeldoorn"
-      }
-    },
     localGroupById(parent, variables, { cache, getCacheKey, client }, info) {
       console.log(parent, variables, info)
       return [{

@@ -37,12 +37,12 @@
       <template v-slot:title>Groups</template>
       <flex-wrapper direction="column">
         <autocomplete-custom
-          :items="allLocalGroups"
+          :items="localGroups"
           label="Local Group"
           @change="id => onSetFilter(id, 'localGroup')"
         />
         <autocomplete-custom
-          :items="allWorkingGroups"
+          :items="workingGroups"
           label="Working Group"
           @change="id => onSetFilter(id, 'workingGroup')"
         />
@@ -70,18 +70,18 @@ import { mapState, mapGetters, mapMutations } from "vuex";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
 import gql from "graphql-tag";
 import {
-  updateLocalGroups,
-  updateWorkingGroups,
-  updateTimeCommitmentRange,
-  selectedTimeCommitment,
-  roleAmount,
-  searchString,
+  UpdateLocalGroups,
+  UpdateWorkingGroups,
+  UpdateTimeCommitmentRange,
+  SelectedTimeCommitment,
+  RoleAmount,
+  SearchString,
   LocalGroupById
 } from "../gql/client.gql";
 import {
-  boundsTimeCommitmentRange,
-  allLocalGroups,
-  allWorkingGroups
+  LocalGroups,
+  WorkingGroups,
+  BoundsTimeCommitmentRange
 } from "../gql/server.gql";
 
 export default {
@@ -106,40 +106,40 @@ export default {
     timeCommitmentRange: []
   }),
   apollo: {
-    test: {
-      query: LocalGroupById,
-      variables: { id: 111 },
-      update: data => {
-        console.log("Local Query", data);
-      }
-    },
+    // test: {
+    //   query: LocalGroupById,
+    //   variables: { id: 111 },
+    //   update: data => {
+    //     console.log("Local Query", data);
+    //   }
+    // },
     searchString: {
-      query: searchString,
+      query: SearchString,
       update: data => data.searchString
     },
     roleAmount: {
-      query: roleAmount,
+      query: RoleAmount,
       update: data => data.roleAmount
     },
-    allLocalGroups: {
-      query: allLocalGroups,
+    localGroups: {
+      query: LocalGroups,
       update: data =>
         data.local_group.map(({ id, name }) => ({ id, text: name }))
     },
-    allWorkingGroups: {
-      query: allWorkingGroups,
+    workingGroups: {
+      query: WorkingGroups,
       update: data =>
         data.working_group.map(({ id, name }) => ({ id, text: name }))
     },
     timeCommitmentRange: {
-      query: boundsTimeCommitmentRange,
+      query: BoundsTimeCommitmentRange,
       update: function(data) {
         const range = [
           data.role_aggregate.aggregate.min.time_commitment_min,
           data.role_aggregate.aggregate.max.time_commitment_max
         ];
         this.$apollo.mutate({
-          mutation: updateTimeCommitmentRange,
+          mutation: UpdateTimeCommitmentRange,
           variables: { range }
         });
         return range;
@@ -161,17 +161,17 @@ export default {
       // console.log(key, value);
       if (key === "localGroup") {
         this.$apollo.mutate({
-          mutation: updateLocalGroups,
+          mutation: UpdateLocalGroups,
           variables: { names: value }
         });
       } else if (key === "workingGroup") {
         this.$apollo.mutate({
-          mutation: updateWorkingGroups,
+          mutation: UpdateWorkingGroups,
           variables: { names: value }
         });
       } else if (key === "timeCommitment") {
         this.$apollo.mutate({
-          mutation: updateTimeCommitmentRange,
+          mutation: UpdateTimeCommitmentRange,
           variables: { range: value }
         });
       }

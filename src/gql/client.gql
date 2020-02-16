@@ -1,24 +1,24 @@
-query selectedLocalGroups {
+query SelectedLocalGroups {
   selectedLocalGroups @client
 }
 
-query selectedWorkingGroups {
+query SelectedWorkingGroups {
   selectedWorkingGroups @client
 }
 
-query selectedTimeCommitment {
+query SelectedTimeCommitment {
   selectedTimeCommitment @client
 }
 
-query roleAmount {
+query RoleAmount {
   roleAmount @client
 }
 
-query searchString {
+query SearchString {
   searchString @client
 }
 
-query getFilters @client {
+query Filters @client {
   searchString
   selectedLocalGroups
   selectedWorkingGroups
@@ -32,14 +32,18 @@ query LocalGroupById($id: Int!) {
   }
 }
 
-mutation updateLocalGroups($names: [String!]) {
+mutation UpdateLocalGroups($names: [String!]) {
   updateLocalGroups(names: $names) @client
 }
 
-mutation updateWorkingGroups($names: [String!]) {
+mutation UpdateWorkingGroups($names: [String!]) {
   updateWorkingGroups(names: $names) @client
 }
 
-mutation updateTimeCommitmentRange($range: [Int!]) {
+mutation UpdateTimeCommitmentRange($range: [Int!]) {
   updateTimeCommitmentRange(range: $range) @client
+}
+
+mutation UpdateRoleAmount($amount: [Int!]) {
+  updateRoleAmount(amount: $amount) @client
 }

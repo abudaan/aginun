@@ -1,5 +1,5 @@
 
-query getRoles(
+query Roles(
   $limit: Int
   $search: String
   $localGroupIds: [Int!]
@@ -33,21 +33,21 @@ query getRoles(
   }
 }
 
-query allWorkingGroups {
+query WorkingGroups {
   working_group {
     id
     name
   }
 }
 
-query allLocalGroups {
+query LocalGroups {
   local_group {
     id
     name
   }
 }
 
-query boundsTimeCommitmentRange {
+query BoundsTimeCommitmentRange {
   role_aggregate {
     aggregate {
       min {
