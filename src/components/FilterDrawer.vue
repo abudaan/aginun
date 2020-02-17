@@ -1,8 +1,13 @@
 <template>
-  <div class="drawer" :style="drawerStyle" :class="{ active: value }" :value="value">
+  <div
+    class="drawer"
+    :style="drawerStyle"
+    :class="{ active: value }"
+    :value="value"
+  >
     <div
       v-if="this.$vuetify.breakpoint.smAndDown"
-      :style="{height: navbarHeight}"
+      :style="{ height: navbarHeight }"
       class="d-flex justify-space-between align-center pa-3 bottom-border"
     >
       <div class="d-flex align-center">
@@ -24,7 +29,8 @@
           text
           color="primary"
           @click="() => onSetFilter(null, 'reset')"
-        >Clear filters</v-btn>
+          >Clear filters</v-btn
+        >
       </div>
       <v-text-field
         :value="searchString"
@@ -66,7 +72,6 @@
 <script>
 import FlexWrapper from "@/components/layout/FlexWrapper.vue";
 import AutocompleteCustom from "@/components/AutocompleteCustom";
-import { mapState, mapGetters, mapMutations } from "vuex";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
 import gql from "graphql-tag";
 import {

@@ -11,7 +11,9 @@
         <div v-if="$vuetify.breakpoint.smAndDown" class="mb-8">
           <v-divider />
           <div class="d-flex justify-end pa-3">
-            <v-btn text color="primary" @click="drawer = true">Filter</v-btn>
+            <v-btn text color="primary" @click="drawer = true">
+              Filter
+            </v-btn>
           </div>
           <v-divider />
         </div>
@@ -24,17 +26,19 @@
         </div>
       </div>
     </div>
-    <filter-drawer v-model="drawer" :width="drawerWidth" :roleAmount="roleAmount" />
+    <filter-drawer
+      v-model="drawer"
+      :width="drawerWidth"
+      :role-amount="roleAmount"
+    />
   </div>
 </template>
 
 <script>
-import RoleCard from "@/components/RoleCard.vue";
+import RoleCard from "@/components/roles/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
-import { mapGetters, mapState, mapMutations } from "vuex";
 import { Filters, UpdateRoleAmount } from "@/gql/client.gql";
 import { Roles } from "@/gql/server.gql";
-import gql from "graphql-tag";
 
 export default {
   name: "Explore",

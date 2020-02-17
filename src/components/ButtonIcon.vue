@@ -17,5 +17,5 @@
 <script>
   export default {
     name: "ButtonIcon",
-  }
+  };
 </script>

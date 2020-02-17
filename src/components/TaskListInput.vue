@@ -3,14 +3,10 @@
 </template>
 
 <script>
-  export default {
-    name: "TaskListInput",
-    data: () => ({
-
-    }),
-  }
+export default {
+  name: "TaskListInput",
+  data: () => ({})
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

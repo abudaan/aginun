@@ -21,28 +21,28 @@
 </template>
 
 <script>
-export default {
-  name: "AutocompleteCustom",
-  props: {
-    items: {
-      type: Array,
-      required: true
+  export default {
+    name: "AutocompleteCustom",
+    props: {
+      items: {
+        type: Array,
+        required: true,
+      },
+      label: {
+        type: String,
+        required: true,
+      },
     },
-    label: {
-      type: String,
-      required: true
-    }
-  },
-  data: () => ({})
-  // methods: {
-  //   itemSelected(item) {
-  //     console.log("Selected item!", item.id);
-  //   },
-  //   itemClicked(item) {
-  //     console.log("Clicked item!", item);
-  //   }
-  // }
-};
+    data: () => ({}),
+    // methods: {
+    //   itemSelected(item) {
+    //     console.log("Selected item!", item.id);
+    //   },
+    //   itemClicked(item) {
+    //     console.log("Clicked item!", item);
+    //   }
+    // }
+  };
 </script>
 
 <style lang="scss" scoped></style>
