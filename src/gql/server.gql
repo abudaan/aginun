@@ -1,4 +1,4 @@
-query Roles(
+query RolesFromServer(
   $limit: Int
   $search: String
   $localGroupIds: [Int!]

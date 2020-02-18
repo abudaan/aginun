@@ -14,11 +14,16 @@ query RoleAmount {
   roleAmount @client
 }
 
+query Limit {
+  limit @client
+}
+
 query SearchString {
   searchString @client
 }
 
 query Filters @client {
+  limit
   searchString
   selectedLocalGroups
   selectedWorkingGroups
@@ -56,26 +61,14 @@ mutation UpdateRoles($roles: [role]) {
   updateRoles(roles: $roles) @client
 }
 
-query Roles(
-  $limit: Int
-  $search: String
-  $localGroupIds: [Int!]
-  $workingGroupIds: [Int!]
-  $timeCommitmentMin: Int
-  $timeCommitmentMax: Int
-) {
-  role(
-    limit: $limit
-    search: $search
-    localGroupIds: $localGroupIds
-    workingGroupIds: $workingGroupIds
-    timeCommitmentMin: $timeCommitmentMin
-    timeCommitmentMax: $timeCommitmentMax
-  ) @client {
+query RolesFromClient {
+  roles @client {
     id
     name
     location
     localGroup
     workingGroup
+    timeCommitmentMin
+    timeCommitmentMax
   }
 }

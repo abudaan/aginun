@@ -38,7 +38,7 @@
 <script>
 import RoleCard from "@/components/roles/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
-import { Filters, UpdateRoleAmount, Roles } from "@/gql/client.gql";
+import { Filters, UpdateRoleAmount, RolesFromClient } from "@/gql/client.gql";
 
 export default {
   name: "RolesOverview",
@@ -69,38 +69,13 @@ export default {
       update: data => {
         return {
           ...data,
-          selectedLocalGroups: data.selectedLocalGroups.length
-            ? data.selectedLocalGroups.map(({ id }) => id)
-            : null,
-          selectedWorkingGroups: data.selectedWorkingGroups.length
-            ? data.selectedWorkingGroups.map(({ id }) => id)
-            : null
+          selectedLocalGroups: data.selectedLocalGroups,
+          selectedWorkingGroups: data.selectedWorkingGroups
         };
       }
     },
     roles: {
-      query: Roles,
-      update: function(roles) {
-        // const roles = data.role.map(role => ({
-        //   id: role.id,
-        //   title: role.name,
-        //   timeCommitment: [role.time_commitment_min, role.time_commitment_max],
-        //   localGroup: {
-        //     text: role.local_group.name
-        //   },
-        //   workingGroup: {
-        //     text: role.working_group.name
-        //   },
-        //   location: role.location
-        // }));
-        // this.$apollo.mutate({
-        //   mutation: UpdateRoleAmount,
-        //   variables: { amount: roles.length }
-        // });
-        // this.roleAmount = roles.length;
-        console.log(data);
-        return roles;
-      },
+      query: RolesFromClient,
       variables: function() {
         const v = {
           limit: 50,

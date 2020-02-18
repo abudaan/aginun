@@ -29,7 +29,8 @@ cache.writeData({
     roleAmount: 0,
     searchString: "",
     limit: 20,
-    navbarHeight: "64px"
+    navbarHeight: "64px",
+    roles: []
   }
 });
 
