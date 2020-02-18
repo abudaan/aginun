@@ -1,4 +1,3 @@
-
 query Roles(
   $limit: Int
   $search: String
@@ -17,19 +16,32 @@ query Roles(
     }
     limit: $limit
   ) {
+    ...RoleFragment
+  }
+}
+
+# query RoleById($id: Int!) {
+#   role(where: { id: { _eq: $id } }) {
+#     ...RoleFragment
+#     description
+#     contactDetails
+#     responsibilities
+#   }
+# }
+
+fragment RoleFragment on role {
+  id
+  name
+  location
+  time_commitment_min
+  time_commitment_max
+  local_group {
     id
     name
-    location
-    time_commitment_min
-    time_commitment_max
-    local_group {
-      id
-      name
-    }
-    working_group {
-      id
-      name
-    }
+  }
+  working_group {
+    id
+    name
   }
 }
 

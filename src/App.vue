@@ -6,7 +6,7 @@
       https://router.vuejs.org/guide/essentials/dynamic-matching.html#reacting-to-params-changes
       :key ensures component is always re-rendered from scratch,
       eliminating the need to watch routes or navigation guards in components -->
-      <router-view :key="$route.fullPath" />
+      <router-view />
     </v-content>
   </v-app>
 </template>

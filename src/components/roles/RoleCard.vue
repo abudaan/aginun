@@ -6,7 +6,7 @@
         :class="{ lighter: hover && $vuetify.theme.dark }"
       >
         <div class="d-flex justify-space-between align-center pa-3">
-          <span>{{ role.workingGroup.text }}</span>
+          <span>{{ role.workingGroup }}</span>
           <v-icon color="primary">
             mdi-police-badge
           </v-icon>
@@ -16,14 +16,14 @@
           <div>
             <h3>{{ role.title }}</h3>
             <div class="caption">
-              {{ role.localGroup.text }}, {{ role.location }}
+              {{ role.localGroup }}, {{ role.location }}
             </div>
           </div>
           <div class="d-flex flex-wrap justify-space-between align-end mt-5">
             <span class="d-flex flex-column justify-center">
               <span class="title flex-grow-0" style="line-height: 1rem">
-                {{ role.timeCommitment.min }} -
-                {{ role.timeCommitment.max }}
+                {{ role.timeCommitmentMin }} -
+                {{ role.timeCommitmentMax }}
               </span>
               <span class="overline text-uppercase">hours / week</span>
             </span>
@@ -38,18 +38,18 @@
 </template>
 
 <script>
-  export default {
-    name: "RoleCard",
-    props: {
-      role: {
-        type: Object,
-        required: true,
-        // might look into more managable prop validation, this might be hard to update when roles get more/less properties.
-        // making components always render, even with missing properties might be okay
-        // (i.e. the time commitment won't show when a role doesn't have a time commitment)
-        // or every property is a seperate prop, but you might have the same problem
+export default {
+  name: "RoleCard",
+  props: {
+    role: {
+      type: Object,
+      required: true
+      // might look into more managable prop validation, this might be hard to update when roles get more/less properties.
+      // making components always render, even with missing properties might be okay
+      // (i.e. the time commitment won't show when a role doesn't have a time commitment)
+      // or every property is a seperate prop, but you might have the same problem
 
-        /*validator: function(obj) {
+      /*validator: function(obj) {
         return (
           has(obj, "id") &&
           Number.isInteger(obj.id) &&
@@ -67,38 +67,38 @@
           Number.isInteger(obj.timeCommitment.max)
         );
       }*/
-      },
-    },
-  };
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-  .card {
-    margin: 0em 1em 2em 1em;
-    @media (max-width: "550px") {
-      margin-right: auto;
-      margin-left: auto;
-      margin-bottom: 1em;
-    }
+.card {
+  margin: 0em 1em 2em 1em;
+  @media (max-width: "550px") {
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 1em;
   }
+}
 
-  .pointer:hover {
-    cursor: pointer;
-  }
+.pointer:hover {
+  cursor: pointer;
+}
 
-  .button--text:hover {
-    opacity: 0.7;
-  }
+.button--text:hover {
+  opacity: 0.7;
+}
 
-  .transition-wrapper {
-    transition: background-color 280ms;
-  }
+.transition-wrapper {
+  transition: background-color 280ms;
+}
 
-  .lighter {
-    background-color: #333333 !important;
-  }
+.lighter {
+  background-color: #333333 !important;
+}
 
-  .full-height {
-    height: 100%;
-  }
+.full-height {
+  height: 100%;
+}
 </style>

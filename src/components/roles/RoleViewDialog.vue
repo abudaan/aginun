@@ -60,14 +60,12 @@
 <script>
 import FlexWrapper from "../layout/FlexWrapper";
 import MetaInfo from "../layout/MetaInfo";
-import { RoleById } from "../../gql/client.gql";
+import { LocalGroupById } from "../../gql/client.gql";
+import { RoleById } from "../../gql/server.gql";
 export default {
   components: {
     FlexWrapper,
     MetaInfo
-  },
-  beforeCreate() {
-    console.log("create role view");
   },
   data() {
     return {
@@ -82,7 +80,16 @@ export default {
       },
       update: data => {
         console.log(data);
-        return data.roleById;
+        return data;
+      }
+    },
+    group: {
+      query: LocalGroupById,
+      variables: function() {
+        return { id: 3 };
+      },
+      update: data => {
+        console.log(data);
       }
     }
   }

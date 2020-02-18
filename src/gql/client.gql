@@ -51,3 +51,31 @@ mutation UpdateTimeCommitmentRange($range: [Int!]) {
 mutation UpdateRoleAmount($amount: [Int!]) {
   updateRoleAmount(amount: $amount) @client
 }
+
+mutation UpdateRoles($roles: [role]) {
+  updateRoles(roles: $roles) @client
+}
+
+query Roles(
+  $limit: Int
+  $search: String
+  $localGroupIds: [Int!]
+  $workingGroupIds: [Int!]
+  $timeCommitmentMin: Int
+  $timeCommitmentMax: Int
+) {
+  role(
+    limit: $limit
+    search: $search
+    localGroupIds: $localGroupIds
+    workingGroupIds: $workingGroupIds
+    timeCommitmentMin: $timeCommitmentMin
+    timeCommitmentMax: $timeCommitmentMax
+  ) @client {
+    id
+    name
+    location
+    localGroup
+    workingGroup
+  }
+}

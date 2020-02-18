@@ -1,5 +1,6 @@
 <template>
   <div>
+    <router-view :key="$route.fullPath" />
     <div :style="containerMargin">
       <div class>
         <div class="text-center my-8">
@@ -37,11 +38,10 @@
 <script>
 import RoleCard from "@/components/roles/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
-import { Filters, UpdateRoleAmount } from "@/gql/client.gql";
-import { Roles } from "@/gql/server.gql";
+import { Filters, UpdateRoleAmount, Roles } from "@/gql/client.gql";
 
 export default {
-  name: "Explore",
+  name: "RolesOverview",
   components: {
     RoleCard,
     FilterDrawer
@@ -80,24 +80,25 @@ export default {
     },
     roles: {
       query: Roles,
-      update: function(data) {
-        const roles = data.role.map(role => ({
-          id: role.id,
-          title: role.name,
-          timeCommitment: [role.time_commitment_min, role.time_commitment_max],
-          localGroup: {
-            text: role.local_group.name
-          },
-          workingGroup: {
-            text: role.working_group.name
-          },
-          location: role.location
-        }));
-        this.$apollo.mutate({
-          mutation: UpdateRoleAmount,
-          variables: { amount: roles.length }
-        });
-        this.roleAmount = roles.length;
+      update: function(roles) {
+        // const roles = data.role.map(role => ({
+        //   id: role.id,
+        //   title: role.name,
+        //   timeCommitment: [role.time_commitment_min, role.time_commitment_max],
+        //   localGroup: {
+        //     text: role.local_group.name
+        //   },
+        //   workingGroup: {
+        //     text: role.working_group.name
+        //   },
+        //   location: role.location
+        // }));
+        // this.$apollo.mutate({
+        //   mutation: UpdateRoleAmount,
+        //   variables: { amount: roles.length }
+        // });
+        // this.roleAmount = roles.length;
+        console.log(data);
         return roles;
       },
       variables: function() {
