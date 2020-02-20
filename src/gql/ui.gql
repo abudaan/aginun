@@ -1,0 +1,3 @@
+query NavbarHeight {
+  navbarHeight @client
+}

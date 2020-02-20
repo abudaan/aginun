@@ -1,16 +1,17 @@
 import {
-  SelectedLocalGroups,
-  SelectedWorkingGroups,
-  SelectedTimeCommitment,
-  LocalGroupById,
   RoleAmount,
-  UpdateRoles,
   RolesFromClient,
-  Filters
-} from "../gql/client.gql";
-import { LocalGroups, WorkingGroups, RolesFromServer } from "../gql/server.gql";
+  RolesFromServer,
+  RoleDetailFromServer
+} from "@/gql/role.gql";
+import {
+  LocalGroups,
+  WorkingGroups,
+  SelectedLocalGroups,
+  SelectedWorkingGroups
+} from "@/gql/group.gql";
+import { SelectedTimeCommitment, Filter } from "@/gql/server.gql";
 import gql from "graphql-tag";
-import uniqid from "uniqid";
 
 const mapNames = (names, groups) => {
   const matched = names.map(name => {
@@ -28,7 +29,7 @@ const mapNames = (names, groups) => {
 
 const getRoles = async (cache, client) => {
   const filters = cache.readQuery({
-    query: Filters
+    query: Filter
   });
 
   const data = await client.query({
@@ -47,26 +48,42 @@ const getRoles = async (cache, client) => {
     }
   });
 
+  // console.log("[ROLE]", data);
   const roles = data.data.role.map(r => ({
-    __typename: "role",
-    id: r.id,
-    name: r.name,
-    location: r.location,
-    localGroup: r.local_group.name,
-    workingGroup: r.working_group.name,
-    timeCommitmentMin: r.time_commitment_min[0] || 0,
-    timeCommitmentMax: r.time_commitment_max[1] || 40
+    ...r,
+    time_commitment_min: r.time_commitment_min || 0,
+    time_commitment_max: r.time_commitment_max || 40
   }));
 
-  console.log(roles);
   client.writeQuery({
     query: RolesFromClient,
     data: { roles }
   });
 
-  console.log(cache);
+  cache.writeQuery({
+    query: RoleAmount,
+    data: { roleAmount: roles.length }
+  });
 
   return roles;
+};
+
+const roleDetail = async (_, { id }, { cache, client }) => {
+  const data = await client.query({
+    query: RoleDetailFromServer,
+    variables: { id }
+  });
+  const details = data.data.role[0];
+  const roles = cache.readQuery({
+    query: RolesFromClient
+  });
+
+  const role = roles.roles.filter(r => r.id === parseInt(id, 10))[0];
+  // console.log(role, details);
+  return {
+    ...role,
+    ...details
+  };
 };
 
 const updateLocalGroups = (_, { names }, { cache, client }) => {
@@ -105,72 +122,17 @@ const updateTimeCommitmentRange = (_, { range }, { cache, client }) => {
   return null;
 };
 
-const updateRoleAmount = (_, { amount }, { cache }) => {
-  cache.writeQuery({
-    query: RoleAmount,
-    data: { roleAmount: amount }
-  });
-  // console.log(cache.data.data.ROOT_QUERY.roleAmount);
-  return null;
-};
-
-const updateRoles = (_, { roles }, { cache }) => {
-  console.log("HUHUHU", roles);
-};
-
-const role = async (parent, variables, { cache }) => {
-  console.log("ROLE");
-  return null;
-};
-
 export const resolvers = {
   Mutation: {
     updateLocalGroups,
     updateWorkingGroups,
-    updateTimeCommitmentRange,
-    updateRoleAmount,
-    updateRoles
+    updateTimeCommitmentRange
   },
 
   Query: {
-    roles(parent, variables, { client, cache }) {
-      const roles = cache.readQuery({
-        query: RolesFromClient
-      });
-      console.log(roles);
-      return roles;
-    },
-    role: async (parent, variables, { client, cache }) => {
-      // console.log(parent, variables);
-      // const data = await client.query({
-      //   query: Roles,
-      //   variables
-      // });
-
-      // // console.log(data.data.role);
-      // const roles = data.data.role.map(r => {
-      //   return {
-      //     __typename: "role",
-      //     id: r.id,
-      //     name: r.name,
-      //     location: r.location,
-      //     localGroup: r.local_group.name,
-      //     workingGroup: r.working_group.name,
-      //     timeCommitmentMin: r.time_commitment_min[0],
-      //     timeCommitmentMax: r.time_commitment_max[1]
-      //   };
-      // });
-
-      // cache.writeQuery({
-      //   query: UpdateRoles,
-      //   data: { roles }
-      // });
-      // console.log(cache);
-      // const amountRoles = role.length;
-      // console.log("PARSED ROLES", roles);
-      return [];
-    }
+    roleDetail
   }
+
   // role: () => {
   //   return {
   //     id: 666,

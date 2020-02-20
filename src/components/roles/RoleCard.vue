@@ -6,7 +6,7 @@
         :class="{ lighter: hover && $vuetify.theme.dark }"
       >
         <div class="d-flex justify-space-between align-center pa-3">
-          <span>{{ role.workingGroup }}</span>
+          <span>{{ role.working_group.name }}</span>
           <v-icon color="primary">
             mdi-police-badge
           </v-icon>
@@ -16,14 +16,14 @@
           <div>
             <h3>{{ role.title }}</h3>
             <div class="caption">
-              {{ role.localGroup }}, {{ role.location }}
+              {{ role.local_group.name }}, {{ role.location }}
             </div>
           </div>
           <div class="d-flex flex-wrap justify-space-between align-end mt-5">
             <span class="d-flex flex-column justify-center">
               <span class="title flex-grow-0" style="line-height: 1rem">
-                {{ role.timeCommitmentMin }} -
-                {{ role.timeCommitmentMax }}
+                {{ role.time_commitment_min }} -
+                {{ role.time_commitment_max }}
               </span>
               <span class="overline text-uppercase">hours / week</span>
             </span>

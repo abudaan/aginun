@@ -27,18 +27,14 @@
         </div>
       </div>
     </div>
-    <filter-drawer
-      v-model="drawer"
-      :width="drawerWidth"
-      :role-amount="roleAmount"
-    />
+    <filter-drawer v-model="drawer" :width="drawerWidth" />
   </div>
 </template>
 
 <script>
 import RoleCard from "@/components/roles/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
-import { Filters, UpdateRoleAmount, RolesFromClient } from "@/gql/client.gql";
+import { RolesFromClient, RoleAmount } from "@/gql/role.gql";
 
 export default {
   name: "RolesOverview",
@@ -48,8 +44,7 @@ export default {
   },
   data: () => ({
     drawer: null,
-    drawerWidth: 400,
-    roleAmount: 0
+    drawerWidth: 400
   }),
   computed: {
     containerMargin: function() {
@@ -63,34 +58,16 @@ export default {
       return this.$vuetify.breakpoint.smAndDown;
     }
   },
+  // beforeCreate: () => {
+  //   console.log(RolesFromClient);
+  // },
   apollo: {
-    filters: {
-      query: Filters,
-      update: data => {
-        return {
-          ...data,
-          selectedLocalGroups: data.selectedLocalGroups,
-          selectedWorkingGroups: data.selectedWorkingGroups
-        };
-      }
-    },
     roles: {
       query: RolesFromClient,
-      variables: function() {
-        const v = {
-          limit: 50,
-          // search: this.filters.searchString,
-          localGroupIds: this.filters.selectedLocalGroups,
-          workingGroupIds: this.filters.selectedWorkingGroups,
-          timeCommitmentMin: this.filters.selectedTimeCommitment[0],
-          timeCommitmentMax: this.filters.selectedTimeCommitment[1]
-        };
-        // console.log(v);
-        return v;
-      },
-      error: error => {
-        console.error("[GraphQL]", error);
-      }
+      update: data => data.roles
+    },
+    roleAmount: {
+      query: RoleAmount
     }
   },
   watch: {

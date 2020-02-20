@@ -12,14 +12,18 @@
     >
       <div class="d-flex align-center">
         <v-btn icon @click="$emit('input', false)">
-          <v-icon color="primary">mdi-arrow-left</v-icon>
+          <v-icon color="primary">
+            mdi-arrow-left
+          </v-icon>
         </v-btn>
         <span>
           <strong class="primary--text">{{ roleAmount }}</strong>
           positions found
         </span>
       </div>
-      <v-btn text color="primary">Clear filters</v-btn>
+      <v-btn text color="primary">
+        Clear filters
+      </v-btn>
     </div>
     <div class="px-4 py-5 pb-0">
       <div class="d-flex justify-space-between align-center">
@@ -29,8 +33,9 @@
           text
           color="primary"
           @click="() => onSetFilter(null, 'reset')"
-          >Clear filters</v-btn
         >
+          Clear filters
+        </v-btn>
       </div>
       <v-text-field
         :value="searchString"
@@ -40,7 +45,9 @@
       />
     </div>
     <filter-section>
-      <template v-slot:title>Groups</template>
+      <template v-slot:title>
+        Groups
+      </template>
       <flex-wrapper direction="column">
         <autocomplete-custom
           :items="localGroups"
@@ -55,7 +62,9 @@
       </flex-wrapper>
     </filter-section>
     <filter-section>
-      <template v-slot:title>Time commitment</template>
+      <template v-slot:title>
+        Time commitment
+      </template>
       <v-range-slider
         :value="timeCommitmentRange"
         :min="timeCommitmentRange[0]"
@@ -74,21 +83,22 @@ import FlexWrapper from "@/components/layout/FlexWrapper.vue";
 import AutocompleteCustom from "@/components/AutocompleteCustom";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
 import gql from "graphql-tag";
-import {
-  UpdateLocalGroups,
-  UpdateWorkingGroups,
-  UpdateTimeCommitmentRange,
-  SelectedTimeCommitment,
-  RoleAmount,
-  SearchString,
-  LocalGroupById,
-  NavbarHeight
-} from "../gql/client.gql";
+import { RoleAmount } from "@/gql/role.gql";
 import {
   LocalGroups,
   WorkingGroups,
-  BoundsTimeCommitmentRange
-} from "../gql/server.gql";
+  UpdateLocalGroups,
+  UpdateWorkingGroups
+} from "@/gql/group.gql";
+
+import {
+  BoundsTimeCommitmentRange,
+  UpdateTimeCommitmentRange,
+  SelectedTimeCommitment,
+  SearchString
+} from "@/gql/server.gql";
+
+import { NavbarHeight } from "@/gql/ui.gql";
 
 export default {
   name: "TheFilterDrawer",
@@ -108,17 +118,13 @@ export default {
       default: 400
     }
   },
+  // beforeCreate: () => {
+  //   console.log(RoleAmount);
+  // },
   data: () => ({
     timeCommitmentRange: []
   }),
   apollo: {
-    // test: {
-    //   query: LocalGroupById,
-    //   variables: { id: 111 },
-    //   update: data => {
-    //     console.log("Local Query", data);
-    //   }
-    // },
     navbarHeight: {
       query: NavbarHeight,
       update: data => data.navbarHeight
