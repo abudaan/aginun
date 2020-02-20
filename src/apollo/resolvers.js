@@ -2,7 +2,8 @@ import {
   RoleAmount,
   RolesFromClient,
   RolesFromServer,
-  RoleDetailFromServer
+  RoleDetailFromServer,
+  RoleAllInfoFromServer
 } from "@/gql/role.gql";
 import {
   LocalGroups,
@@ -10,7 +11,7 @@ import {
   SelectedLocalGroups,
   SelectedWorkingGroups
 } from "@/gql/group.gql";
-import { SelectedTimeCommitment, Filter } from "@/gql/server.gql";
+import { SelectedTimeCommitment, Filter, SearchString } from "@/gql/filter.gql";
 import gql from "graphql-tag";
 
 const mapNames = (names, groups) => {
@@ -38,10 +39,10 @@ const getRoles = async (cache, client) => {
       limit: filters.limit,
       search: filters.searchString ? filters.searchString : null,
       localGroupIds: filters.selectedLocalGroups.length
-        ? filters.selectedLocalGroups
+        ? filters.selectedLocalGroups.map(g => g.id)
         : null,
       workingGroupIds: filters.selectedWorkingGroups.length
-        ? filters.selectedWorkingGroups
+        ? filters.selectedWorkingGroups.map(g => g.id)
         : null,
       timeCommitmentMin: filters.selectedTimeCommitment[0],
       timeCommitmentMax: filters.selectedTimeCommitment[1]
@@ -69,21 +70,37 @@ const getRoles = async (cache, client) => {
 };
 
 const roleDetail = async (_, { id }, { cache, client }) => {
-  const data = await client.query({
-    query: RoleDetailFromServer,
-    variables: { id }
-  });
-  const details = data.data.role[0];
   const roles = cache.readQuery({
     query: RolesFromClient
   });
 
-  const role = roles.roles.filter(r => r.id === parseInt(id, 10))[0];
-  // console.log(role, details);
-  return {
-    ...role,
-    ...details
-  };
+  let role = roles.roles.filter(r => r.id === parseInt(id, 10))[0];
+
+  if (role) {
+    const data = await client.query({
+      query: RoleDetailFromServer,
+      variables: { id }
+    });
+    const details = data.data.role[0];
+    return {
+      ...role,
+      ...details
+    };
+  }
+
+  const data = await client.query({
+    query: RoleAllInfoFromServer,
+    variables: { id }
+  });
+
+  role = data.data.role[0];
+
+  client.writeQuery({
+    query: RolesFromClient,
+    data: { roles: [role] }
+  });
+
+  return role;
 };
 
 const updateLocalGroups = (_, { names }, { cache, client }) => {
@@ -122,11 +139,30 @@ const updateTimeCommitmentRange = (_, { range }, { cache, client }) => {
   return null;
 };
 
+const updateSearchString = (_, { search }, { cache, client }) => {
+  client.writeQuery({
+    query: SearchString,
+    data: { searchString: search }
+  });
+  getRoles(cache, client);
+  return null;
+};
+
+const clearFilter = (_, variables, { cache, client }) => {
+  const r = cache.readQuery();
+  client.writeQuery({
+    query: SelectedTimeCommitment,
+    data: { selectedTimeCommitment: r }
+  });
+};
+
 export const resolvers = {
   Mutation: {
     updateLocalGroups,
     updateWorkingGroups,
-    updateTimeCommitmentRange
+    updateTimeCommitmentRange,
+    updateSearchString,
+    clearFilter
   },
 
   Query: {
@@ -135,9 +171,9 @@ export const resolvers = {
 
   // role: () => {
   //   return {
-  //     id: 666,
-  //     name: "",
-  //     location: ""
+  //     id: 10,
+  //     name: "Composer",
+  //     location: "Groningen"
   //   };
   // }
 };

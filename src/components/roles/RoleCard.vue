@@ -14,7 +14,7 @@
         <v-divider />
         <div class="pa-3 d-flex flex-column flex-grow-1 justify-space-between">
           <div>
-            <h3>{{ role.title }}</h3>
+            <h3>{{ role.name }}</h3>
             <div class="caption">
               {{ role.local_group.name }}, {{ role.location }}
             </div>

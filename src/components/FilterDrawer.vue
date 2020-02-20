@@ -82,23 +82,21 @@
 import FlexWrapper from "@/components/layout/FlexWrapper.vue";
 import AutocompleteCustom from "@/components/AutocompleteCustom";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
-import gql from "graphql-tag";
 import { RoleAmount } from "@/gql/role.gql";
+import { NavbarHeight } from "@/gql/ui.gql";
 import {
   LocalGroups,
   WorkingGroups,
   UpdateLocalGroups,
   UpdateWorkingGroups
 } from "@/gql/group.gql";
-
 import {
   BoundsTimeCommitmentRange,
   UpdateTimeCommitmentRange,
   SelectedTimeCommitment,
+  UpdateSearchString,
   SearchString
-} from "@/gql/server.gql";
-
-import { NavbarHeight } from "@/gql/ui.gql";
+} from "@/gql/filter.gql";
 
 export default {
   name: "TheFilterDrawer",
@@ -189,6 +187,11 @@ export default {
         this.$apollo.mutate({
           mutation: UpdateTimeCommitmentRange,
           variables: { range: value }
+        });
+      } else if (key === "text") {
+        this.$apollo.mutate({
+          mutation: UpdateSearchString,
+          variables: { search: value }
         });
       }
     }

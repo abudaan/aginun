@@ -57,6 +57,15 @@ query RoleDetailFromClient($id: int!) {
   }
 }
 
+query RoleAllInfoFromServer($id: Int!) {
+  role(where: { id: { _eq: $id } }) {
+    ...RoleFragment
+    description
+    contact_details
+    responsibilities
+  }
+}
+
 mutation UpdateRoleAmount($amount: [Int!]) {
   updateRoleAmount(amount: $amount) @client
 }

@@ -58,9 +58,6 @@ export default {
       return this.$vuetify.breakpoint.smAndDown;
     }
   },
-  // beforeCreate: () => {
-  //   console.log(RolesFromClient);
-  // },
   apollo: {
     roles: {
       query: RolesFromClient,

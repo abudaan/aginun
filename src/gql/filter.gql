@@ -34,3 +34,11 @@ query Filter @client {
 mutation UpdateTimeCommitmentRange($range: [Int!]) {
   updateTimeCommitmentRange(range: $range) @client
 }
+
+mutation UpdateSearchString($search: String!) {
+  updateSearchString(search: $search) @client
+}
+
+mutation ClearFilter {
+  clearFilter @client
+}
