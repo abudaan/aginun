@@ -37,7 +37,7 @@ const getRoles = async (cache, client) => {
     query: RolesFromServer,
     variables: {
       limit: filters.limit,
-      search: filters.searchString ? filters.searchString : null,
+      search: filters.searchString ? `%${filters.searchString}%` : null,
       localGroupIds: filters.selectedLocalGroups.length
         ? filters.selectedLocalGroups.map(g => g.id)
         : null,
@@ -148,12 +148,24 @@ const updateSearchString = (_, { search }, { cache, client }) => {
   return null;
 };
 
-const clearFilter = (_, variables, { cache, client }) => {
-  const r = cache.readQuery();
+const clearFilter = (_, __, { cache, client }) => {
+  // const r = cache.readQuery();
   client.writeQuery({
     query: SelectedTimeCommitment,
-    data: { selectedTimeCommitment: r }
+    data: { selectedTimeCommitment: [0, 40] } // @todo: fix this!
   });
+
+  client.writeQuery({
+    query: SelectedLocalGroups,
+    data: { selectedLocalGroups: [] }
+  });
+
+  client.writeQuery({
+    query: SelectedWorkingGroups,
+    data: { selectedWorkingGroups: [] }
+  });
+
+  getRoles(cache, client);
 };
 
 export const resolvers = {

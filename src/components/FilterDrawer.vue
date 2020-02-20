@@ -21,7 +21,7 @@
           positions found
         </span>
       </div>
-      <v-btn text color="primary">
+      <v-btn text color="primary" @click="clearFilter">
         Clear filters
       </v-btn>
     </div>
@@ -32,7 +32,7 @@
           v-if="!$vuetify.breakpoint.smAndDown"
           text
           color="primary"
-          @click="() => onSetFilter(null, 'reset')"
+          @click="clearFilter"
         >
           Clear filters
         </v-btn>
@@ -66,7 +66,7 @@
         Time commitment
       </template>
       <v-range-slider
-        :value="timeCommitmentRange"
+        :value="selectedTimeCommitment"
         :min="timeCommitmentRange[0]"
         :max="timeCommitmentRange[1]"
         class="mt-12"
@@ -95,6 +95,7 @@ import {
   UpdateTimeCommitmentRange,
   SelectedTimeCommitment,
   UpdateSearchString,
+  ClearFilter,
   SearchString
 } from "@/gql/filter.gql";
 
@@ -120,7 +121,8 @@ export default {
   //   console.log(RoleAmount);
   // },
   data: () => ({
-    timeCommitmentRange: []
+    timeCommitmentRange: [],
+    selectedTimeCommitment: []
   }),
   apollo: {
     navbarHeight: {
@@ -144,6 +146,10 @@ export default {
       query: WorkingGroups,
       update: data =>
         data.working_group.map(({ id, name }) => ({ id, text: name }))
+    },
+    selectedTimeCommitment: {
+      query: SelectedTimeCommitment,
+      update: data => data.selectedTimeCommitment
     },
     timeCommitmentRange: {
       query: BoundsTimeCommitmentRange,
@@ -171,6 +177,11 @@ export default {
     }
   },
   methods: {
+    clearFilter: function() {
+      this.$apollo.mutate({
+        mutation: ClearFilter
+      });
+    },
     onSetFilter: function(value, key) {
       // console.log(key, value);
       if (key === "localGroup") {
