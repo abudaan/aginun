@@ -4,13 +4,13 @@
       {{ task.title }}
     </template>
     <template #subtitle>
-      {{ task.localGroup.text }}, {{ task.workingGroup.text }}
+      {{ task.local_group.name }}, {{ task.working_group.name }}
     </template>
     <template #meta>
       <span class="d-flex flex-column justify-center">
         <span class="title flex-grow-0" style="line-height: 1rem">
-          {{ task.timeCommitment.min }} -
-          {{ task.timeCommitment.max }}
+          {{ task.time_commitment_min }} -
+          {{ task.time_commitment_max }}
         </span>
         <span class="overline text-uppercase">hours</span>
       </span>
@@ -29,8 +29,8 @@ export default {
   props: {
     task: {
       type: Object,
-      required: true,
-    },
-  },
+      required: true
+    }
+  }
 };
 </script>

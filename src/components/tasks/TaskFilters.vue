@@ -49,7 +49,7 @@ import FlexWrapper from "@/components/layout/FlexWrapper.vue";
 import AutocompleteCustom from "@/components/AutocompleteCustom";
 import FilterDrawerSection from "../layout/FilterDrawerSection";
 import {
-  RoleAmount,
+  TaskAmount,
   NavbarHeight,
   LocalGroups,
   WorkingGroups,
@@ -90,9 +90,9 @@ export default {
       query: SearchString,
       update: data => data.searchString
     },
-    roleAmount: {
-      query: RoleAmount,
-      update: data => data.roleAmount
+    taskAmount: {
+      query: TaskAmount,
+      update: data => data.taskAmount
     },
     selectedLocalGroups: {
       query: SelectedLocalGroups,

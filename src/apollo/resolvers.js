@@ -10,7 +10,8 @@ import {
   SelectedWorkingGroups,
   SelectedTimeCommitment,
   Filter,
-  SearchString
+  SearchString,
+  AggregateTimeCommitmentRange
 } from "@/gql/queries.gql";
 
 // util function that maps the names of the groups in the dropdown boxes in the drawer
@@ -168,6 +169,10 @@ const clearFilter = (_, __, { cache, client }) => {
   });
 
   getRoles(cache, client);
+};
+
+const aggregateTimeCommitmentRange = (_, __, { cache, client }) => {
+  // AggregateTimeCommitmentRange
 };
 
 export const resolvers = {

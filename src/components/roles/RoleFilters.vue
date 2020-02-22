@@ -53,7 +53,7 @@ import {
   WorkingGroups,
   SearchString,
   SelectedTimeCommitment,
-  BoundsTimeCommitmentRange
+  AggregateTimeCommitmentRange
 } from "@/gql/queries.gql";
 import {
   UpdateTimeCommitmentRange,
@@ -105,7 +105,7 @@ export default {
       update: data => data.selectedTimeCommitment
     },
     timeCommitmentRange: {
-      query: BoundsTimeCommitmentRange,
+      query: AggregateTimeCommitmentRange,
       update: function(data) {
         const range = [
           data.role_aggregate.aggregate.min.time_commitment_min,

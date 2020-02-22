@@ -26,7 +26,7 @@ query SelectedWorkingGroups {
   selectedWorkingGroups @client
 }
 
-query BoundsTimeCommitmentRange {
+query AggregateTimeCommitmentRangeFromServer {
   role_aggregate {
     aggregate {
       min {
@@ -37,6 +37,10 @@ query BoundsTimeCommitmentRange {
       }
     }
   }
+}
+
+query AggregateTimeCommitmentRangeFromClient {
+  timeCommitmentRange @client
 }
 
 # Filter
@@ -140,3 +144,52 @@ query RoleAmount {
 #     ...RoleFragment
 #   }
 # }
+
+# Task
+
+fragment RoleFragment on role {
+  id
+  name
+  location
+  time_commitment_min
+  time_commitment_max
+  local_group {
+    name
+  }
+  working_group {
+    name
+  }
+  completed
+}
+
+query TaskFromServer(
+  $limit: Int
+  $search: String
+  $localGroupIds: [Int!]
+  $workingGroupIds: [Int!]
+  $timeCommitmentMin: Int
+  $timeCommitmentMax: Int
+) {
+  role(
+    where: {
+      name: { _ilike: $search }
+      local_group: { id: { _in: $localGroupIds } }
+      working_group: { id: { _in: $workingGroupIds } }
+      time_commitment_min: { _gte: $timeCommitmentMin }
+      time_commitment_max: { _lte: $timeCommitmentMax }
+    }
+    limit: $limit
+  ) {
+    ...TaskFragment
+  }
+}
+
+query TaskFromClient {
+  roles @client {
+    ...TaskFragment
+  }
+}
+
+query TaskAmount {
+  taskAmount @client
+}
