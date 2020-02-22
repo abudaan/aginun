@@ -10,17 +10,14 @@
       <v-card v-if="!!role" class="role card">
         <v-card-title>
           <flex-wrapper direction="column">
-            <h2 class="role title">{{ role.title }}</h2>
-            <flex-wrapper v-if="role.workingGroup || role.localGroup">
+            <h2 class="role title">
+              {{ role.name }}
+            </h2>
+            <flex-wrapper v-if="role.working_group || role.local_group">
               <h5 class="role subtitle">
-                {{ !!role.workingGroup && role.workingGroup.text }}
-                <span
-                  v-if="!!role.workingGroup && !!role.localGroup"
-                  style="margin: 0 0.25rem;"
-                >
-                  -
-                </span>
-                {{ !!role.localGroup && role.localGroup.text }}
+                {{ role.working_group.name }}
+                <span style="margin: 0 0.25rem;">- </span>
+                {{ role.local_group.name }}
               </h5>
             </flex-wrapper>
           </flex-wrapper>
@@ -37,17 +34,17 @@
             </div>
             <div class="role sidebar">
               <meta-info
-                v-if="!!role.timeCommitment"
+                v-if="!!role.time_commitment_min"
                 title="Time Commitment"
                 :description="
-                  `${role.timeCommitment.min} -
-                ${role.timeCommitment.max} hours/week`
+                  `${role.time_commitment_min} -
+                ${role.time_commitment_max} hours/week`
                 "
               />
               <meta-info
-                v-if="!!role.contactDetails"
+                v-if="!!role.contact_details"
                 title="Contact Details"
-                :description="role.contactDetails"
+                :description="role.contact_details"
               />
             </div>
           </flex-wrapper>
@@ -59,7 +56,7 @@
 <script>
 import FlexWrapper from "../layout/FlexWrapper";
 import MetaInfo from "../layout/MetaInfo";
-import { mapGetters } from "vuex";
+import { RoleDetailFromClient } from "@/gql/queries.gql";
 export default {
   components: {
     FlexWrapper,
@@ -70,12 +67,15 @@ export default {
       dialog: true,
     };
   },
-  computed: {
-    ...mapGetters("roles", ["getByID"]),
-    role: function() {
-      return this.getByID(this.$route.params.id);
+  apollo: {
+    role: {
+      query: RoleDetailFromClient,
+      variables: function() {
+        return { id: this.$route.params.id };
     },
-  },
+      update: data => data.roleDetail
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

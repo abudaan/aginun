@@ -66,13 +66,12 @@
         Time commitment
       </template>
       <v-range-slider
-        :value="selectedTimeCommitment"
-        :min="timeCommitmentRange[0]"
-        :max="timeCommitmentRange[1]"
+        v-model="timeRange"
+        :min="timeCommitment.min"
+        :max="timeCommitment.max"
         class="mt-12"
         thumb-label="always"
         label="Time Commitment"
-        @change="id => onSetFilter(id, 'timeCommitment')"
       />
     </filter-section>
   </div>

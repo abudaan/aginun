@@ -1,19 +1,19 @@
 <template>
   <default-card>
     <template #header>
-      {{ role.workingGroup.text }}
+      {{ role.working_group.name }}
     </template>
     <template #title>
       {{ role.title }}
     </template>
     <template #subtitle>
-      {{ role.localGroup.text }}, {{ role.location }}
+      {{ role.local_group.name }}, {{ role.location }}
     </template>
     <template #meta>
       <span class="d-flex flex-column justify-center">
         <span class="title flex-grow-0" style="line-height: 1rem">
-          {{ role.timeCommitment.min }} -
-          {{ role.timeCommitment.max }}
+                {{ role.time_commitment_min }} -
+                {{ role.time_commitment_max }}
         </span>
         <span class="overline text-uppercase">hours / week</span>
       </span>

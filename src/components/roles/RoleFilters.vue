@@ -2,7 +2,7 @@
   <div>
     <div>
       <v-text-field
-        :value="selectedFilters.text"
+        :value="searchString"
         label="Facilitator, Writer, Photographer..."
         class="mt-3"
         @input="value => onSetFilter(value, 'text')"
@@ -14,13 +14,13 @@
       </template>
       <flex-wrapper direction="column">
         <autocomplete-custom
-          :value="selectedFilters.localGroup"
+          :value="selectedLocalGroups"
           :items="localGroups"
           label="Local Group"
           @change="id => onSetFilter(id, 'localGroup')"
         />
         <autocomplete-custom
-          :value="selectedFilters.workingGroup"
+          :value="selectedWorkingGroups"
           :items="workingGroups"
           label="Working Group"
           @change="id => onSetFilter(id, 'workingGroup')"
@@ -46,32 +46,121 @@
 <script>
 import FlexWrapper from "@/components/layout/FlexWrapper.vue";
 import AutocompleteCustom from "@/components/AutocompleteCustom";
-import { mapState } from "vuex";
 import FilterDrawerSection from "../layout/FilterDrawerSection";
+import {
+  RoleAmount,
+  NavbarHeight,
+  LocalGroups,
+  WorkingGroups,
+  SearchString,
+  SelectedTimeCommitment,
+  BoundsTimeCommitmentRange,
+  SelectedLocalGroups,
+  SelectedWorkingGroups
+} from "@/gql/queries.gql";
+import {
+  UpdateTimeCommitmentRange,
+  UpdateLocalGroups,
+  UpdateWorkingGroups,
+  UpdateSearchString,
+  ClearFilter
+} from "@/gql/mutations.gql";
 
 export default {
   name: "RoleFilters",
   components: {
     filterSection: FilterDrawerSection,
     AutocompleteCustom,
-    FlexWrapper,
-  },
-  props: {
-    selectedFilters: {
-      type: Object,
-      required: true,
-    },
-    roleAmount: { type: Number, default: 0 },
-    onSetFilter: { required: true, type: Function },
+    FlexWrapper
   },
   data: () => ({
-    timeRange: [1, 30],
+    timeCommitmentRange: [],
+    selectedTimeCommitment: []
   }),
-  computed: {
-    ...mapState("roles", ["timeCommitment"]),
-    ...mapState("localGroups", ["localGroups"]),
-    ...mapState("workingGroups", ["workingGroups"]),
+  beforeCreate: () => {
+    console.log();
   },
+  apollo: {
+    navbarHeight: {
+      query: NavbarHeight,
+      update: data => data.navbarHeight
+    },
+    searchString: {
+      query: SearchString,
+      update: data => data.searchString
+    },
+    roleAmount: {
+      query: RoleAmount,
+      update: data => data.roleAmount
+    },
+    selectedLocalGroups: {
+      query: SelectedLocalGroups,
+      update: data => data.selectedLocalGroups
+    },
+    selectedWorkingGroups: {
+      query: SelectedWorkingGroups,
+      update: data => data.selectedWorkingGroups
+    },
+    localGroups: {
+      query: LocalGroups,
+      update: data =>
+        data.local_group.map(({ id, name }) => ({ id, text: name }))
+    },
+    workingGroups: {
+      query: WorkingGroups,
+      update: data =>
+        data.working_group.map(({ id, name }) => ({ id, text: name }))
+    },
+    selectedTimeCommitment: {
+      query: SelectedTimeCommitment,
+      update: data => data.selectedTimeCommitment
+    },
+    timeCommitmentRange: {
+      query: BoundsTimeCommitmentRange,
+      update: function(data) {
+        const range = [
+          data.role_aggregate.aggregate.min.time_commitment_min,
+          data.role_aggregate.aggregate.max.time_commitment_max
+        ];
+        this.$apollo.mutate({
+          mutation: UpdateTimeCommitmentRange,
+          variables: { range }
+        });
+        return range;
+      }
+    },
+    methods: {
+      clearFilter: function() {
+        this.$apollo.mutate({
+          mutation: ClearFilter
+        });
+      },
+      onSetFilter: function(value, key) {
+        // console.log(key, value);
+        if (key === "localGroup") {
+          this.$apollo.mutate({
+            mutation: UpdateLocalGroups,
+            variables: { names: value }
+          });
+        } else if (key === "workingGroup") {
+          this.$apollo.mutate({
+            mutation: UpdateWorkingGroups,
+            variables: { names: value }
+          });
+        } else if (key === "timeCommitment") {
+          this.$apollo.mutate({
+            mutation: UpdateTimeCommitmentRange,
+            variables: { range: value }
+          });
+        } else if (key === "text") {
+          this.$apollo.mutate({
+            mutation: UpdateSearchString,
+            variables: { search: value }
+          });
+        }
+      }
+    }
+  }
 };
 </script>
 

@@ -19,12 +19,12 @@
       <v-divider />
     </div>
     <grid-list
-      v-if="filteredRoles.length > 0"
+      v-if="roles.length > 0"
       item-width="300px"
       item-height="200px"
       gap="2rem"
     >
-      <role-card v-for="role in filteredRoles" :key="role.id" :role="role" />
+      <role-card v-for="role in roles" :key="role.id" :role="role" />
     </grid-list>
     <div v-else class="pa-5 text-center">
       <h3>No results.</h3>
@@ -43,11 +43,7 @@
             </v-btn>
           </div>
         </template>
-        <role-filters
-          :on-set-filter="handleSelectFilter"
-          :selected-filters="selectedFilters"
-          :role-amount="filteredRoles.length"
-        />
+        <role-filters />
       </default-drawer>
     </template>
   </page-with-drawer>
@@ -59,7 +55,7 @@ import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
 import RoleCard from "@/components/roles/RoleCard.vue";
 import GridList from "@/components/layout/GridList.vue";
 import RoleFilters from "@/components/roles/RoleFilters.vue";
-import { mapGetters } from "vuex";
+import { RolesFromClient } from "@/gql/queries.gql";
 
 export default {
   name: "RolesOverview",
@@ -68,39 +64,31 @@ export default {
     RoleFilters,
     PageWithDrawer,
     GridList,
-    DefaultDrawer,
+    DefaultDrawer
   },
   data: () => ({
-    isDrawerOpen: null,
-    //not a huge fan of having to declare these beforehand, will look into another way
-    selectedFilters: {
-      text: "",
-      localGroup: [],
-      workingGroup: [],
-    },
+    isDrawerOpen: null
   }),
+  apollo: {
+    roles: {
+      query: RolesFromClient,
+      update: data => data.roles
+    }
+  },
   computed: {
-    ...mapGetters("roles", ["getByFilters"]),
-    filteredRoles: function() {
-      return this.getByFilters(this.selectedFilters);
-    },
     isMobile: function() {
       return this.$vuetify.breakpoint.smAndDown;
-    },
+    }
   },
   watch: {
     isMobile: function() {
       this.isDrawerOpen = !this.isMobile;
-    },
+    }
   },
   created: function() {
-    this.isDrawerOpen = !this.isMobile;
+    return !this.isMobile;
   },
-  methods: {
-    handleSelectFilter: function(value, type) {
-      this.selectedFilters[type] = value;
-    },
-  },
+  methods: {}
 };
 </script>
 
