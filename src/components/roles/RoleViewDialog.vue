@@ -2,10 +2,10 @@
   <div>
     <v-dialog
       persistent
-      @click:outside="$router.push('/roles')"
-      @keydown.escape="$router.push('/roles')"
       max-width="750"
       value="true"
+      @click:outside="$router.push('/roles')"
+      @keydown.escape="$router.push('/roles')"
     >
       <v-card v-if="!!role" class="role card">
         <v-card-title>
@@ -60,11 +60,11 @@ import { RoleDetailFromClient } from "@/gql/queries.gql";
 export default {
   components: {
     FlexWrapper,
-    MetaInfo,
+    MetaInfo
   },
   data() {
     return {
-      dialog: true,
+      dialog: true
     };
   },
   apollo: {
@@ -72,7 +72,7 @@ export default {
       query: RoleDetailFromClient,
       variables: function() {
         return { id: this.$route.params.id };
-    },
+      },
       update: data => data.roleDetail
     }
   }

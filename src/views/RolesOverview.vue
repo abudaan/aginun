@@ -86,7 +86,7 @@ export default {
     }
   },
   created: function() {
-    return !this.isMobile;
+    this.isDrawerOpen = !this.isMobile;
   },
   methods: {}
 };

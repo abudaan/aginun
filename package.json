@@ -67,6 +67,7 @@
     ],
     "rules": {
       "no-console": "off",
+      "no-unused-vars": "off",
       "vue/max-attributes-per-line": [
         2,
         {

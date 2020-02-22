@@ -31,7 +31,7 @@ export default {
     },
     value: {
       type: Array,
-      required: true,
+      required: false,
     },
     label: {
       type: String,

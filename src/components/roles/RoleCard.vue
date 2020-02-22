@@ -4,7 +4,7 @@
       {{ role.working_group.name }}
     </template>
     <template #title>
-      {{ role.title }}
+      {{ role.name }}
     </template>
     <template #subtitle>
       {{ role.local_group.name }}, {{ role.location }}
@@ -12,8 +12,8 @@
     <template #meta>
       <span class="d-flex flex-column justify-center">
         <span class="title flex-grow-0" style="line-height: 1rem">
-                {{ role.time_commitment_min }} -
-                {{ role.time_commitment_max }}
+          {{ role.time_commitment_min }} -
+          {{ role.time_commitment_max }}
         </span>
         <span class="overline text-uppercase">hours / week</span>
       </span>
@@ -31,12 +31,12 @@ import DefaultCard from "@/components/surfaces/DefaultCard.vue";
 export default {
   name: "RoleCard",
   components: {
-    DefaultCard,
+    DefaultCard
   },
   props: {
     role: {
       type: Object,
-      required: true,
+      required: true
       // might look into more managable prop validation, this might be hard to update when roles get more/less properties.
       // making components always render, even with missing properties might be okay
       // (i.e. the time commitment won't show when a role doesn't have a time commitment)
@@ -60,8 +60,8 @@ export default {
           Number.isInteger(obj.timeCommitment.max)
         );
       }*/
-    },
-  },
+    }
+  }
 };
 </script>
 

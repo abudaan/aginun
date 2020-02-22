@@ -16,13 +16,11 @@
       </template>
       <flex-wrapper direction="column">
         <autocomplete-custom
-          :value="selectedLocalGroups"
           :items="localGroups"
           label="Local Group"
           @change="id => onSetFilter(id, 'localGroup')"
         />
         <autocomplete-custom
-          :value="selectedWorkingGroups"
           :items="workingGroups"
           label="Working Group"
           @change="id => onSetFilter(id, 'workingGroup')"
@@ -34,12 +32,13 @@
         Time commitment
       </template>
       <v-range-slider
-        v-model="timeRange"
-        :min="timeCommitment.min"
-        :max="timeCommitment.max"
+        :value="selectedTimeCommitment"
+        :min="timeCommitmentRange[0]"
+        :max="timeCommitmentRange[1]"
         class="mt-12"
         thumb-label="always"
         label="Time Commitment"
+        @change="id => onSetFilter(id, 'timeCommitment')"
       />
     </filter-section>
   </div>
@@ -130,36 +129,36 @@ export default {
         });
         return range;
       }
+    }
+  },
+  methods: {
+    clearFilter: function() {
+      this.$apollo.mutate({
+        mutation: ClearFilter
+      });
     },
-    methods: {
-      clearFilter: function() {
+    onSetFilter: function(value, key) {
+      // console.log(key, value);
+      if (key === "localGroup") {
         this.$apollo.mutate({
-          mutation: ClearFilter
+          mutation: UpdateLocalGroups,
+          variables: { names: value }
         });
-      },
-      onSetFilter: function(value, key) {
-        // console.log(key, value);
-        if (key === "localGroup") {
-          this.$apollo.mutate({
-            mutation: UpdateLocalGroups,
-            variables: { names: value }
-          });
-        } else if (key === "workingGroup") {
-          this.$apollo.mutate({
-            mutation: UpdateWorkingGroups,
-            variables: { names: value }
-          });
-        } else if (key === "timeCommitment") {
-          this.$apollo.mutate({
-            mutation: UpdateTimeCommitmentRange,
-            variables: { range: value }
-          });
-        } else if (key === "text") {
-          this.$apollo.mutate({
-            mutation: UpdateSearchString,
-            variables: { search: value }
-          });
-        }
+      } else if (key === "workingGroup") {
+        this.$apollo.mutate({
+          mutation: UpdateWorkingGroups,
+          variables: { names: value }
+        });
+      } else if (key === "timeCommitment") {
+        this.$apollo.mutate({
+          mutation: UpdateTimeCommitmentRange,
+          variables: { range: value }
+        });
+      } else if (key === "text") {
+        this.$apollo.mutate({
+          mutation: UpdateSearchString,
+          variables: { search: value }
+        });
       }
     }
   }
