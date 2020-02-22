@@ -1,18 +1,12 @@
 <template>
-  <div>
-
-  </div>
+  <div />
 </template>
 
 <script>
   export default {
     name: "TaskListInput",
-    data: () => ({
-
-    }),
-  }
+    data: () => ({}),
+  };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

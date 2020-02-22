@@ -4,36 +4,36 @@
   </div>
 </template>
 <script>
-export default {
-  props: {
-    itemWidth: {
-      type: String,
-      required: true,
+  export default {
+    props: {
+      itemWidth: {
+        type: String,
+        required: true,
+      },
+      itemHeight: {
+        type: String,
+        required: true,
+      },
+      gap: {
+        type: String,
+        default: "1rem",
+      },
     },
-    itemHeight: {
-      type: String,
-      required: true,
+    computed: {
+      listStyle: function() {
+        return {
+          gridTemplateColumns: `repeat(auto-fill,${this.itemWidth})`,
+          gridAutoRows: `minmax(${this.itemHeight}, max-content)`,
+          gridGap: this.gap,
+        };
+      },
     },
-    gap: {
-      type: String,
-      default: "1rem",
-    },
-  },
-  computed: {
-    listStyle: function() {
-      return {
-        gridTemplateColumns: `repeat(auto-fill,${this.itemWidth})`,
-        gridAutoRows: `minmax(${this.itemHeight}, max-content)`,
-        gridGap: this.gap,
-      };
-    },
-  },
-};
+  };
 </script>
 <style lang="scss" scoped>
-.grid-list {
-  display: grid;
-  align-items: start;
-  justify-content: center;
-}
+  .grid-list {
+    display: grid;
+    align-items: start;
+    justify-content: center;
+  }
 </style>

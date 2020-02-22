@@ -6,8 +6,8 @@ module.exports = {
   pluginOptions: {
     "style-resources-loader": {
       preProcessor: "scss",
-      patterns: [path.resolve(__dirname, "./src/styles/global.scss")]
+      patterns: [path.resolve(__dirname, "./src/styles/global.scss")],
     },
-    apollo: { lintGQL: true, enableMocks: true, enableEngine: false }
-  }
+    apollo: { lintGQL: true, enableMocks: true, enableEngine: false },
+  },
 };

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="d-flex align-center py-3 separator"
-    :class="themeClass"
-  >
+  <div class="d-flex align-center py-3 separator" :class="themeClass">
     <v-checkbox
       :input-value="task.completed"
       color="primary"
@@ -16,9 +13,9 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-import styleMixin from '@/mixins/styleMixin'
-import has from 'lodash/has'
+  import { mapMutations } from "vuex";
+  import styleMixin from "@/mixins/styleMixin";
+  import has from "lodash/has";
 
   export default {
     name: "TaskListItem",
@@ -27,28 +24,33 @@ import has from 'lodash/has'
       task: {
         type: Object,
         required: true,
-        validator: function (obj) {
-          return has(obj, 'id') && Number.isInteger(obj.id) &&
-                 has(obj, 'title') && typeof obj.title === 'string' &&
-                 has(obj, 'completed') && typeof obj.completed === 'boolean'
-        }
-      }
+        validator: function(obj) {
+          return (
+            has(obj, "id") &&
+            Number.isInteger(obj.id) &&
+            has(obj, "title") &&
+            typeof obj.title === "string" &&
+            has(obj, "completed") &&
+            typeof obj.completed === "boolean"
+          );
+        },
+      },
     },
     methods: {
-      ...mapMutations('tasks', ['toggleTask', 'deleteTask'])
-    }
-  }
+      ...mapMutations("tasks", ["toggleTask", "deleteTask"]),
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
-.separator {
-  border-bottom-style: solid;
-  border-bottom-width: thin;
-  &.theme--light {
-    border-color: rgba(0,0,0,0.12);
+  .separator {
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+    &.theme--light {
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+    &.theme--dark {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
   }
-  &.theme--dark {
-    border-color: rgba(255,255,255,0.12);
-  }
-}
 </style>

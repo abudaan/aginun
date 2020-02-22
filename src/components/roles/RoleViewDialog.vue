@@ -54,52 +54,52 @@
   </div>
 </template>
 <script>
-import FlexWrapper from "../layout/FlexWrapper";
-import MetaInfo from "../layout/MetaInfo";
-import { RoleDetailFromClient } from "@/gql/queries.gql";
-export default {
-  components: {
-    FlexWrapper,
-    MetaInfo
-  },
-  data() {
-    return {
-      dialog: true
-    };
-  },
-  apollo: {
-    role: {
-      query: RoleDetailFromClient,
-      variables: function() {
-        return { id: this.$route.params.id };
+  import FlexWrapper from "../layout/FlexWrapper";
+  import MetaInfo from "../layout/MetaInfo";
+  import { RoleDetailFromClient } from "@/gql/queries.gql";
+  export default {
+    components: {
+      FlexWrapper,
+      MetaInfo,
+    },
+    data() {
+      return {
+        dialog: true,
+      };
+    },
+    apollo: {
+      role: {
+        query: RoleDetailFromClient,
+        variables: function() {
+          return { id: this.$route.params.id };
+        },
+        update: data => data.roleDetail,
       },
-      update: data => data.roleDetail
-    }
-  }
-};
+    },
+  };
 </script>
 <style lang="scss" scoped>
-.role {
-  &.text {
-    margin-top: 1rem;
-    color: #222 !important;
-  }
-  &.title {
-    font-size: 1.5rem !important;
-    font-weight: bold;
-  }
-  &.subtitle {
-    font-weight: normal;
-  }
+  .role {
+    &.text {
+      margin-top: 1rem;
+      color: #222 !important;
+    }
+    &.title {
+      font-size: 1.5rem !important;
+      font-weight: bold;
+    }
+    &.subtitle {
+      font-weight: normal;
+    }
 
-  &.description {
-    flex-basis: 66%;
-    flex: 6;
+    &.description {
+      flex-basis: 66%;
+      flex: 6;
+    }
+    &.sidebar {
+      margin-left: 1rem;
+      flex-basis: 33%;
+      flex: 3;
+    }
   }
-  &.sidebar {
-    margin-left: 1rem;
-    flex-basis: 33%;
-    flex: 3;
-  }
-}
 </style>

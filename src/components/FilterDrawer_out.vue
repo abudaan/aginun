@@ -1,6 +1,42 @@
 <template>
-  <div>
-    <div>
+  <div
+    class="drawer"
+    :style="drawerStyle"
+    :class="{ active: value }"
+    :value="value"
+  >
+    <div
+      v-if="this.$vuetify.breakpoint.smAndDown"
+      :style="{ height: navbarHeight }"
+      class="d-flex justify-space-between align-center pa-3 bottom-border"
+    >
+      <div class="d-flex align-center">
+        <v-btn icon @click="$emit('input', false)">
+          <v-icon color="primary">
+            mdi-arrow-left
+          </v-icon>
+        </v-btn>
+        <span>
+          <strong class="primary--text">{{ roleAmount }}</strong>
+          positions found
+        </span>
+      </div>
+      <v-btn text color="primary" @click="clearFilter">
+        Clear filters
+      </v-btn>
+    </div>
+    <div class="px-4 py-5 pb-0">
+      <div class="d-flex justify-space-between align-center">
+        <span class="font-weight-bold">Search positions</span>
+        <v-btn
+          v-if="!$vuetify.breakpoint.smAndDown"
+          text
+          color="primary"
+          @click="clearFilter"
+        >
+          Clear filters
+        </v-btn>
+      </div>
       <v-text-field
         :value="searchString"
         label="Facilitator, Writer, Photographer..."
@@ -45,7 +81,7 @@
 <script>
   import FlexWrapper from "@/components/layout/FlexWrapper.vue";
   import AutocompleteCustom from "@/components/AutocompleteCustom";
-  import FilterDrawerSection from "../layout/FilterDrawerSection";
+  import FilterDrawerSection from "./layout/FilterDrawerSection";
   import {
     RoleAmount,
     NavbarHeight,
@@ -53,9 +89,9 @@
     WorkingGroups,
     SearchString,
     SelectedTimeCommitment,
-    AggregateTimeCommitmentRangeFromServer,
   } from "@/gql/queries.gql";
   import {
+    BoundsTimeCommitmentRange,
     UpdateTimeCommitmentRange,
     UpdateLocalGroups,
     UpdateWorkingGroups,
@@ -64,19 +100,30 @@
   } from "@/gql/mutations.gql";
 
   export default {
-    name: "RoleFilters",
+    name: "TheFilterDrawer",
     components: {
       filterSection: FilterDrawerSection,
       AutocompleteCustom,
       FlexWrapper,
     },
+    props: {
+      value: {
+        required: true,
+        validator: value => typeof value === "boolean" || value === null,
+      },
+      width: {
+        required: true,
+        type: Number,
+        default: 400,
+      },
+    },
+    // beforeCreate: () => {
+    //   console.log(RoleAmount);
+    // },
     data: () => ({
       timeCommitmentRange: [],
       selectedTimeCommitment: [],
     }),
-    beforeCreate: () => {
-      console.log();
-    },
     apollo: {
       navbarHeight: {
         query: NavbarHeight,
@@ -105,7 +152,7 @@
         update: data => data.selectedTimeCommitment,
       },
       timeCommitmentRange: {
-        query: AggregateTimeCommitmentRangeFromServer,
+        query: BoundsTimeCommitmentRange,
         update: function(data) {
           const range = [
             data.role_aggregate.aggregate.min.time_commitment_min,
@@ -117,6 +164,16 @@
           });
           return range;
         },
+      },
+    },
+    computed: {
+      drawerStyle: function() {
+        let styles = {};
+        if (!this.$vuetify.breakpoint.smAndDown) {
+          styles.top = this.navbarHeight;
+          styles["max-width"] = this.width + "px";
+        }
+        return styles;
       },
     },
     methods: {
@@ -153,4 +210,41 @@
   };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    border-left-style: solid;
+    border-left-width: 1px;
+    z-index: 16;
+    transition: transform 0.3s ease-out;
+    overflow-y: auto;
+    transform: translateX(100%);
+    &.active {
+      transform: translateX(0);
+    }
+    .theme--light & {
+      background: white;
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+    .theme--dark & {
+      background: #121212;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  .bottom-border {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    .theme--light & {
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+    .theme--dark & {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+  }
+</style>

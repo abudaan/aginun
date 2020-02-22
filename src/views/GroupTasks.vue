@@ -5,21 +5,17 @@
 </template>
 
 <script>
-import TaskList from '@/components/TaskList'
-import WideContainer from '@/components/WideContainer'
+  import TaskList from "@/components/TaskList";
+  import WideContainer from "@/components/WideContainer";
 
   export default {
     name: "GroupTasks",
     components: {
       TaskList,
-      WideContainer
+      WideContainer,
     },
-    data: () => ({
-
-    }),
-  }
+    data: () => ({}),
+  };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

@@ -52,50 +52,50 @@
   </page-with-drawer>
 </template>
 <script>
-import TaskFilters from "@/components/tasks/TaskFilters.vue";
-import DefaultDrawer from "@/components/layout/DefaultDrawer.vue";
-import GridList from "@/components/layout/GridList.vue";
-import TaskCard from "@/components/tasks/TaskCard.vue";
-import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
-import { mapGetters } from "vuex";
-export default {
-  name: "TasksOverview",
-  components: {
-    TaskFilters,
-    PageWithDrawer,
-    GridList,
-    TaskCard,
-    DefaultDrawer,
-  },
-  data: () => ({
-    isDrawerOpen: null,
-    selectedFilters: {
-      text: "",
-      localGroup: [],
-      workingGroup: [],
+  import TaskFilters from "@/components/tasks/TaskFilters.vue";
+  import DefaultDrawer from "@/components/layout/DefaultDrawer.vue";
+  import GridList from "@/components/layout/GridList.vue";
+  import TaskCard from "@/components/tasks/TaskCard.vue";
+  import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
+  import { mapGetters } from "vuex";
+  export default {
+    name: "TasksOverview",
+    components: {
+      TaskFilters,
+      PageWithDrawer,
+      GridList,
+      TaskCard,
+      DefaultDrawer,
     },
-  }),
-  computed: {
-    ...mapGetters("tasks", ["getByFilters"]),
-    filteredTasks: function() {
-      return this.getByFilters(this.selectedFilters);
+    data: () => ({
+      isDrawerOpen: null,
+      selectedFilters: {
+        text: "",
+        localGroup: [],
+        workingGroup: [],
+      },
+    }),
+    computed: {
+      ...mapGetters("tasks", ["getByFilters"]),
+      filteredTasks: function() {
+        return this.getByFilters(this.selectedFilters);
+      },
+      isMobile: function() {
+        return this.$vuetify.breakpoint.smAndDown;
+      },
     },
-    isMobile: function() {
-      return this.$vuetify.breakpoint.smAndDown;
+    watch: {
+      isMobile: function() {
+        this.isDrawerOpen = !this.isMobile;
+      },
     },
-  },
-  watch: {
-    isMobile: function() {
+    created: function() {
       this.isDrawerOpen = !this.isMobile;
     },
-  },
-  created: function() {
-    this.isDrawerOpen = !this.isMobile;
-  },
-  methods: {
-    handleSelectFilter: function(value, type) {
-      this.selectedFilters[type] = value;
+    methods: {
+      handleSelectFilter: function(value, type) {
+        this.selectedFilters[type] = value;
+      },
     },
-  },
-};
+  };
 </script>

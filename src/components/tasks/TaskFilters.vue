@@ -45,124 +45,124 @@
 </template>
 
 <script>
-import FlexWrapper from "@/components/layout/FlexWrapper.vue";
-import AutocompleteCustom from "@/components/AutocompleteCustom";
-import FilterDrawerSection from "../layout/FilterDrawerSection";
-import {
-  TaskAmount,
-  NavbarHeight,
-  LocalGroups,
-  WorkingGroups,
-  SearchString,
-  SelectedTimeCommitment,
-  BoundsTimeCommitmentRange,
-  SelectedLocalGroups,
-  SelectedWorkingGroups
-} from "@/gql/queries.gql";
-import {
-  UpdateTimeCommitmentRange,
-  UpdateLocalGroups,
-  UpdateWorkingGroups,
-  UpdateSearchString,
-  ClearFilter
-} from "@/gql/mutations.gql";
+  import FlexWrapper from "@/components/layout/FlexWrapper.vue";
+  import AutocompleteCustom from "@/components/AutocompleteCustom";
+  import FilterDrawerSection from "../layout/FilterDrawerSection";
+  import {
+    TaskAmount,
+    NavbarHeight,
+    LocalGroups,
+    WorkingGroups,
+    SearchString,
+    SelectedTimeCommitment,
+    BoundsTimeCommitmentRange,
+    SelectedLocalGroups,
+    SelectedWorkingGroups,
+  } from "@/gql/queries.gql";
+  import {
+    UpdateTimeCommitmentRange,
+    UpdateLocalGroups,
+    UpdateWorkingGroups,
+    UpdateSearchString,
+    ClearFilter,
+  } from "@/gql/mutations.gql";
 
-export default {
-  name: "TaskFilters",
-  components: {
-    filterSection: FilterDrawerSection,
-    AutocompleteCustom,
-    FlexWrapper
-  },
-  data: () => ({
-    timeCommitmentRange: [],
-    selectedTimeCommitment: []
-  }),
-  beforeCreate: () => {
-    console.log();
-  },
-  apollo: {
-    navbarHeight: {
-      query: NavbarHeight,
-      update: data => data.navbarHeight
+  export default {
+    name: "TaskFilters",
+    components: {
+      filterSection: FilterDrawerSection,
+      AutocompleteCustom,
+      FlexWrapper,
     },
-    searchString: {
-      query: SearchString,
-      update: data => data.searchString
+    data: () => ({
+      timeCommitmentRange: [],
+      selectedTimeCommitment: [],
+    }),
+    beforeCreate: () => {
+      console.log();
     },
-    taskAmount: {
-      query: TaskAmount,
-      update: data => data.taskAmount
+    apollo: {
+      navbarHeight: {
+        query: NavbarHeight,
+        update: data => data.navbarHeight,
+      },
+      searchString: {
+        query: SearchString,
+        update: data => data.searchString,
+      },
+      taskAmount: {
+        query: TaskAmount,
+        update: data => data.taskAmount,
+      },
+      selectedLocalGroups: {
+        query: SelectedLocalGroups,
+        update: data => data.selectedLocalGroups,
+      },
+      selectedWorkingGroups: {
+        query: SelectedWorkingGroups,
+        update: data => data.selectedWorkingGroups,
+      },
+      localGroups: {
+        query: LocalGroups,
+        update: data =>
+          data.local_group.map(({ id, name }) => ({ id, text: name })),
+      },
+      workingGroups: {
+        query: WorkingGroups,
+        update: data =>
+          data.working_group.map(({ id, name }) => ({ id, text: name })),
+      },
+      selectedTimeCommitment: {
+        query: SelectedTimeCommitment,
+        update: data => data.selectedTimeCommitment,
+      },
+      timeCommitmentRange: {
+        query: BoundsTimeCommitmentRange,
+        update: function(data) {
+          const range = [
+            data.role_aggregate.aggregate.min.time_commitment_min,
+            data.role_aggregate.aggregate.max.time_commitment_max,
+          ];
+          this.$apollo.mutate({
+            mutation: UpdateTimeCommitmentRange,
+            variables: { range },
+          });
+          return range;
+        },
+      },
     },
-    selectedLocalGroups: {
-      query: SelectedLocalGroups,
-      update: data => data.selectedLocalGroups
-    },
-    selectedWorkingGroups: {
-      query: SelectedWorkingGroups,
-      update: data => data.selectedWorkingGroups
-    },
-    localGroups: {
-      query: LocalGroups,
-      update: data =>
-        data.local_group.map(({ id, name }) => ({ id, text: name }))
-    },
-    workingGroups: {
-      query: WorkingGroups,
-      update: data =>
-        data.working_group.map(({ id, name }) => ({ id, text: name }))
-    },
-    selectedTimeCommitment: {
-      query: SelectedTimeCommitment,
-      update: data => data.selectedTimeCommitment
-    },
-    timeCommitmentRange: {
-      query: BoundsTimeCommitmentRange,
-      update: function(data) {
-        const range = [
-          data.role_aggregate.aggregate.min.time_commitment_min,
-          data.role_aggregate.aggregate.max.time_commitment_max
-        ];
+    methods: {
+      clearFilter: function() {
         this.$apollo.mutate({
-          mutation: UpdateTimeCommitmentRange,
-          variables: { range }
+          mutation: ClearFilter,
         });
-        return range;
-      }
-    }
-  },
-  methods: {
-    clearFilter: function() {
-      this.$apollo.mutate({
-        mutation: ClearFilter
-      });
+      },
+      onSetFilter: function(value, key) {
+        // console.log(key, value);
+        if (key === "localGroup") {
+          this.$apollo.mutate({
+            mutation: UpdateLocalGroups,
+            variables: { names: value },
+          });
+        } else if (key === "workingGroup") {
+          this.$apollo.mutate({
+            mutation: UpdateWorkingGroups,
+            variables: { names: value },
+          });
+        } else if (key === "timeCommitment") {
+          this.$apollo.mutate({
+            mutation: UpdateTimeCommitmentRange,
+            variables: { range: value },
+          });
+        } else if (key === "text") {
+          this.$apollo.mutate({
+            mutation: UpdateSearchString,
+            variables: { search: value },
+          });
+        }
+      },
     },
-    onSetFilter: function(value, key) {
-      // console.log(key, value);
-      if (key === "localGroup") {
-        this.$apollo.mutate({
-          mutation: UpdateLocalGroups,
-          variables: { names: value }
-        });
-      } else if (key === "workingGroup") {
-        this.$apollo.mutate({
-          mutation: UpdateWorkingGroups,
-          variables: { names: value }
-        });
-      } else if (key === "timeCommitment") {
-        this.$apollo.mutate({
-          mutation: UpdateTimeCommitmentRange,
-          variables: { range: value }
-        });
-      } else if (key === "text") {
-        this.$apollo.mutate({
-          mutation: UpdateSearchString,
-          variables: { search: value }
-        });
-      }
-    }
-  }
-};
+  };
 </script>
 
 <style lang="scss" scoped></style>

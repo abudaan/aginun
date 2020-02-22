@@ -11,7 +11,7 @@ import {
   SelectedTimeCommitment,
   Filter,
   SearchString,
-  AggregateTimeCommitmentRange
+  AggregateTimeCommitmentRange,
 } from "@/gql/queries.gql";
 
 // util function that maps the names of the groups in the dropdown boxes in the drawer
@@ -32,12 +32,12 @@ const mapNames = (names, groups) => {
 
 const getRoles = async (cache, client) => {
   const filters = cache.readQuery({
-    query: Filter
+    query: Filter,
   });
 
   // get the roles that match the current filter from the server
   const {
-    data: { role: roles }
+    data: { role: roles },
   } = await client.query({
     query: RolesFromServer,
     variables: {
@@ -50,18 +50,18 @@ const getRoles = async (cache, client) => {
         ? filters.selectedWorkingGroups.map(g => g.id)
         : null,
       timeCommitmentMin: filters.selectedTimeCommitment[0],
-      timeCommitmentMax: filters.selectedTimeCommitment[1]
-    }
+      timeCommitmentMax: filters.selectedTimeCommitment[1],
+    },
   });
 
   client.writeQuery({
     query: RolesFromClient,
-    data: { roles }
+    data: { roles },
   });
 
   cache.writeQuery({
     query: RoleAmount,
-    data: { roleAmount: roles.length }
+    data: { roleAmount: roles.length },
   });
 
   return roles;
@@ -69,7 +69,7 @@ const getRoles = async (cache, client) => {
 
 const roleDetail = async (_, { id }, { cache, client }) => {
   const roles = cache.readQuery({
-    query: RolesFromClient
+    query: RolesFromClient,
   });
 
   let role = roles.roles.filter(r => r.id === parseInt(id, 10))[0];
@@ -77,25 +77,25 @@ const roleDetail = async (_, { id }, { cache, client }) => {
   if (role) {
     const data = await client.query({
       query: RoleDetailFromServer,
-      variables: { id }
+      variables: { id },
     });
     const details = data.data.role[0];
     return {
       ...role,
-      ...details
+      ...details,
     };
   }
 
   const data = await client.query({
     query: RoleAllInfoFromServer,
-    variables: { id }
+    variables: { id },
   });
 
   role = data.data.role[0];
 
   client.writeQuery({
     query: RolesFromClient,
-    data: { roles: [role] }
+    data: { roles: [role] },
   });
 
   return role;
@@ -103,75 +103,75 @@ const roleDetail = async (_, { id }, { cache, client }) => {
 
 const updateLocalGroups = (_, { names }, { cache, client }) => {
   const { local_group: groups } = cache.readQuery({
-    query: LocalGroups
+    query: LocalGroups,
   });
   cache.writeQuery({
     query: SelectedLocalGroups,
-    data: { selectedLocalGroups: mapNames(names, groups) }
+    data: { selectedLocalGroups: mapNames(names, groups) },
   });
   // console.log(cache.data.data.ROOT_QUERY.selectedLocalGroups);
   getRoles(cache, client);
   return null;
 };
 
-const updateWorkingGroups = (_, { names }, { cache, client }) => {
+const updateWorkingGroups = (...[, { names }, { cache, client }]) => {
   const { working_group: groups } = cache.readQuery({
-    query: WorkingGroups
+    query: WorkingGroups,
   });
   cache.writeQuery({
     query: SelectedWorkingGroups,
-    data: { selectedWorkingGroups: mapNames(names, groups) }
+    data: { selectedWorkingGroups: mapNames(names, groups) },
   });
   getRoles(cache, client);
   // console.log(cache.data.data.ROOT_QUERY.selectedWorkingGroups);
   return null;
 };
 
-const updateTimeCommitmentRange = (_, { range }, { cache, client }) => {
+const updateTimeCommitmentRange = (...[, { range }, { cache, client }]) => {
   cache.writeQuery({
     query: SelectedTimeCommitment,
-    data: { selectedTimeCommitment: range }
+    data: { selectedTimeCommitment: range },
   });
   getRoles(cache, client);
   // console.log(cache.data.data.ROOT_QUERY.selectedTimeCommitment);
   return null;
 };
 
-const updateSearchString = (_, { search }, { cache, client }) => {
+const updateSearchString = (...[, { search }, { cache, client }]) => {
   client.writeQuery({
     query: SearchString,
-    data: { searchString: search }
+    data: { searchString: search },
   });
   getRoles(cache, client);
   return null;
 };
 
-const clearFilter = (_, __, { cache, client }) => {
+const clearFilter = (...[, , { cache, client }]) => {
   // const r = cache.readQuery();
   client.writeQuery({
     query: SelectedTimeCommitment,
-    data: { selectedTimeCommitment: [0, 40] } // @todo: fix this!
+    data: { selectedTimeCommitment: [0, 40] }, // @todo: fix this!
   });
 
   client.writeQuery({
     query: SearchString,
-    data: { searchString: "" }
+    data: { searchString: "" },
   });
 
   client.writeQuery({
     query: SelectedLocalGroups,
-    data: { selectedLocalGroups: [] }
+    data: { selectedLocalGroups: [] },
   });
 
   client.writeQuery({
     query: SelectedWorkingGroups,
-    data: { selectedWorkingGroups: [] }
+    data: { selectedWorkingGroups: [] },
   });
 
   getRoles(cache, client);
 };
 
-const aggregateTimeCommitmentRange = (_, __, { cache, client }) => {
+const aggregateTimeCommitmentRange = (...[, , { cache, client }]) => {
   // AggregateTimeCommitmentRange
 };
 
@@ -181,12 +181,13 @@ export const resolvers = {
     updateWorkingGroups,
     updateTimeCommitmentRange,
     updateSearchString,
-    clearFilter
+    clearFilter,
   },
 
   Query: {
-    roleDetail
-  }
+    roleDetail,
+    aggregateTimeCommitmentRange,
+  },
 
   // role: () => {
   //   return {

@@ -23,14 +23,14 @@
   </default-card>
 </template>
 <script>
-import DefaultCard from "@/components/surfaces/DefaultCard.vue";
-export default {
-  components: { DefaultCard },
-  props: {
-    task: {
-      type: Object,
-      required: true
-    }
-  }
-};
+  import DefaultCard from "@/components/surfaces/DefaultCard.vue";
+  export default {
+    components: { DefaultCard },
+    props: {
+      task: {
+        type: Object,
+        required: true,
+      },
+    },
+  };
 </script>

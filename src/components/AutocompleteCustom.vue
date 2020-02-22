@@ -6,8 +6,8 @@
     small-chips
     multiple
     class="mt-3"
-    @change="$emit('change', $event)"
     :label="label"
+    @change="$emit('change', $event)"
   >
     <!-- <template v-slot:selection="data">
       <v-chip
@@ -22,24 +22,25 @@
 </template>
 
 <script>
-export default {
-  name: "AutocompleteCustom",
-  props: {
-    items: {
-      type: Array,
-      required: true,
+  export default {
+    name: "AutocompleteCustom",
+    props: {
+      items: {
+        type: Array,
+        required: true,
+      },
+      value: {
+        type: Array,
+        required: false,
+        default: () => [],
+      },
+      label: {
+        type: String,
+        required: true,
+      },
     },
-    value: {
-      type: Array,
-      required: false,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-  },
-  data: () => ({}),
-};
+    data: () => ({}),
+  };
 </script>
 
 <style lang="scss" scoped></style>

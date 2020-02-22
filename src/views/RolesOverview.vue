@@ -50,46 +50,46 @@
 </template>
 
 <script>
-import DefaultDrawer from "@/components/layout/DefaultDrawer.vue";
-import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
-import RoleCard from "@/components/roles/RoleCard.vue";
-import GridList from "@/components/layout/GridList.vue";
-import RoleFilters from "@/components/roles/RoleFilters.vue";
-import { RolesFromClient } from "@/gql/queries.gql";
+  import DefaultDrawer from "@/components/layout/DefaultDrawer.vue";
+  import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
+  import RoleCard from "@/components/roles/RoleCard.vue";
+  import GridList from "@/components/layout/GridList.vue";
+  import RoleFilters from "@/components/roles/RoleFilters.vue";
+  import { RolesFromClient } from "@/gql/queries.gql";
 
-export default {
-  name: "RolesOverview",
-  components: {
-    RoleCard,
-    RoleFilters,
-    PageWithDrawer,
-    GridList,
-    DefaultDrawer
-  },
-  data: () => ({
-    isDrawerOpen: null
-  }),
-  apollo: {
-    roles: {
-      query: RolesFromClient,
-      update: data => data.roles
-    }
-  },
-  computed: {
-    isMobile: function() {
-      return this.$vuetify.breakpoint.smAndDown;
-    }
-  },
-  watch: {
-    isMobile: function() {
+  export default {
+    name: "RolesOverview",
+    components: {
+      RoleCard,
+      RoleFilters,
+      PageWithDrawer,
+      GridList,
+      DefaultDrawer,
+    },
+    data: () => ({
+      isDrawerOpen: null,
+    }),
+    apollo: {
+      roles: {
+        query: RolesFromClient,
+        update: data => data.roles,
+      },
+    },
+    computed: {
+      isMobile: function() {
+        return this.$vuetify.breakpoint.smAndDown;
+      },
+    },
+    watch: {
+      isMobile: function() {
+        this.isDrawerOpen = !this.isMobile;
+      },
+    },
+    created: function() {
       this.isDrawerOpen = !this.isMobile;
-    }
-  },
-  created: function() {
-    this.isDrawerOpen = !this.isMobile;
-  },
-  methods: {}
-};
+    },
+    methods: {},
+  };
 </script>
 
 <style lang="scss" scoped></style>

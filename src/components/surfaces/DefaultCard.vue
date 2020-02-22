@@ -33,10 +33,10 @@
 </template>
 
 <script>
-export default {};
+  export default {};
 </script>
 <style lang="scss" scoped>
-.full-height {
-  height: 100%;
-}
+  .full-height {
+    height: 100%;
+  }
 </style>

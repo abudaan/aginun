@@ -7,12 +7,8 @@
 <script>
   export default {
     name: "GroupsOverview",
-    data: () => ({
-
-    }),
-  }
+    data: () => ({}),
+  };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
