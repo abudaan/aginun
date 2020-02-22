@@ -1,6 +1,5 @@
 <template>
   <page-with-drawer :is-drawer-open="isDrawerOpen">
-    <router-view :key="$route.fullPath" />
     <div class="text-center my-8">
       <h1>
         Find roles at
@@ -19,12 +18,12 @@
       <v-divider />
     </div>
     <grid-list
-      v-if="filteredRoles.length > 0"
+      v-if="filteredTasks.length > 0"
       item-width="300px"
       item-height="200px"
       gap="2rem"
     >
-      <role-card v-for="role in filteredRoles" :key="role.id" :role="role" />
+      <task-card v-for="task in filteredTasks" :key="task.id" :task="task" />
     </grid-list>
     <div v-else class="pa-5 text-center">
       <h3>No results.</h3>
@@ -43,36 +42,33 @@
             </v-btn>
           </div>
         </template>
-        <role-filters
+        <task-filters
           :on-set-filter="handleSelectFilter"
           :selected-filters="selectedFilters"
-          :role-amount="filteredRoles.length"
+          :role-amount="filteredTasks.length"
         />
       </default-drawer>
     </template>
   </page-with-drawer>
 </template>
-
 <script>
+import TaskFilters from "@/components/tasks/TaskFilters.vue";
 import DefaultDrawer from "@/components/layout/DefaultDrawer.vue";
-import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
-import RoleCard from "@/components/roles/RoleCard.vue";
 import GridList from "@/components/layout/GridList.vue";
-import RoleFilters from "@/components/roles/RoleFilters.vue";
+import TaskCard from "@/components/tasks/TaskCard.vue";
+import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
 import { mapGetters } from "vuex";
-
 export default {
-  name: "RolesOverview",
+  name: "TasksOverview",
   components: {
-    RoleCard,
-    RoleFilters,
+    TaskFilters,
     PageWithDrawer,
     GridList,
+    TaskCard,
     DefaultDrawer,
   },
   data: () => ({
     isDrawerOpen: null,
-    //not a huge fan of having to declare these beforehand, will look into another way
     selectedFilters: {
       text: "",
       localGroup: [],
@@ -80,8 +76,8 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters("roles", ["getByFilters"]),
-    filteredRoles: function() {
+    ...mapGetters("tasks", ["getByFilters"]),
+    filteredTasks: function() {
       return this.getByFilters(this.selectedFilters);
     },
     isMobile: function() {
@@ -103,5 +99,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped></style>

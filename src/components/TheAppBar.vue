@@ -1,5 +1,10 @@
 <template>
-  <v-app-bar app :height="navbarHeight" flat class="bottom-border">
+  <v-app-bar
+    app
+    :height="$store.state.styles.navbarHeight"
+    flat
+    class="bottom-border"
+  >
     <v-spacer />
     <v-btn icon @click="toggleDarkMode">
       <v-icon>mdi-invert-colors</v-icon>
@@ -8,21 +13,13 @@
 </template>
 
 <script>
-import { NavbarHeight } from "@/gql/queries.gql";
-
 export default {
-  apollo: {
-    navbarHeight: {
-      query: NavbarHeight,
-      update: data => data.navbarHeight
-    }
-  },
   name: "TheAppBar",
   methods: {
     toggleDarkMode: function() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-    }
-  }
+    },
+  },
 };
 </script>
 

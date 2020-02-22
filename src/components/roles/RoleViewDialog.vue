@@ -2,22 +2,25 @@
   <div>
     <v-dialog
       persistent
-      max-width="750"
-      value="true"
       @click:outside="$router.push('/roles')"
       @keydown.escape="$router.push('/roles')"
+      max-width="750"
+      value="true"
     >
       <v-card v-if="!!role" class="role card">
         <v-card-title>
           <flex-wrapper direction="column">
-            <h2 class="role title">
-              {{ role.name }}
-            </h2>
-            <flex-wrapper v-if="role.working_group || role.local_group">
+            <h2 class="role title">{{ role.title }}</h2>
+            <flex-wrapper v-if="role.workingGroup || role.localGroup">
               <h5 class="role subtitle">
-                {{ role.working_group.name }}
-                <span style="margin: 0 0.25rem;">- </span>
-                {{ role.local_group.name }}
+                {{ !!role.workingGroup && role.workingGroup.text }}
+                <span
+                  v-if="!!role.workingGroup && !!role.localGroup"
+                  style="margin: 0 0.25rem;"
+                >
+                  -
+                </span>
+                {{ !!role.localGroup && role.localGroup.text }}
               </h5>
             </flex-wrapper>
           </flex-wrapper>
@@ -34,17 +37,17 @@
             </div>
             <div class="role sidebar">
               <meta-info
-                v-if="!!role.time_commitment_min"
+                v-if="!!role.timeCommitment"
                 title="Time Commitment"
                 :description="
-                  `${role.time_commitment_min} -
-                ${role.time_commitment_max} hours/week`
+                  `${role.timeCommitment.min} -
+                ${role.timeCommitment.max} hours/week`
                 "
               />
               <meta-info
-                v-if="!!role.contact_details"
+                v-if="!!role.contactDetails"
                 title="Contact Details"
-                :description="role.contact_details"
+                :description="role.contactDetails"
               />
             </div>
           </flex-wrapper>
@@ -56,26 +59,23 @@
 <script>
 import FlexWrapper from "../layout/FlexWrapper";
 import MetaInfo from "../layout/MetaInfo";
-import { RoleDetailFromClient } from "@/gql/queries.gql";
+import { mapGetters } from "vuex";
 export default {
   components: {
     FlexWrapper,
-    MetaInfo
+    MetaInfo,
   },
   data() {
     return {
-      dialog: true
+      dialog: true,
     };
   },
-  apollo: {
-    role: {
-      query: RoleDetailFromClient,
-      variables: function() {
-        return { id: this.$route.params.id };
-      },
-      update: data => data.roleDetail
-    }
-  }
+  computed: {
+    ...mapGetters("roles", ["getByID"]),
+    role: function() {
+      return this.getByID(this.$route.params.id);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -91,6 +91,7 @@ export default {
   &.subtitle {
     font-weight: normal;
   }
+
   &.description {
     flex-basis: 66%;
     flex: 6;

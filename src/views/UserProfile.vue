@@ -5,10 +5,14 @@
 </template>
 
 <script>
-export default {
-  name: "UserProfile",
-  data: () => ({})
-};
+  export default {
+    name: "UserProfile",
+    data: () => ({
+
+    }),
+  }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

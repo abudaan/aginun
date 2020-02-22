@@ -5,10 +5,14 @@
 </template>
 
 <script>
-export default {
-  name: "GroupRoles",
-  data: () => ({})
-};
+  export default {
+    name: "GroupRoles",
+    data: () => ({
+
+    }),
+  }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>
