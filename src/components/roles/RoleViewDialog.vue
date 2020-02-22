@@ -56,7 +56,7 @@
 <script>
 import FlexWrapper from "../layout/FlexWrapper";
 import MetaInfo from "../layout/MetaInfo";
-import { RoleDetailFromClient } from "@/gql/role.gql";
+import { RoleDetailFromClient } from "@/gql/queries.gql";
 export default {
   components: {
     FlexWrapper,

@@ -34,7 +34,7 @@
 <script>
 import RoleCard from "@/components/roles/RoleCard.vue";
 import FilterDrawer from "@/components/FilterDrawer";
-import { RolesFromClient, RoleAmount } from "@/gql/role.gql";
+import { RolesFromClient, RoleAmount } from "@/gql/queries.gql";
 
 export default {
   name: "RolesOverview",

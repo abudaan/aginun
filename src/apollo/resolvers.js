@@ -3,17 +3,18 @@ import {
   RolesFromClient,
   RolesFromServer,
   RoleDetailFromServer,
-  RoleAllInfoFromServer
-} from "@/gql/role.gql";
-import {
+  RoleAllInfoFromServer,
   LocalGroups,
   WorkingGroups,
   SelectedLocalGroups,
-  SelectedWorkingGroups
-} from "@/gql/group.gql";
-import { SelectedTimeCommitment, Filter, SearchString } from "@/gql/filter.gql";
-import gql from "graphql-tag";
+  SelectedWorkingGroups,
+  SelectedTimeCommitment,
+  Filter,
+  SearchString
+} from "@/gql/queries.gql";
 
+// util function that maps the names of the groups in the dropdown boxes in the drawer
+// to their corresponding ids in the database
 const mapNames = (names, groups) => {
   const matched = names.map(name => {
     let group;
@@ -33,7 +34,10 @@ const getRoles = async (cache, client) => {
     query: Filter
   });
 
-  const data = await client.query({
+  // get the roles that match the current filter from the server
+  const {
+    data: { role: roles }
+  } = await client.query({
     query: RolesFromServer,
     variables: {
       limit: filters.limit,
@@ -48,13 +52,6 @@ const getRoles = async (cache, client) => {
       timeCommitmentMax: filters.selectedTimeCommitment[1]
     }
   });
-
-  // console.log("[ROLE]", data);
-  const roles = data.data.role.map(r => ({
-    ...r,
-    time_commitment_min: r.time_commitment_min || 0,
-    time_commitment_max: r.time_commitment_max || 40
-  }));
 
   client.writeQuery({
     query: RolesFromClient,
@@ -153,6 +150,11 @@ const clearFilter = (_, __, { cache, client }) => {
   client.writeQuery({
     query: SelectedTimeCommitment,
     data: { selectedTimeCommitment: [0, 40] } // @todo: fix this!
+  });
+
+  client.writeQuery({
+    query: SearchString,
+    data: { searchString: "" }
   });
 
   client.writeQuery({

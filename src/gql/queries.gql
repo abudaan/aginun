@@ -1,3 +1,68 @@
+query NavbarHeight {
+  navbarHeight @client
+}
+
+# Group
+
+query WorkingGroups {
+  working_group {
+    id
+    name
+  }
+}
+
+query LocalGroups {
+  local_group {
+    id
+    name
+  }
+}
+
+query SelectedLocalGroups {
+  selectedLocalGroups @client
+}
+
+query SelectedWorkingGroups {
+  selectedWorkingGroups @client
+}
+
+query BoundsTimeCommitmentRange {
+  role_aggregate {
+    aggregate {
+      min {
+        time_commitment_min
+      }
+      max {
+        time_commitment_max
+      }
+    }
+  }
+}
+
+# Filter
+
+query Limit {
+  limit @client
+}
+
+query SearchString {
+  searchString @client
+}
+
+query SelectedTimeCommitment {
+  selectedTimeCommitment @client
+}
+
+query Filter @client {
+  limit
+  searchString
+  selectedLocalGroups
+  selectedWorkingGroups
+  selectedTimeCommitment
+}
+
+# Role
+
 fragment RoleFragment on role {
   id
   name
@@ -64,14 +129,6 @@ query RoleAllInfoFromServer($id: Int!) {
     contact_details
     responsibilities
   }
-}
-
-mutation UpdateRoleAmount($amount: [Int!]) {
-  updateRoleAmount(amount: $amount) @client
-}
-
-mutation UpdateRoles($roles: [role]) {
-  updateRoles(roles: $roles) @client
 }
 
 query RoleAmount {

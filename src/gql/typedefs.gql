@@ -4,17 +4,18 @@ type LocalGroup {
 }
 
 extend type Mutation {
-  updateLocalGroups(names:[String!]): [local_group!]
-  updateWorkingGroups(names:[String!]): [working_group!]
+  updateLocalGroups(names: [String!]): [local_group!]
+  updateWorkingGroups(names: [String!]): [working_group!]
   updateTimeCommitmentRange(range: [Int!]): void
   updateRoleAmount(amount: Int!): void
+  updateSearchString(search: String): void
+  clearFilter: void
 }
 
 extend type Query {
-  selectedTimeCommitment: [Int!]!
   roleAmount: Int!
-  searchString: String!
-  localGroupById(id: Int!): LocalGroup
   navbarHeight: Int!
+  selectedTimeCommitment: [Int!]!
+  searchString: String!
+  # localGroupById(id: Int!): LocalGroup
 }
-

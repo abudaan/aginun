@@ -82,22 +82,22 @@
 import FlexWrapper from "@/components/layout/FlexWrapper.vue";
 import AutocompleteCustom from "@/components/AutocompleteCustom";
 import FilterDrawerSection from "./layout/FilterDrawerSection";
-import { RoleAmount } from "@/gql/role.gql";
-import { NavbarHeight } from "@/gql/ui.gql";
 import {
+  RoleAmount,
+  NavbarHeight,
   LocalGroups,
   WorkingGroups,
-  UpdateLocalGroups,
-  UpdateWorkingGroups
-} from "@/gql/group.gql";
+  SearchString,
+  SelectedTimeCommitment
+} from "@/gql/queries.gql";
 import {
   BoundsTimeCommitmentRange,
   UpdateTimeCommitmentRange,
-  SelectedTimeCommitment,
+  UpdateLocalGroups,
+  UpdateWorkingGroups,
   UpdateSearchString,
-  ClearFilter,
-  SearchString
-} from "@/gql/filter.gql";
+  ClearFilter
+} from "@/gql/mutations.gql";
 
 export default {
   name: "TheFilterDrawer",
