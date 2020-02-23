@@ -1,19 +1,19 @@
 import * as groupResolvers from "./resolvers/group";
-import { roleResolvers, roleClient } from "./resolvers/role";
+import { roleResolvers, roleData } from "./resolvers/role";
 
 const resolvers = {
   ...groupResolvers,
   Query: {
-    roleClient,
+    roleData,
   },
   Mutation: {
-    roleClient,
+    roleData,
   },
-  RoleClient: {
+  RoleData: {
     ...roleResolvers,
   },
 };
 
-console.log("Resolvers", resolvers);
+// console.log("Resolvers", resolvers);
 
 export { resolvers };

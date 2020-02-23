@@ -55,7 +55,7 @@
   import RoleCard from "@/components/roles/RoleCard.vue";
   import GridList from "@/components/layout/GridList.vue";
   import RoleFilters from "@/components/roles/RoleFilters.vue";
-  import { RoleClient } from "@/apollo/gql/role.gql";
+  import { FilteredRoles } from "@/apollo/gql/role.gql";
 
   export default {
     name: "RolesOverview",
@@ -68,14 +68,16 @@
     },
     data: () => ({
       isDrawerOpen: null,
+      filtered: [],
     }),
     apollo: {
       filtered: {
-        query: RoleClient,
-        // update: data => {
-        //   console.log(data);
-        // },
-        update: data => data.roleClient.filtered,
+        query: FilteredRoles,
+        update: data => {
+          // console.log(data);
+          return data.roleData.filtered;
+        },
+        // update: data => data.roleData.filtered,
       },
     },
     computed: {

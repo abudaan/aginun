@@ -16,6 +16,11 @@ fragment RoleFragment on role {
 
 # queries
 
+query RoleServerWithFilter($limit: Int) {
+  limit @client @export(as: "limit")
+  RoleServer(limit: $limit)
+}
+
 query RoleServer(
   $limit: Int
   $search: String
@@ -34,14 +39,40 @@ query RoleServer(
     }
     limit: $limit
   ) {
-    ...RoleFragment
+    # ...RoleFragment
+    id
+    name
+    location
+    time_commitment_min
+    time_commitment_max
+    date_added
+    due_date
+    local_group {
+      name
+    }
+    working_group {
+      name
+    }
   }
 }
 
-query RoleClient {
-  roleClient @client {
-    filtered @client {
-      ...RoleFragment
+query FilteredRoles {
+  roleData @client {
+    filtered {
+      # ...RoleFragment
+      id
+      name
+      location
+      time_commitment_min
+      time_commitment_max
+      date_added
+      due_date
+      local_group {
+        name
+      }
+      working_group {
+        name
+      }
     }
   }
 }
@@ -55,11 +86,13 @@ query RoleDetailServer($id: Int!) {
 }
 
 query RoleDetailClient($id: int!) {
-  roleDetail(id: $id) @client {
-    ...RoleFragment
-    description
-    contact_details
-    responsibilities
+  roleData @client {
+    roleDetail(id: $id) {
+      ...RoleFragment
+      description
+      contact_details
+      responsibilities
+    }
   }
 }
 
@@ -73,7 +106,9 @@ query RoleAllInfoServer($id: Int!) {
 }
 
 query RoleAmount {
-  roleAmount @client
+  roleData @client {
+    amount
+  }
 }
 
 query AggregateTimeCommitmentRange {
@@ -90,21 +125,33 @@ query AggregateTimeCommitmentRange {
 }
 
 query Limit {
-  limit @client
+  roleData @client {
+    limit
+  }
 }
 
 query SearchString {
-  searchString @client
+  roleData @client {
+    searchString
+  }
+}
+
+query UpdateFilter {
+  roleData @client {
+    filter
+  }
 }
 
 query SelectedTimeCommitment {
-  roleClient @client {
-    selectedTimeCommitment @client
+  roleData @client {
+    filter {
+      selectedTimeCommitment
+    }
   }
 }
 
 query Filter {
-  roleClient @client {
+  roleData @client {
     filter {
       limit
       searchString
@@ -145,8 +192,8 @@ query AggregateTimeCommitmentRangeServer {
 }
 
 query AggregateTimeCommitmentRangeClient {
-  roleClient @client {
-    timeCommitmentRange @client {
+  roleData @client {
+    timeCommitmentRange {
       min
       max
     }
@@ -154,19 +201,21 @@ query AggregateTimeCommitmentRangeClient {
 }
 
 query SelectedLocalGroups {
-  roleClient @client {
-    selectedLocalGroups @client
+  roleData @client {
+    selectedLocalGroups
   }
 }
 
 query SelectedWorkingGroups {
-  selectedWorkingGroups @client
+  roleData @client {
+    selectedWorkingGroups
+  }
 }
 
 # mutations
 
 mutation UpdateTimeCommitmentRange($range: [Int!]) {
-  roleClient @client {
+  roleData @client {
     updateTimeCommitmentRange(range: $range) @client
   }
 }

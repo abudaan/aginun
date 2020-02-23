@@ -9,7 +9,7 @@ module.exports = {
   },
   client: {
     name: "aginun-clientside",
-    localSchemaFile: "./src/gql/typedefs.gql",
+    localSchemaFile: "./src/apollo/gql/typedefs.gql",
     clientOnlyDirectives: ["connection", "type"],
     clientSchemaDirectives: ["client", "rest"],
     includes: ["src/**/*.vue", "src/**/*.js", "src/**/*.gql"],

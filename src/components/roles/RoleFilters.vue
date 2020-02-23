@@ -72,7 +72,7 @@
     },
     data: () => ({
       timeCommitmentRange: { min: 0, max: 20 },
-      selectedTimeCommitment: [10, 20],
+      // selectedTimeCommitment: [10, 20],
     }),
     // beforeCreate: () => {
     //   console.log();
@@ -84,11 +84,11 @@
       },
       searchString: {
         query: SearchString,
-        update: data => data.searchString,
+        update: data => data.roleData.filter.searchString,
       },
       roleAmount: {
         query: RoleAmount,
-        update: data => data.roleAmount,
+        update: data => data.roleData.roleAmount,
       },
       localGroups: {
         query: LocalGroups,
@@ -102,14 +102,18 @@
       },
       selectedTimeCommitment: {
         query: SelectedTimeCommitment,
-        update: data => data.selectedTimeCommitment,
+        update: data => {
+          console.log("selectedTimeCommitment", data);
+          return data.roleData.filter.selectedTimeCommitment;
+        },
+        // update: data => data.selectedTimeCommitment,
       },
       timeCommitmentRange: {
         query: AggregateTimeCommitmentRangeClient,
         // update: data => {
         //   console.log(data);
         // },
-        update: data => data.roleClient.timeCommitmentRange,
+        update: data => data.roleData.timeCommitmentRange,
       },
     },
     methods: {
