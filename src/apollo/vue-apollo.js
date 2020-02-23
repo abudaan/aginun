@@ -4,9 +4,9 @@ import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import {
   createApolloClient,
-  restartWebsockets
+  restartWebsockets,
 } from "vue-cli-plugin-apollo/graphql-client";
-import * as typeDefs from "@/gql/typedefs.gql";
+import * as typeDefs from "@/apollo/gql/typedefs.gql";
 import { resolvers } from "./resolvers";
 
 // Install the vue plugin
@@ -23,15 +23,31 @@ const httpEndpoint =
 const cache = new InMemoryCache();
 cache.writeData({
   data: {
-    selectedLocalGroups: [],
-    selectedWorkingGroups: [],
-    selectedTimeCommitment: [],
-    roleAmount: 0,
-    searchString: "",
-    limit: 20,
+    roleClient: {
+      __typename: "RoleClient",
+      filter: {
+        __typename: "Filter",
+        selectedLocalGroups: [],
+        selectedWorkingGroups: [],
+        selectedTimeCommitment: [],
+        searchString: "",
+        limit: 20,
+      },
+      amount: 0,
+      filtered: [],
+    },
+    taskClient: {
+      __typename: "TaskClient",
+      selectedLocalGroups: [],
+      selectedWorkingGroups: [],
+      selectedTimeCommitment: [],
+      searchString: "",
+      limit: 20,
+      amount: 0,
+      filtered: [],
+    },
     navbarHeight: "64px",
-    roles: []
-  }
+  },
 });
 
 // Config
@@ -40,7 +56,7 @@ const defaultOptions = {
   ssr: false,
   cache,
   typeDefs,
-  resolvers
+  resolvers,
 };
 
 // Call this in the Vue app file
@@ -48,7 +64,7 @@ export function createProvider(options = {}) {
   // Create apollo client
   const { apolloClient, wsClient } = createApolloClient({
     ...defaultOptions,
-    ...options
+    ...options,
   });
   apolloClient.wsClient = wsClient;
 
@@ -57,8 +73,8 @@ export function createProvider(options = {}) {
     defaultClient: apolloClient,
     defaultOptions: {
       $query: {
-        fetchPolicy: "cache-first"
-      }
+        fetchPolicy: "cache-first",
+      },
     },
     errorHandler(error) {
       // eslint-disable-next-line no-console
@@ -67,7 +83,7 @@ export function createProvider(options = {}) {
         "background: red; color: white; padding: 2px 4px; border-radius: 3px; font-weight: bold;",
         error.message
       );
-    }
+    },
     // watchLoading (isLoading, countModifier) {
     //   // loading += countModifier
     //   console.log('Global loading', isLoading, countModifier)

@@ -1,0 +1,188 @@
+fragment RoleFragment on role {
+  id
+  name
+  location
+  time_commitment_min
+  time_commitment_max
+  date_added
+  due_date
+  local_group {
+    name
+  }
+  working_group {
+    name
+  }
+}
+
+# queries
+
+query RoleServer(
+  $limit: Int
+  $search: String
+  $localGroupIds: [Int!]
+  $workingGroupIds: [Int!]
+  $timeCommitmentMin: Int
+  $timeCommitmentMax: Int
+) {
+  role(
+    where: {
+      name: { _ilike: $search }
+      local_group: { id: { _in: $localGroupIds } }
+      working_group: { id: { _in: $workingGroupIds } }
+      time_commitment_min: { _gte: $timeCommitmentMin }
+      time_commitment_max: { _lte: $timeCommitmentMax }
+    }
+    limit: $limit
+  ) {
+    ...RoleFragment
+  }
+}
+
+query RoleClient {
+  roleClient @client {
+    filtered @client {
+      ...RoleFragment
+    }
+  }
+}
+
+query RoleDetailServer($id: Int!) {
+  role(where: { id: { _eq: $id } }) {
+    description
+    contact_details
+    responsibilities
+  }
+}
+
+query RoleDetailClient($id: int!) {
+  roleDetail(id: $id) @client {
+    ...RoleFragment
+    description
+    contact_details
+    responsibilities
+  }
+}
+
+query RoleAllInfoServer($id: Int!) {
+  role(where: { id: { _eq: $id } }) {
+    ...RoleFragment
+    description
+    contact_details
+    responsibilities
+  }
+}
+
+query RoleAmount {
+  roleAmount @client
+}
+
+query AggregateTimeCommitmentRange {
+  role_aggregate {
+    aggregate {
+      min {
+        time_commitment_min
+      }
+      max {
+        time_commitment_max
+      }
+    }
+  }
+}
+
+query Limit {
+  limit @client
+}
+
+query SearchString {
+  searchString @client
+}
+
+query SelectedTimeCommitment {
+  roleClient @client {
+    selectedTimeCommitment @client
+  }
+}
+
+query Filter {
+  roleClient @client {
+    filter {
+      limit
+      searchString
+      selectedLocalGroups
+      selectedWorkingGroups
+      selectedTimeCommitment
+    }
+  }
+}
+
+# query RoleByIdFromCache($id: int!) {
+#   role(id: $id) @client {
+#     ...RoleFragment
+#   }
+# }
+
+# mutations
+
+mutation UpdateRoleAmount($amount: [Int!]) {
+  updateRoleAmount(amount: $amount) @client
+}
+
+mutation UpdateRoles($roles: [role]) {
+  updateRoles(roles: $roles) @client
+}
+
+query AggregateTimeCommitmentRangeServer {
+  role_aggregate {
+    aggregate {
+      min {
+        time_commitment_min
+      }
+      max {
+        time_commitment_max
+      }
+    }
+  }
+}
+
+query AggregateTimeCommitmentRangeClient {
+  roleClient @client {
+    timeCommitmentRange @client {
+      min
+      max
+    }
+  }
+}
+
+query SelectedLocalGroups {
+  roleClient @client {
+    selectedLocalGroups @client
+  }
+}
+
+query SelectedWorkingGroups {
+  selectedWorkingGroups @client
+}
+
+# mutations
+
+mutation UpdateTimeCommitmentRange($range: [Int!]) {
+  roleClient @client {
+    updateTimeCommitmentRange(range: $range) @client
+  }
+}
+
+mutation UpdateSearchString($search: String!) {
+  updateSearchString(search: $search) @client
+}
+
+mutation UpdateLocalGroups($names: [String!]) {
+  updateLocalGroups(names: $names) @client
+}
+
+mutation UpdateWorkingGroups($names: [String!]) {
+  updateWorkingGroups(names: $names) @client
+}
+
+mutation ClearFilter {
+  clearFilter @client
+}

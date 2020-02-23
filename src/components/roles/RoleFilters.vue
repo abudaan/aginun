@@ -31,8 +31,8 @@
       </template>
       <v-range-slider
         :value="selectedTimeCommitment"
-        :min="timeCommitmentRange[0]"
-        :max="timeCommitmentRange[1]"
+        :min="timeCommitmentRange.min"
+        :max="timeCommitmentRange.max"
         class="mt-12"
         thumb-label="always"
         label="Time Commitment"
@@ -47,21 +47,21 @@
   import AutocompleteCustom from "@/components/AutocompleteCustom";
   import FilterDrawerSection from "../layout/FilterDrawerSection";
   import {
-    RoleAmount,
     NavbarHeight,
     LocalGroups,
     WorkingGroups,
+  } from "@/apollo/gql/other.gql";
+  import {
+    RoleAmount,
     SearchString,
     SelectedTimeCommitment,
-    AggregateTimeCommitmentRangeFromServer,
-  } from "@/gql/queries.gql";
-  import {
+    AggregateTimeCommitmentRangeClient,
     UpdateTimeCommitmentRange,
     UpdateLocalGroups,
     UpdateWorkingGroups,
     UpdateSearchString,
     ClearFilter,
-  } from "@/gql/mutations.gql";
+  } from "@/apollo/gql/role.gql";
 
   export default {
     name: "RoleFilters",
@@ -71,12 +71,12 @@
       FlexWrapper,
     },
     data: () => ({
-      timeCommitmentRange: [],
-      selectedTimeCommitment: [],
+      timeCommitmentRange: { min: 0, max: 20 },
+      selectedTimeCommitment: [10, 20],
     }),
-    beforeCreate: () => {
-      console.log();
-    },
+    // beforeCreate: () => {
+    //   console.log();
+    // },
     apollo: {
       navbarHeight: {
         query: NavbarHeight,
@@ -105,18 +105,11 @@
         update: data => data.selectedTimeCommitment,
       },
       timeCommitmentRange: {
-        query: AggregateTimeCommitmentRangeFromServer,
-        update: function(data) {
-          const range = [
-            data.role_aggregate.aggregate.min.time_commitment_min,
-            data.role_aggregate.aggregate.max.time_commitment_max,
-          ];
-          this.$apollo.mutate({
-            mutation: UpdateTimeCommitmentRange,
-            variables: { range },
-          });
-          return range;
-        },
+        query: AggregateTimeCommitmentRangeClient,
+        // update: data => {
+        //   console.log(data);
+        // },
+        update: data => data.roleClient.timeCommitmentRange,
       },
     },
     methods: {

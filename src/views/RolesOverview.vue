@@ -19,12 +19,12 @@
       <v-divider />
     </div>
     <grid-list
-      v-if="roles.length > 0"
+      v-if="filtered.length > 0"
       item-width="300px"
       item-height="200px"
       gap="2rem"
     >
-      <role-card v-for="role in roles" :key="role.id" :role="role" />
+      <role-card v-for="role in filtered" :key="role.id" :role="role" />
     </grid-list>
     <div v-else class="pa-5 text-center">
       <h3>No results.</h3>
@@ -55,7 +55,7 @@
   import RoleCard from "@/components/roles/RoleCard.vue";
   import GridList from "@/components/layout/GridList.vue";
   import RoleFilters from "@/components/roles/RoleFilters.vue";
-  import { RolesFromClient } from "@/gql/queries.gql";
+  import { RoleClient } from "@/apollo/gql/role.gql";
 
   export default {
     name: "RolesOverview",
@@ -70,9 +70,12 @@
       isDrawerOpen: null,
     }),
     apollo: {
-      roles: {
-        query: RolesFromClient,
-        update: data => data.roles,
+      filtered: {
+        query: RoleClient,
+        // update: data => {
+        //   console.log(data);
+        // },
+        update: data => data.roleClient.filtered,
       },
     },
     computed: {

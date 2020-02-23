@@ -58,14 +58,12 @@
     BoundsTimeCommitmentRange,
     SelectedLocalGroups,
     SelectedWorkingGroups,
-  } from "@/gql/queries.gql";
-  import {
     UpdateTimeCommitmentRange,
     UpdateLocalGroups,
     UpdateWorkingGroups,
     UpdateSearchString,
     ClearFilter,
-  } from "@/gql/mutations.gql";
+  } from "@/apollo/gql/task.gql";
 
   export default {
     name: "TaskFilters",

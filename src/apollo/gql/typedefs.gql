@@ -3,6 +3,24 @@ type LocalGroup {
   name: string
 }
 
+type Range {
+  min: Int
+  max: Int
+}
+
+type Filter {
+  limit: Int!
+  searchString: String!
+  selectedLocalGroups: [Int!]!
+  selectedWorkingGroups: [Int!]!
+  selectedTimeCommitment: [Int!]!
+}
+
+type RoleClient {
+  aggregateTimeCommitmentRange: Range!
+  filter: Filter
+}
+
 extend type Mutation {
   updateLocalGroups(names: [String!]): [local_group!]
   updateWorkingGroups(names: [String!]): [working_group!]

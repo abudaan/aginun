@@ -89,15 +89,13 @@
     WorkingGroups,
     SearchString,
     SelectedTimeCommitment,
-  } from "@/gql/queries.gql";
-  import {
     BoundsTimeCommitmentRange,
     UpdateTimeCommitmentRange,
     UpdateLocalGroups,
     UpdateWorkingGroups,
     UpdateSearchString,
     ClearFilter,
-  } from "@/gql/mutations.gql";
+  } from "@/apollo/gql/role.gql";
 
   export default {
     name: "TheFilterDrawer",

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import { NavbarHeight } from "@/gql/queries.gql";
+  import { NavbarHeight } from "@/apollo/gql/other.gql";
 
   export default {
     apollo: {
