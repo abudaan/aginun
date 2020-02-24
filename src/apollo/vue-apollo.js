@@ -31,6 +31,7 @@ cache.writeData({
         selectedWorkingGroups: null,
         selectedTimeCommitmentMin: 2,
         selectedTimeCommitmentMax: 20,
+        // searchString: "%gr%",
         searchString: null,
         limit: 10,
       },

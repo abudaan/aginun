@@ -3,9 +3,6 @@ import {
   SearchString,
   SelectedLocalGroups,
   SelectedWorkingGroups,
-  RoleServer,
-  RoleServerWithFilter,
-  UpdateFilter,
   FilteredRoles,
   GetRoleAmount,
   RoleDetailServer,
@@ -14,28 +11,15 @@ import {
   AggregateTimeCommitmentRangeServer,
   UpdateTimeCommitmentRange,
   GetRoles,
-  TimeCommitmentRangeRoles,
-  RoleData,
+  GetRoleData,
 } from "../gql/role.gql";
 
-const roleData = async (parent, variables, { cache, client }, info) => {
+const getRoleData = async (parent, variables, { cache, client }, info) => {
   const data = await client.readQuery({
-    query: RoleData,
+    query: GetRoleData,
   });
-  console.log("roleData", data);
-  return data;
-};
-
-const timeCommitmentRangeRole = async (
-  parent,
-  variables,
-  { cache, client },
-  info
-) => {
-  const data = await client.query({
-    query: TimeCommitmentRangeRoles,
-  });
-  console.log(data);
+  // console.log("getRoleData", data);
+  return data.RoleData;
 };
 
 const filtered = async (parent, variables, { cache, client }, info) => {
@@ -59,6 +43,29 @@ const filtered = async (parent, variables, { cache, client }, info) => {
     typename: "FilteredRoles",
     roles,
   };
+};
+
+const timeCommitmentRange = async (...[, , { cache, client }]) => {
+  const data = await client.query({
+    query: AggregateTimeCommitmentRangeServer,
+  });
+  const range = {
+    __typename: "Range",
+    min: data.data.role_aggregate.aggregate.min.time_commitment_min,
+    max: data.data.role_aggregate.aggregate.max.time_commitment_max,
+  };
+
+  cache.writeQuery({
+    query: UpdateTimeCommitmentRange,
+    data: {
+      roleData: {
+        __typename: "RoleData",
+        range,
+      },
+    },
+  });
+
+  return range;
 };
 
 const roleDetail = async (_, { id }, { cache, client }) => {
@@ -95,29 +102,6 @@ const roleDetail = async (_, { id }, { cache, client }) => {
   return role;
 };
 
-const timeCommitmentRange = async (...[, , { cache, client }]) => {
-  const data = await client.query({
-    query: AggregateTimeCommitmentRangeServer,
-  });
-  const range = {
-    __typename: "Range",
-    min: data.data.role_aggregate.aggregate.min.time_commitment_min,
-    max: data.data.role_aggregate.aggregate.max.time_commitment_max,
-  };
-
-  cache.writeQuery({
-    query: UpdateTimeCommitmentRange,
-    data: {
-      roleData: {
-        __typename: "RoleData",
-        range,
-      },
-    },
-  });
-
-  return range;
-};
-
 const updateTimeCommitmentRange = (...[, { range }, { cache, client }]) => {
   const {
     roleData: { filter },
@@ -131,6 +115,7 @@ const updateTimeCommitmentRange = (...[, { range }, { cache, client }]) => {
   };
 
   console.log("updateTimeCommitmentRange");
+
   client.writeQuery({
     // query: UpdateFilter,
     query: UpdateTimeCommitmentRange,
@@ -193,7 +178,7 @@ const roleResolvers = {
   clearFilter,
 };
 
-export { roleResolvers, filtered, roleData, timeCommitmentRangeRole };
+export { roleResolvers, filtered, getRoleData };
 
 // const role = (parent, variables, { cache, client }) => {
 //   console.log(parent, variables);

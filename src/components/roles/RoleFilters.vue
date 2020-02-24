@@ -2,7 +2,7 @@
   <div>
     <div>
       <v-text-field
-        :value="searchString"
+        :value="filter.searchString"
         label="Facilitator, Writer, Photographer..."
         class="mt-3"
         @input="value => onSetFilter(value, 'text')"
@@ -30,9 +30,9 @@
         Time commitment
       </template>
       <v-range-slider
-        :value="selectedTimeCommitment"
-        :min="timeCommitmentRange.min"
-        :max="timeCommitmentRange.max"
+        :value="filter.selectedTimeCommitment"
+        :min="filter.timeCommitmentRangeMin"
+        :max="filter.timeCommitmentRangeMax"
         class="mt-12"
         thumb-label="always"
         label="Time Commitment"
@@ -52,7 +52,6 @@
     WorkingGroups,
   } from "@/apollo/gql/other.gql";
   import {
-    GetRoleAmount,
     GetTimeCommitmentRangeRole,
     GetFilter,
     UpdateTimeCommitmentRange,
@@ -69,13 +68,6 @@
       AutocompleteCustom,
       FlexWrapper,
     },
-    data: () => ({
-      timeCommitmentRange: { min: 0, max: 40 },
-      selectedTimeCommitment: [1, 21],
-      searchString: "",
-      roleAmount: 2,
-      // selectedTimeCommitment: [10, 20],
-    }),
     // beforeCreate: () => {
     //   console.log();
     // },
@@ -87,21 +79,21 @@
       filter: {
         query: GetFilter,
         update: data => {
-          console.log("FILTER", data);
+          const {
+            RoleData: { filter },
+          } = data;
+          return {
+            ...filter,
+            searchString: filter.searchString
+              ? filter.searchString.replace(/%/g, "")
+              : null,
+            selectedTimeCommitment: [
+              filter.selectedTimeCommitmentMin,
+              filter.selectedTimeCommitmentMax,
+            ],
+          };
         },
       },
-      // searchString: {
-      //   query: SearchString,
-      //   // update: data => data.roleData.filter.searchString,
-      //   update: data => {
-      //     console.log("SearchString", data);
-      //     return data.roleData.filter.SearchString;
-      //   },
-      // },
-      // roleAmount: {
-      //   query: RoleAmount,
-      //   update: data => data.amount,
-      // },
       localGroups: {
         query: LocalGroups,
         update: data =>
@@ -112,28 +104,14 @@
         update: data =>
           data.working_group.map(({ id, name }) => ({ id, text: name })),
       },
-      // selectedTimeCommitment: {
-      //   query: SelectedTimeCommitment,
-      //   update: data => {
-      //     console.log("selectedTimeCommitment", data);
-      //     return data.roleData.filter.selectedTimeCommitment;
-      //   },
-      //   // update: data => data.selectedTimeCommitment,
-      // },
       timeCommitmentRange: {
         query: GetTimeCommitmentRangeRole,
         update: data => {
-          console.log(data);
+          // console.log(data);
           return data.getRoleData.timeCommitmentRange;
         },
         // update: data => ddata.getRoleData.timeCommitmentRange,
       },
-      // roleAmount: {
-      //   query: GetRoleAmount,
-      //   update: data => {
-      //     console.log("ROLE AMOUNT", data);
-      //   },
-      // },
     },
     methods: {
       clearFilter: function() {
