@@ -55,7 +55,10 @@
     RoleAmount,
     SearchString,
     SelectedTimeCommitment,
-    AggregateTimeCommitmentRangeClient,
+    GetTimeCommitmentRangeRole,
+    TimeCommitmentRangeRoles,
+    GetTimeCommitmentRangeRole2,
+    RoleData,
     UpdateTimeCommitmentRange,
     UpdateLocalGroups,
     UpdateWorkingGroups,
@@ -72,6 +75,9 @@
     },
     data: () => ({
       timeCommitmentRange: { min: 0, max: 20 },
+      selectedTimeCommitment: [1, 21],
+      searchString: "",
+      roleAmount: 2,
       // selectedTimeCommitment: [10, 20],
     }),
     // beforeCreate: () => {
@@ -82,18 +88,18 @@
         query: NavbarHeight,
         update: data => data.navbarHeight,
       },
-      searchString: {
-        query: SearchString,
-        // update: data => data.roleData.filter.searchString,
-        update: data => {
-          console.log("SearchString", data);
-          return data.roleData.filter.SearchString;
-        },
-      },
-      roleAmount: {
-        query: RoleAmount,
-        update: data => data.roleData.roleAmount,
-      },
+      // searchString: {
+      //   query: SearchString,
+      //   // update: data => data.roleData.filter.searchString,
+      //   update: data => {
+      //     console.log("SearchString", data);
+      //     return data.roleData.filter.SearchString;
+      //   },
+      // },
+      // roleAmount: {
+      //   query: RoleAmount,
+      //   update: data => data.amount,
+      // },
       localGroups: {
         query: LocalGroups,
         update: data =>
@@ -104,21 +110,27 @@
         update: data =>
           data.working_group.map(({ id, name }) => ({ id, text: name })),
       },
-      selectedTimeCommitment: {
-        query: SelectedTimeCommitment,
-        update: data => {
-          console.log("selectedTimeCommitment", data);
-          return data.roleData.filter.selectedTimeCommitment;
-        },
-        // update: data => data.selectedTimeCommitment,
-      },
-      timeCommitmentRange: {
-        query: AggregateTimeCommitmentRangeClient,
-        // update: data => {
-        //   console.log(data);
-        // },
-        update: data => data.roleData.timeCommitmentRange,
-      },
+      // selectedTimeCommitment: {
+      //   query: SelectedTimeCommitment,
+      //   update: data => {
+      //     console.log("selectedTimeCommitment", data);
+      //     return data.roleData.filter.selectedTimeCommitment;
+      //   },
+      //   // update: data => data.selectedTimeCommitment,
+      // },
+      // timeCommitmentRange: {
+      //   query: RoleData,
+      //   update: data => {
+      //     console.log(data);
+      //   },
+      //   // update: data => data.roleData.timeCommitmentRange,
+      // },
+      // roleAmount: {
+      //   query: RoleAmount,
+      //   update: data => {
+      //     console.log(data);
+      //   },
+      // },
     },
     methods: {
       clearFilter: function() {

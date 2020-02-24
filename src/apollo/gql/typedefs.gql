@@ -36,6 +36,8 @@ type role {
 type RoleData {
   # aggregateTimeCommitmentRange: Range!
   filtered: [role]!
+  timeCommitmentRange: Range!
+  calculateTimeCommitmentRange: Range
   # filter: Filter
   # amount: Int
   # getRoles: [role]!

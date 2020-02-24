@@ -1,52 +1,29 @@
 <template>
   <v-app>
-    <!-- <the-app-bar />
+    <the-app-bar />
     <v-content>
       <router-view />
-    </v-content> -->
+    </v-content>
   </v-app>
 </template>
 
 <script>
-  // import TheAppBar from "@/components/TheAppBar.vue";
-  import { Test, Test2, Test3 } from "@/apollo/gql/other.gql";
-  import { GetRoleData } from "@/apollo/gql/role.gql";
+  import TheAppBar from "@/components/TheAppBar.vue";
+  import { Test4 } from "@/apollo/gql/other.gql";
 
   export default {
     name: "App",
     apollo: {
-      // test1: {
-      //   query: Test,
-      //   update: data => {
-      //     console.log(data);
-      //     return data;
-      //   },
-      // },
-      // test2: {
-      //   query: Test2,
-      //   update: data => {
-      //     console.log(data);
-      //     return data;
-      //   },
-      // },
-      test3: {
-        query: Test3,
-        update: data => {
+      testoop: {
+        query: Test4,
+        data: data => {
           console.log(data);
-          return data;
-        },
-      },
-      role: {
-        query: GetRoleData,
-        update: data => {
-          console.log(data);
-          return data;
         },
       },
     },
-    // components: {
-    //   TheAppBar,
-    // },
+    components: {
+      TheAppBar,
+    },
     data: () => ({
       drawer: null, // vuetify determines initial state based on screen size
     }),

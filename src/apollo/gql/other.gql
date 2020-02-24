@@ -34,13 +34,17 @@ query Test2 {
   }
 }
 
-query Test3($limit: Int = 3, $search: String!) {
-  getFilterLimitRole @client @export(as: "limit")
-  getFilterSearchStringRole @client @export(as: "search")
-  role(where: { name: { _ilike: $search } }, limit: $limit) {
-    id
-    name
+query Test4 {
+  # id: getId @client
+  getRoleData @client {
+    # RoleData {
+    timeCommitmentRange {
+      min
+      max
+    }
+    # }
   }
+  # datap: roleDatap @client
 }
 
 # mutations

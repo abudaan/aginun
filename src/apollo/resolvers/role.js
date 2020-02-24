@@ -13,49 +13,36 @@ import {
   SelectedTimeCommitment,
   AggregateTimeCommitmentRangeServer,
   UpdateTimeCommitmentRange,
+  GetRoles,
+  TimeCommitmentRangeRoles,
+  RoleData,
 } from "../gql/role.gql";
 
-const role = async (parent, variables, { cache, client }, info) => {
-  const {
-    RoleData: { filter },
-  } = cache.readQuery({
-    query: Filter,
+const roleData = async (parent, variables, { cache, client }, info) => {
+  const data = await client.readQuery({
+    query: RoleData,
   });
-  // const filtered = await getRoles(cache, client);
-  console.log("role @client", parent, variables, filter);
-  return {
-    __typename: "RoleData",
-    // filtered: [{ id: 1, name: "Coder" }],
-    // filter,
-    // filtered: null,
-  };
+  console.log("roleData", data);
+  return data;
 };
 
-const filtered = async (...[, , { cache, client }]) => {
-  console.log("FILTERED");
-  const {
-    roleData: { filter },
-  } = cache.readQuery({
-    query: Filter,
+const timeCommitmentRangeRole = async (
+  parent,
+  variables,
+  { cache, client },
+  info
+) => {
+  const data = await client.query({
+    query: TimeCommitmentRangeRoles,
   });
+  console.log(data);
+};
 
-  // get the roles that match the current filter from the server
+const filteredRoles = async (parent, variables, { cache, client }, info) => {
   const {
     data: { role: roles },
   } = await client.query({
-    query: RoleServer,
-    variables: {
-      limit: filter.limit,
-      search: filter.searchString ? `%${filter.searchString}%` : null,
-      localGroupIds: filter.selectedLocalGroups.length
-        ? filter.selectedLocalGroups.map(g => g.id)
-        : null,
-      workingGroupIds: filter.selectedWorkingGroups.length
-        ? filter.selectedWorkingGroups.map(g => g.id)
-        : null,
-      timeCommitmentMin: filter.selectedTimeCommitment[0],
-      timeCommitmentMax: filter.selectedTimeCommitment[1],
-    },
+    query: GetRoles,
   });
 
   cache.writeQuery({
@@ -67,48 +54,6 @@ const filtered = async (...[, , { cache, client }]) => {
       },
     },
   });
-
-  return roles;
-};
-
-const getRoles = async (cache, client) => {
-  const {
-    roleData: { filter },
-  } = cache.readQuery({
-    query: Filter,
-  });
-
-  // console.log(filter);
-  // get the roles that match the current filter from the server
-  const {
-    data: { role: roles },
-  } = await client.query({
-    query: RoleServer,
-    variables: {
-      limit: filter.limit,
-      search: filter.searchString ? `%${filter.searchString}%` : null,
-      localGroupIds: filter.selectedLocalGroups.length
-        ? filter.selectedLocalGroups.map(g => g.id)
-        : null,
-      workingGroupIds: filter.selectedWorkingGroups.length
-        ? filter.selectedWorkingGroups.map(g => g.id)
-        : null,
-      timeCommitmentMin: filter.selectedTimeCommitment[0],
-      timeCommitmentMax: filter.selectedTimeCommitment[1],
-    },
-  });
-
-  client.writeQuery({
-    query: FilteredRoles,
-    data: {
-      // roleClient: {
-      //   __typename: "RoleData",
-      filtered: roles,
-      // amount: roles.length,
-      // },
-    },
-  });
-  console.log(1, roles);
   return roles;
 };
 
@@ -224,7 +169,7 @@ const clearFilter = (...[, , { cache, client }]) => {
     data: { selectedWorkingGroups: [] },
   });
 
-  getRoles(cache, client);
+  // getRoles(cache, client);
 };
 
 const updateSearchString = (...[, { search }, { cache, client }]) => {
@@ -232,12 +177,11 @@ const updateSearchString = (...[, { search }, { cache, client }]) => {
     query: SearchString,
     data: { searchString: search },
   });
-  getRoles(cache, client);
+  // getRoles(cache, client);
   return null;
 };
 
 const roleResolvers = {
-  filtered,
   roleDetail,
   timeCommitmentRange,
   updateTimeCommitmentRange,
@@ -245,7 +189,7 @@ const roleResolvers = {
   clearFilter,
 };
 
-export { roleResolvers, getRoles, role };
+export { roleResolvers, filteredRoles, roleData, timeCommitmentRangeRole };
 
 // const role = (parent, variables, { cache, client }) => {
 //   console.log(parent, variables);
