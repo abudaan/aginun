@@ -15,38 +15,29 @@ import {
   UpdateTimeCommitmentRange,
 } from "../gql/role.gql";
 
-const roleData = async (parent, variables, { cache, client }, info) => {
-  // console.log("roleClient", parent, variables, { cache, client }, info);
-  // const roles = cache.readQuery({ query: RoleClient });
-  // console.log(roles);
-  // return roles;
-  // return {
-  //   __typename: "RoleClient",
-  //   // updateTimeCommitmentRange: [13, 16],
-  // };
-
+const role = async (parent, variables, { cache, client }, info) => {
   const {
-    roleData: { filter },
+    RoleData: { filter },
   } = cache.readQuery({
     query: Filter,
   });
   // const filtered = await getRoles(cache, client);
-  console.log("ROLEDATA", filter);
+  console.log("role @client", parent, variables, filter);
   return {
     __typename: "RoleData",
     // filtered: [{ id: 1, name: "Coder" }],
-    filter,
-    filtered: null,
+    // filter,
+    // filtered: null,
   };
 };
 
 const filtered = async (...[, , { cache, client }]) => {
+  console.log("FILTERED");
   const {
     roleData: { filter },
   } = cache.readQuery({
     query: Filter,
   });
-  console.log("FILTERED");
 
   // get the roles that match the current filter from the server
   const {
@@ -185,20 +176,29 @@ const updateTimeCommitmentRange = (...[, { range }, { cache, client }]) => {
     query: Filter,
   });
 
-  filter.selectedTimeCommitment = range;
+  const f = {
+    ...filter,
+    selectedTimeCommitment: [range[0], range[1]],
+  };
 
-  console.log("updateTimeCommitmentRange", range);
-  cache.writeQuery({
-    query: UpdateFilter,
+  console.log("updateTimeCommitmentRange");
+  client.writeQuery({
+    // query: UpdateFilter,
+    query: UpdateTimeCommitmentRange,
     data: {
       roleData: {
         __typename: "RoleData",
-        filter,
+        filter: {
+          __typename: "Filter",
+          selectedTimeCommitment: [range[0], range[1]],
+        },
       },
     },
   });
   // getRoles(cache, client);
   // console.log(cache.data.data.ROOT_QUERY.selectedTimeCommitment);
+  // return range;
+  // filtered({}, null, { cache, client });
   return range;
 };
 
@@ -245,7 +245,7 @@ const roleResolvers = {
   clearFilter,
 };
 
-export { roleResolvers, getRoles, roleData };
+export { roleResolvers, getRoles, role };
 
 // const role = (parent, variables, { cache, client }) => {
 //   console.log(parent, variables);

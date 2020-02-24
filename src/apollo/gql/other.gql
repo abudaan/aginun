@@ -18,4 +18,29 @@ query LocalGroups {
   }
 }
 
+query Test($id: Int) {
+  getId @client @export(as: "id")
+  role(where: { id: { _eq: $id } }) {
+    id
+    name
+  }
+}
+
+query Test2 {
+  RoleData @client {
+    filter {
+      limit
+    }
+  }
+}
+
+query Test3($limit: Int = 3, $search: String!) {
+  getFilterLimitRole @client @export(as: "limit")
+  getFilterSearchStringRole @client @export(as: "search")
+  role(where: { name: { _ilike: $search } }, limit: $limit) {
+    id
+    name
+  }
+}
+
 # mutations

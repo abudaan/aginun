@@ -34,25 +34,24 @@ type role {
 }
 
 type RoleData {
-  aggregateTimeCommitmentRange: Range!
+  # aggregateTimeCommitmentRange: Range!
   filtered: [role]!
-  filter: Filter
-  amount: Int
+  # filter: Filter
+  # amount: Int
+  # getRoles: [role]!
 }
 
 extend type Mutation {
   updateLocalGroups(names: [String!]): [local_group!]
   updateWorkingGroups(names: [String!]): [working_group!]
-  updateTimeCommitmentRange(range: [Int!]): void
-  updateRoleAmount(amount: Int!): void
-  updateSearchString(search: String): void
-  clearFilter: void
+  updateTimeCommitmentRange(range: [Int!]): Boolean
+  updateRoleAmount(amount: Int!): Boolean
+  updateSearchString(search: String): Boolean
+  clearFilter: Boolean
 }
 
 extend type Query {
-  roleAmount: Int!
+  RoleData: RoleData!
   navbarHeight: Int!
-  selectedTimeCommitment: [Int!]!
-  searchString: String!
   # localGroupById(id: Int!): LocalGroup
 }

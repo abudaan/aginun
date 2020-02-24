@@ -84,7 +84,11 @@
       },
       searchString: {
         query: SearchString,
-        update: data => data.roleData.filter.searchString,
+        // update: data => data.roleData.filter.searchString,
+        update: data => {
+          console.log("SearchString", data);
+          return data.roleData.filter.SearchString;
+        },
       },
       roleAmount: {
         query: RoleAmount,

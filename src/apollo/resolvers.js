@@ -1,16 +1,27 @@
 import * as groupResolvers from "./resolvers/group";
-import { roleResolvers, roleData } from "./resolvers/role";
+import { roleResolvers, role } from "./resolvers/role";
 
 const resolvers = {
   ...groupResolvers,
   Query: {
-    roleData,
+    // role,
+    // getId: () => {
+    //   // console.log("get id");
+    //   return 2;
+    // },
+    getFilterLimitRole: () => 5,
+    getFilterSearchStringRole: () => "%gra%",
   },
   Mutation: {
-    roleData,
+    // roleData,
   },
   RoleData: {
-    ...roleResolvers,
+    // filter: parent => {
+    //   console.log("adasdasdasdadasdasd", parent);
+    //   return parent.filter;
+    // },
+    // ...roleResolvers,
+    limit: () => 10,
   },
 };
 

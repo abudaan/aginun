@@ -6,8 +6,8 @@ import vuetify from "./plugins/vuetify";
 import { createProvider } from "./apollo/vue-apollo";
 Vue.config.productionTip = false;
 new Vue({
-  router,
-  store,
+  // router,
+  // store,
   vuetify,
   apolloProvider: createProvider(),
   render: h => h(App),

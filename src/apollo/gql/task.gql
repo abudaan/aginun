@@ -1,4 +1,4 @@
-fragment RoleFragment on role {
+fragment TaskFragment on role {
   id
   name
   location

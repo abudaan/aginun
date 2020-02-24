@@ -85,7 +85,7 @@ query RoleDetailServer($id: Int!) {
   }
 }
 
-query RoleDetailClient($id: int!) {
+query RoleDetailClient($id: Int!) {
   roleData @client {
     roleDetail(id: $id) {
       ...RoleFragment
@@ -126,13 +126,17 @@ query AggregateTimeCommitmentRange {
 
 query Limit {
   roleData @client {
-    limit
+    filter {
+      limit
+    }
   }
 }
 
 query SearchString {
   roleData @client {
-    searchString
+    filter {
+      searchString
+    }
   }
 }
 
@@ -202,13 +206,35 @@ query AggregateTimeCommitmentRangeClient {
 
 query SelectedLocalGroups {
   roleData @client {
-    selectedLocalGroups
+    filter {
+      selectedLocalGroups
+    }
   }
 }
 
 query SelectedWorkingGroups {
   roleData @client {
-    selectedWorkingGroups
+    filter {
+      selectedWorkingGroups
+    }
+  }
+}
+
+query GetRoleData {
+  RoleData @client {
+    amount
+    filter {
+      limit
+    }
+  }
+}
+
+query GetRoleLimit {
+  RoleData @client {
+    amount
+    filter {
+      limit
+    }
   }
 }
 
