@@ -52,13 +52,9 @@
     WorkingGroups,
   } from "@/apollo/gql/other.gql";
   import {
-    RoleAmount,
-    SearchString,
-    SelectedTimeCommitment,
+    GetRoleAmount,
     GetTimeCommitmentRangeRole,
-    TimeCommitmentRangeRoles,
-    GetTimeCommitmentRangeRole2,
-    RoleData,
+    GetFilter,
     UpdateTimeCommitmentRange,
     UpdateLocalGroups,
     UpdateWorkingGroups,
@@ -74,7 +70,7 @@
       FlexWrapper,
     },
     data: () => ({
-      timeCommitmentRange: { min: 0, max: 20 },
+      timeCommitmentRange: { min: 0, max: 40 },
       selectedTimeCommitment: [1, 21],
       searchString: "",
       roleAmount: 2,
@@ -87,6 +83,12 @@
       navbarHeight: {
         query: NavbarHeight,
         update: data => data.navbarHeight,
+      },
+      filter: {
+        query: GetFilter,
+        update: data => {
+          console.log("FILTER", data);
+        },
       },
       // searchString: {
       //   query: SearchString,
@@ -118,17 +120,18 @@
       //   },
       //   // update: data => data.selectedTimeCommitment,
       // },
-      // timeCommitmentRange: {
-      //   query: RoleData,
-      //   update: data => {
-      //     console.log(data);
-      //   },
-      //   // update: data => data.roleData.timeCommitmentRange,
-      // },
+      timeCommitmentRange: {
+        query: GetTimeCommitmentRangeRole,
+        update: data => {
+          console.log(data);
+          return data.getRoleData.timeCommitmentRange;
+        },
+        // update: data => ddata.getRoleData.timeCommitmentRange,
+      },
       // roleAmount: {
-      //   query: RoleAmount,
+      //   query: GetRoleAmount,
       //   update: data => {
-      //     console.log(data);
+      //     console.log("ROLE AMOUNT", data);
       //   },
       // },
     },

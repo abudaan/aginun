@@ -75,9 +75,9 @@
         query: GetFilteredRoles,
         update: data => {
           // console.log(data);
-          return data.filteredRoles;
+          return data.getRoleData.filtered.roles;
         },
-        // update: data => data.roleData.filtered,
+        // update: data => data.getRoleData.filtered.roles,
       },
     },
     computed: {

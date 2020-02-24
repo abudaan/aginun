@@ -62,18 +62,44 @@ query TimeCommitmentRangeRoles {
 }
 
 query GetFilteredRoles {
-  filteredRoles @client
+  getRoleData @client {
+    filtered {
+      roles {
+        ...RoleFragment
+      }
+    }
+  }
 }
 
 query GetTimeCommitmentRangeRole {
-  timeCommitmentRangeRole @client
-}
-
-query GetTimeCommitmentRangeRole2 {
-  roleData @client {
-    timeCommitmentRange
+  getRoleData @client {
+    timeCommitmentRange {
+      min
+      max
+    }
   }
 }
+
+query GetRoleAmount {
+  RoleData @client {
+    amount
+  }
+}
+
+query GetFilter {
+  RoleData @client {
+    amount
+    filter {
+      limit
+      searchString
+      selectedLocalGroups
+      selectedWorkingGroups
+      selectedTimeCommitment
+    }
+  }
+}
+
+#---------------------------------------------------------------------#
 
 query RoleServerWithFilter($limit: Int) {
   limit @client @export(as: "limit")
@@ -161,12 +187,6 @@ query RoleAllInfoServer($id: Int!) {
     description
     contact_details
     responsibilities
-  }
-}
-
-query RoleAmount {
-  RoleData @client {
-    amount
   }
 }
 

@@ -1,11 +1,6 @@
 import * as groupResolvers from "./resolvers/group";
-import {
-  roleResolvers,
-  filteredRoles,
-  roleData,
-  timeCommitmentRangeRole,
-} from "./resolvers/role";
-import { RoleData } from "./gql/role.gql";
+import { roleResolvers, filtered, roleData } from "./resolvers/role";
+import { GetRoles, GetRoleAmount } from "./gql/role.gql";
 
 const resolvers = {
   ...groupResolvers,
@@ -39,8 +34,6 @@ const resolvers = {
         },
       };
     },
-    filteredRoles,
-    timeCommitmentRangeRole,
     getId: () => {
       // console.log("get id");
       return { id: 2 };
@@ -53,13 +46,16 @@ const resolvers = {
   },
   RoleData: {
     timeCommitmentRange: (parent, variables, { cache, client }, info) => {
-      console.log("adasdadadas", typeof parent, variables, info);
       return {
         __typename: "Range",
         min: 2,
-        max: 50,
+        max: 78,
       };
     },
+    filtered,
+    // filtered: (parent, variables, { cache, client }, info) => {
+    //   console.log("FILTERED");
+    // },
     // filter: parent => {
     //   console.log("adasdasdasdadasdasd", parent);
     //   return parent.filter;

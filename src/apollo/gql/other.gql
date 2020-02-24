@@ -35,14 +35,11 @@ query Test2 {
 }
 
 query Test4 {
-  # id: getId @client
   getRoleData @client {
-    # RoleData {
     timeCommitmentRange {
       min
       max
     }
-    # }
   }
   # datap: roleDatap @client
 }

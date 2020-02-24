@@ -7,7 +7,7 @@ import {
   RoleServerWithFilter,
   UpdateFilter,
   FilteredRoles,
-  RoleAmount,
+  GetRoleAmount,
   RoleDetailServer,
   RoleAllInfoServer,
   SelectedTimeCommitment,
@@ -38,7 +38,7 @@ const timeCommitmentRangeRole = async (
   console.log(data);
 };
 
-const filteredRoles = async (parent, variables, { cache, client }, info) => {
+const filtered = async (parent, variables, { cache, client }, info) => {
   const {
     data: { role: roles },
   } = await client.query({
@@ -46,7 +46,7 @@ const filteredRoles = async (parent, variables, { cache, client }, info) => {
   });
 
   cache.writeQuery({
-    query: RoleAmount,
+    query: GetRoleAmount,
     data: {
       roleData: {
         __typename: "RoleData",
@@ -54,7 +54,11 @@ const filteredRoles = async (parent, variables, { cache, client }, info) => {
       },
     },
   });
-  return roles;
+  // console.log("filtered", roles);
+  return {
+    typename: "FilteredRoles",
+    roles,
+  };
 };
 
 const roleDetail = async (_, { id }, { cache, client }) => {
@@ -189,7 +193,7 @@ const roleResolvers = {
   clearFilter,
 };
 
-export { roleResolvers, filteredRoles, roleData, timeCommitmentRangeRole };
+export { roleResolvers, filtered, roleData, timeCommitmentRangeRole };
 
 // const role = (parent, variables, { cache, client }) => {
 //   console.log(parent, variables);

@@ -9,18 +9,18 @@
 
 <script>
   import TheAppBar from "@/components/TheAppBar.vue";
-  import { Test4 } from "@/apollo/gql/other.gql";
+  // import { Test4 } from "@/apollo/gql/other.gql";
 
   export default {
     name: "App",
-    apollo: {
-      testoop: {
-        query: Test4,
-        data: data => {
-          console.log(data);
-        },
-      },
-    },
+    // apollo: {
+    //   test: {
+    //     query: Test4,
+    //     data: data => {
+    //       console.log(data);
+    //     },
+    //   },
+    // },
     components: {
       TheAppBar,
     },
