@@ -23,10 +23,10 @@ const httpEndpoint =
 const cache = new InMemoryCache();
 cache.writeData({
   data: {
-    RoleData: {
+    roleData: {
       __typename: "RoleData",
       filter: {
-        __typename: "Filter",
+        __typename: "RoleFilter",
         selectedLocalGroups: null,
         selectedWorkingGroups: null,
         selectedTimeCommitmentMin: 2,
@@ -38,19 +38,19 @@ cache.writeData({
       timeCommitmentRange: {
         __typename: "Range",
         min: 0,
-        max: 40,
+        max: 4,
       },
       calculateTimeCommitmentRange: null,
       amount: 0,
       filtered: {
         __typename: "FilteredRoles",
-        roles: [],
+        roles: null,
       },
     },
-    TaskData: {
+    taskData: {
       __typename: "TaskData",
       filter: {
-        __typename: "Filter",
+        __typename: "TaskFilter",
         selectedLocalGroups: null,
         selectedWorkingGroups: null,
         selectedTimeCommitmentMin: 2,

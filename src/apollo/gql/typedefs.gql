@@ -13,7 +13,7 @@ type Range {
   max: Int
 }
 
-type Filter {
+type RoleFilter {
   limit: Int!
   searchString: String!
   selectedLocalGroups: [Int!]!
@@ -21,25 +21,23 @@ type Filter {
   selectedTimeCommitment: Range
 }
 
-type role {
-  id: Int!
-  name: String!
-  location: String
-  time_commitment_min: Int!
-  time_commitment_max: Int!
-  date_added: Date!
-  due_date: Date
-  local_group: LocalGroup!
-  working_group: WorkingGroup!
-}
+# type role {
+#   id: Int!
+#   name: String!
+#   location: String
+#   time_commitment_min: Int!
+#   time_commitment_max: Int!
+#   date_added: Date!
+#   due_date: Date
+#   local_group: LocalGroup!
+#   working_group: WorkingGroup!
+# }
 
 type RoleData {
-  # aggregateTimeCommitmentRange: Range!
   filtered: [role]!
   timeCommitmentRange: Range!
-  calculateTimeCommitmentRange: Range
-  # filter: Filter
-  # amount: Int
+  filter: RoleFilter
+  amount: Int
   # getRoles: [role]!
 }
 
@@ -53,7 +51,7 @@ extend type Mutation {
 }
 
 extend type Query {
-  RoleData: RoleData!
+  roleData: RoleData!
   navbarHeight: Int!
   # localGroupById(id: Int!): LocalGroup
 }

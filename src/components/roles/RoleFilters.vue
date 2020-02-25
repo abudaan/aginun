@@ -52,9 +52,11 @@
     WorkingGroups,
   } from "@/apollo/gql/other.gql";
   import {
+    // queries
     GetTimeCommitmentRangeRole,
     GetFilter,
-    UpdateTimeCommitmentRange,
+    // mutations
+    UpdateTimeCommitmentRangeRole,
     UpdateLocalGroups,
     UpdateWorkingGroups,
     UpdateSearchString,
@@ -80,7 +82,7 @@
         query: GetFilter,
         update: data => {
           const {
-            RoleData: { filter },
+            roleData: { filter },
           } = data;
           return {
             ...filter,
@@ -110,7 +112,7 @@
           // console.log(data);
           return data.getRoleData.timeCommitmentRange;
         },
-        // update: data => ddata.getRoleData.timeCommitmentRange,
+        // update: data => data.getRoleData.timeCommitmentRange,
       },
     },
     methods: {
@@ -133,7 +135,7 @@
           });
         } else if (key === "timeCommitment") {
           this.$apollo.mutate({
-            mutation: UpdateTimeCommitmentRange,
+            mutation: UpdateTimeCommitmentRangeRole,
             variables: { range: value },
           });
         } else if (key === "text") {

@@ -8,21 +8,25 @@ import {
   RoleDetailServer,
   RoleAllInfoServer,
   SelectedTimeCommitment,
-  AggregateTimeCommitmentRangeServer,
-  UpdateTimeCommitmentRange,
+  TimeCommitmentRangeRole,
+  UpdateTimeCommitmentRangeRole,
   GetRoles,
   GetRoleData,
+  GetFilteredRolesCache,
 } from "../gql/role.gql";
+import gql from "graphql-tag";
 
 const getRoleData = async (parent, variables, { cache, client }, info) => {
+  console.log("[query] getRoleData");
   const data = await client.readQuery({
     query: GetRoleData,
   });
   // console.log("getRoleData", data);
-  return data.RoleData;
+  return data.roleData;
 };
 
 const filtered = async (parent, variables, { cache, client }, info) => {
+  console.log("[field] filtered");
   const {
     data: { role: roles },
   } = await client.query({
@@ -38,7 +42,24 @@ const filtered = async (parent, variables, { cache, client }, info) => {
       },
     },
   });
-  // console.log("filtered", roles);
+
+  cache.writeQuery({
+    query: GetFilteredRolesCache,
+    data: {
+      roleData: {
+        __typename: "RoleData",
+        filtered: {
+          __typename: "FilteredRoles",
+          roles,
+        },
+      },
+    },
+  });
+  const d = cache.readQuery({
+    query: GetFilteredRolesCache,
+  });
+
+  console.log("retrieved", d);
   return {
     typename: "FilteredRoles",
     roles,
@@ -46,17 +67,18 @@ const filtered = async (parent, variables, { cache, client }, info) => {
 };
 
 const timeCommitmentRange = async (...[, , { cache, client }]) => {
+  console.log("[field] timeCommitmentRange");
   const data = await client.query({
-    query: AggregateTimeCommitmentRangeServer,
+    query: TimeCommitmentRangeRole,
   });
   const range = {
     __typename: "Range",
     min: data.data.role_aggregate.aggregate.min.time_commitment_min,
     max: data.data.role_aggregate.aggregate.max.time_commitment_max,
   };
-
+  // console.log(data);
   cache.writeQuery({
-    query: UpdateTimeCommitmentRange,
+    query: UpdateTimeCommitmentRangeRole,
     data: {
       roleData: {
         __typename: "RoleData",
@@ -118,7 +140,7 @@ const updateTimeCommitmentRange = (...[, { range }, { cache, client }]) => {
 
   client.writeQuery({
     // query: UpdateFilter,
-    query: UpdateTimeCommitmentRange,
+    query: UpdateTimeCommitmentRangeRole,
     data: {
       roleData: {
         __typename: "RoleData",
@@ -178,7 +200,7 @@ const roleResolvers = {
   clearFilter,
 };
 
-export { roleResolvers, filtered, getRoleData };
+export { roleResolvers, filtered, getRoleData, timeCommitmentRange };
 
 // const role = (parent, variables, { cache, client }) => {
 //   console.log(parent, variables);

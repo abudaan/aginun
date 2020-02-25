@@ -27,7 +27,7 @@ query Test($id: Int) {
 }
 
 query Test2 {
-  RoleData @client {
+  roleData @client {
     filter {
       limit
     }
