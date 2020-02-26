@@ -13,8 +13,12 @@ import {
   GetRoles,
   GetRoleData,
   GetFilteredRolesCache,
+  GetSelectedLocalGroups,
+  GetSelectedWorkingGroups,
+  GetFilter,
 } from "../gql/role.gql";
 import gql from "graphql-tag";
+import { updateLocalGroupsGeneric } from "./group";
 
 const getRoleData = async (parent, variables, { cache, client }, info) => {
   console.log("[query] getRoleData");
@@ -55,11 +59,10 @@ const filtered = async (parent, variables, { cache, client }, info) => {
       },
     },
   });
-  const d = cache.readQuery({
-    query: GetFilteredRolesCache,
-  });
-
-  console.log("retrieved", d);
+  // const d = cache.readQuery({
+  //   query: GetFilteredRolesCache,
+  // });
+  // console.log("retrieved", d);
   return {
     typename: "FilteredRoles",
     roles,
@@ -122,6 +125,45 @@ const roleDetail = async (_, { id }, { cache, client }) => {
   });
 
   return role;
+};
+
+const updateRoleFilter = (
+  parent,
+  { localGroups, workingGroups, timeCommitment, searchString },
+  { cache, client }
+) => {
+  const {
+    roleData: { filter },
+  } = cache.readQuery({
+    query: GetFilter,
+  });
+  if (localGroups) {
+    filter.selectedLocalGroups = localGroups;
+  }
+  if (workingGroups) {
+    filter.selectedWorkingGroups = workingGroups;
+  }
+  if (timeCommitment) {
+    filter.selectedTimeCommitmentMin = timeCommitment[0];
+    filter.selectedTimeCommitmentMax = timeCommitment[1];
+  }
+  if (searchString) {
+    filter.searchString = `%${searchString}%`;
+  }
+  // console.log("[mutation] updateRoleFilter", filter);
+  client.writeQuery({
+    query: GetFilter,
+    data: {
+      roleData: {
+        __typename: "RoleData",
+        filter: {
+          __typename: "Filter",
+          ...filter,
+        },
+      },
+    },
+  });
+  return filter;
 };
 
 const updateTimeCommitmentRange = (...[, { range }, { cache, client }]) => {
@@ -200,7 +242,13 @@ const roleResolvers = {
   clearFilter,
 };
 
-export { roleResolvers, filtered, getRoleData, timeCommitmentRange };
+export {
+  roleResolvers,
+  filtered,
+  getRoleData,
+  timeCommitmentRange,
+  updateRoleFilter,
+};
 
 // const role = (parent, variables, { cache, client }) => {
 //   console.log(parent, variables);

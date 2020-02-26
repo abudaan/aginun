@@ -5,7 +5,7 @@
         :value="filter.searchString"
         label="Facilitator, Writer, Photographer..."
         class="mt-3"
-        @input="value => onSetFilter(value, 'text')"
+        @input="value => onSetFilter(value, 'searchString')"
       />
     </div>
     <filter-section>
@@ -16,12 +16,12 @@
         <autocomplete-custom
           :items="localGroups"
           label="Local Group"
-          @change="id => onSetFilter(id, 'localGroup')"
+          @change="id => onSetFilter(id, 'localGroups')"
         />
         <autocomplete-custom
           :items="workingGroups"
           label="Working Group"
-          @change="id => onSetFilter(id, 'workingGroup')"
+          @change="id => onSetFilter(id, 'workingGroups')"
         />
       </flex-wrapper>
     </filter-section>
@@ -56,10 +56,7 @@
     GetTimeCommitmentRangeRole,
     GetFilter,
     // mutations
-    UpdateTimeCommitmentRangeRole,
-    UpdateLocalGroups,
-    UpdateWorkingGroups,
-    UpdateSearchString,
+    UpdateRoleFilter,
     ClearFilter,
   } from "@/apollo/gql/role.gql";
 
@@ -123,27 +120,10 @@
       },
       onSetFilter: function(value, key) {
         // console.log(key, value);
-        if (key === "localGroup") {
-          this.$apollo.mutate({
-            mutation: UpdateLocalGroups,
-            variables: { names: value },
-          });
-        } else if (key === "workingGroup") {
-          this.$apollo.mutate({
-            mutation: UpdateWorkingGroups,
-            variables: { names: value },
-          });
-        } else if (key === "timeCommitment") {
-          this.$apollo.mutate({
-            mutation: UpdateTimeCommitmentRangeRole,
-            variables: { range: value },
-          });
-        } else if (key === "text") {
-          this.$apollo.mutate({
-            mutation: UpdateSearchString,
-            variables: { search: value },
-          });
-        }
+        this.$apollo.mutate({
+          mutation: UpdateRoleFilter,
+          variables: { [key]: value },
+        });
       },
     },
   };

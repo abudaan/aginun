@@ -125,7 +125,6 @@ query GetRoleAmount {
 
 query GetFilter {
   roleData @client {
-    amount
     filter {
       ...RoleFilterFragment
     }
@@ -217,8 +216,22 @@ mutation UpdateSearchString($search: String!) {
   updateSearchString(search: $search) @client
 }
 
-mutation UpdateLocalGroups($names: [String!]) {
-  updateLocalGroups(names: $names) @client
+mutation UpdateRoleFilterLocalGroups($names: [String!]) {
+  updateRoleFilter(names: $names) @client
+}
+
+mutation UpdateRoleFilter(
+  $localGroups: [String!]
+  $workingGroups: [String!]
+  $timeCommitment: [Int!]
+  $searchString: String
+) {
+  updateRoleFilter(
+    searchString: $searchString
+    localGroups: $localGroups
+    workingGroups: $workingGroups
+    timeCommitment: $timeCommitment
+  ) @client
 }
 
 mutation UpdateWorkingGroups($names: [String!]) {

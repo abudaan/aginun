@@ -18,6 +18,20 @@ const mapNames = (names, groups) => {
   return matched;
 };
 
+const updateLocalGroupsGeneric = (query, names, cache, client) => {
+  const { local_group: groups } = cache.readQuery({
+    query: LocalGroups,
+  });
+  client.writeQuery({
+    query,
+    data: { selectedLocalGroups: mapNames(names, groups) },
+  });
+  // const d = cache.readQuery({
+  //   query,
+  // });
+  // console.log(d);
+};
+
 const updateLocalGroups = (_, { names }, { cache, client }) => {
   const { local_group: groups } = cache.readQuery({
     query: LocalGroups,
@@ -44,4 +58,4 @@ const updateWorkingGroups = (...[, { names }, { cache, client }]) => {
   return null;
 };
 
-export { updateLocalGroups, updateWorkingGroups };
+export { updateLocalGroups, updateWorkingGroups, updateLocalGroupsGeneric };
