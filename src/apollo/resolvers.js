@@ -1,11 +1,12 @@
 import * as groupResolvers from "./resolvers/group";
 import {
   filtered,
-  timeCommitmentRange,
   getRoleData,
-  updateLocalGroups,
-  updateRoleFilter,
+  clearRoleFilter,
+  updateTimeCommitmentRole,
 } from "./resolvers/role";
+import { updateRoleFilter } from "./resolvers/updateRoleFilter";
+import { timeCommitmentRange } from "./resolvers/timeCommitmentRange";
 
 const resolvers = {
   ...groupResolvers,
@@ -14,6 +15,8 @@ const resolvers = {
   },
   Mutation: {
     updateRoleFilter,
+    clearRoleFilter,
+    updateTimeCommitmentRole,
   },
   RoleData: {
     timeCommitmentRange,

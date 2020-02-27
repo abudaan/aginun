@@ -18,7 +18,8 @@ type RoleFilter {
   searchString: String!
   selectedLocalGroups: [Int!]!
   selectedWorkingGroups: [Int!]!
-  selectedTimeCommitment: Range
+  selectedTimeCommitmentMin: Int!
+  selectedTimeCommitmentMax: Int!
 }
 
 # type role {
@@ -35,7 +36,7 @@ type RoleFilter {
 
 type RoleData {
   filtered: [role]!
-  timeCommitmentRange: Range!
+  timeCommitmentRange: [Int!]!
   filter: RoleFilter
   amount: Int
   # getRoles: [role]!

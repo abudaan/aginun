@@ -24,8 +24,10 @@ const cache = new InMemoryCache();
 cache.writeData({
   data: {
     roleData: {
+      id: "data",
       __typename: "RoleData",
       filter: {
+        id: "filter",
         __typename: "RoleFilter",
         selectedLocalGroups: null,
         selectedWorkingGroups: null,
@@ -35,32 +37,28 @@ cache.writeData({
         searchString: null,
         limit: 10,
       },
-      timeCommitmentRange: {
-        __typename: "Range",
-        min: 0,
-        max: 4,
-      },
-      calculateTimeCommitmentRange: null,
+      timeCommitmentRange: [0, 16],
       amount: 0,
       filtered: {
+        id: "filtered_roles",
         __typename: "FilteredRoles",
         roles: null,
       },
     },
-    taskData: {
-      __typename: "TaskData",
-      filter: {
-        __typename: "TaskFilter",
-        selectedLocalGroups: null,
-        selectedWorkingGroups: null,
-        selectedTimeCommitmentMin: 2,
-        selectedTimeCommitmentMax: 20,
-        searchString: null,
-        limit: 10,
-      },
-      amount: 0,
-      filtered: [],
-    },
+    // taskData: {
+    //   __typename: "TaskData",
+    //   filter: {
+    //     __typename: "TaskFilter",
+    //     selectedLocalGroups: null,
+    //     selectedWorkingGroups: null,
+    //     selectedTimeCommitmentMin: 2,
+    //     selectedTimeCommitmentMax: 20,
+    //     searchString: null,
+    //     limit: 10,
+    //   },
+    //   amount: 0,
+    //   filtered: [],
+    // },
     navbarHeight: "64px",
   },
 });

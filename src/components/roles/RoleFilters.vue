@@ -31,8 +31,8 @@
       </template>
       <v-range-slider
         :value="filter.selectedTimeCommitment"
-        :min="filter.timeCommitmentRangeMin"
-        :max="filter.timeCommitmentRangeMax"
+        :min="timeCommitmentRange[0]"
+        :max="timeCommitmentRange[1]"
         class="mt-12"
         thumb-label="always"
         label="Time Commitment"
@@ -57,6 +57,7 @@
     GetFilter,
     // mutations
     UpdateRoleFilter,
+    UpdateTimeCommitment,
     ClearFilter,
   } from "@/apollo/gql/role.gql";
 
@@ -67,9 +68,11 @@
       AutocompleteCustom,
       FlexWrapper,
     },
-    // beforeCreate: () => {
-    //   console.log();
-    // },
+    data: () => ({
+      // extra data field is required until this issue has been fixed:
+      // https://github.com/vuejs/vue-apollo/issues/854
+      timeCommitmentRange: [],
+    }),
     apollo: {
       navbarHeight: {
         query: NavbarHeight,
@@ -78,6 +81,7 @@
       filter: {
         query: GetFilter,
         update: data => {
+          // console.log("FILTER", data);
           const {
             roleData: { filter },
           } = data;
@@ -106,7 +110,7 @@
       timeCommitmentRange: {
         query: GetTimeCommitmentRangeRole,
         update: data => {
-          // console.log(data);
+          console.log(data);
           return data.getRoleData.timeCommitmentRange;
         },
         // update: data => data.getRoleData.timeCommitmentRange,
@@ -119,6 +123,13 @@
         });
       },
       onSetFilter: function(value, key) {
+        // if (key === "timeCommitment") {
+        //   this.$apollo.mutate({
+        //     mutation: UpdateTimeCommitment,
+        //     variables: { [key]: value },
+        //   });
+        //   return;
+        // }
         // console.log(key, value);
         this.$apollo.mutate({
           mutation: UpdateRoleFilter,
