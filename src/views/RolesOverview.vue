@@ -55,7 +55,7 @@
   import RoleCard from "@/components/roles/RoleCard.vue";
   import GridList from "@/components/layout/GridList.vue";
   import RoleFilters from "@/components/roles/RoleFilters.vue";
-  import { GetFilteredRoles, GetFilter } from "@/apollo/gql/role.gql";
+  import { GetFilteredRoles, GetFilter, GetRoles } from "@/apollo/gql/role.gql";
 
   export default {
     name: "RolesOverview",
@@ -72,25 +72,28 @@
       filter: {},
     }),
     apollo: {
+      filtered: {
+        query: GetRoles,
+        update: data => {
+          console.log(data);
+          return data.role;
+        },
+        // update: data => data.getRoleData.filtered.roles,
+        // variables() {
+        //   console.log("VARIABLES");
+        //   return {
+        //     selectedTimeCommitmentMin: this.filter.selectedTimeCommitmentMin,
+        //     selectedTimeCommitmentMax: this.filter.selectedTimeCommitmentMax,
+        //   };
+        // },
+        fetchPolicy: "cache-and-network",
+      },
       filter: {
         query: GetFilter,
         // update: data => data.roleData.filter,
-        update: data => {
-          console.log("FILTER UPDATED", data);
+        update(data) {
+          // console.log("FILTER UPDATED", data, this.$apollo.queries.filtered);
           return data.roleData.filter;
-        },
-      },
-      filtered: {
-        // query: GetFilteredRoles,
-        query: GetFilteredRoles,
-        update: data => {
-          // console.log(data.getRoleData.filtered.roles);
-          return data.getRoleData.filtered.roles;
-        },
-        // update: data => data.getRoleData.filtered.roles,
-        variables() {
-          console.log("VARIABLES");
-          return this.filter;
         },
       },
     },

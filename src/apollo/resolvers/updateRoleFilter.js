@@ -44,18 +44,17 @@ export const updateRoleFilter = async (
       roleData: {
         id: "data",
         __typename: "RoleData",
-        filter,
+        filter: {
+          ...filter,
+        },
       },
     },
   });
 
-  // console.log(cache.data.data["local_group:21"]);
-  // const fragment = gql`
-  //   fragment test on local_group {
-  //     id
-  //     name
-  //   }
-  // `;
+  const d = cache.readQuery({
+    query: GetFilter,
+  });
+  console.log("retrieved", d);
 
   // await filtered(parent, {}, { cache, client });
   console.log("[mutation] updateRoleFilter", filter);
