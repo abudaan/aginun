@@ -69,7 +69,6 @@
     data: () => ({
       isDrawerOpen: null,
       filtered: [],
-      filter: {},
     }),
     apollo: {
       filtered: {
@@ -78,23 +77,7 @@
           console.log(data);
           return data.role;
         },
-        // update: data => data.getRoleData.filtered.roles,
-        // variables() {
-        //   console.log("VARIABLES");
-        //   return {
-        //     selectedTimeCommitmentMin: this.filter.selectedTimeCommitmentMin,
-        //     selectedTimeCommitmentMax: this.filter.selectedTimeCommitmentMax,
-        //   };
-        // },
-        fetchPolicy: "cache-and-network",
-      },
-      filter: {
-        query: GetFilter,
-        // update: data => data.roleData.filter,
-        update(data) {
-          // console.log("FILTER UPDATED", data, this.$apollo.queries.filtered);
-          return data.roleData.filter;
-        },
+        // fetchPolicy: "cache-and-network",
       },
     },
     computed: {

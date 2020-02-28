@@ -1,3 +1,4 @@
+import { updateRoleFilter } from "./updateRoleFilter";
 import gql from "graphql-tag";
 
 const query1 = gql`
@@ -44,6 +45,9 @@ export const timeCommitmentRange = async (...[, , { cache, client }]) => {
       },
     },
   });
+
+  // update the filter: set the default commitment range to the full time range
+  updateRoleFilter({}, { timeCommitment: range }, { cache, client });
 
   return range;
 };

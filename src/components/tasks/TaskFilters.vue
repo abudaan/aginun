@@ -56,8 +56,6 @@
     SearchString,
     SelectedTimeCommitment,
     BoundsTimeCommitmentRange,
-    SelectedLocalGroups,
-    SelectedWorkingGroups,
     UpdateTimeCommitmentRange,
     UpdateLocalGroups,
     UpdateWorkingGroups,
@@ -91,14 +89,6 @@
       taskAmount: {
         query: TaskAmount,
         update: data => data.taskAmount,
-      },
-      selectedLocalGroups: {
-        query: SelectedLocalGroups,
-        update: data => data.selectedLocalGroups,
-      },
-      selectedWorkingGroups: {
-        query: SelectedWorkingGroups,
-        update: data => data.selectedWorkingGroups,
       },
       localGroups: {
         query: LocalGroups,

@@ -2,7 +2,7 @@ import { LocalGroups, WorkingGroups } from "../gql/other.gql";
 import { SelectedLocalGroups, SelectedWorkingGroups } from "../gql/role.gql";
 import { getRoles } from "./role";
 
-// util function that maps the names of the groups in the dropdown boxes in the drawer
+// utility function that maps the names of the groups in the dropdown boxes in the drawer
 // to their corresponding ids in the database
 const mapNames = (names, groups) => {
   const matched = names.map(name => {
@@ -18,34 +18,28 @@ const mapNames = (names, groups) => {
   return matched;
 };
 
-const updateLocalGroupsGeneric = (query, names, cache, client) => {
-  const { local_group: groups } = cache.readQuery({
-    query: LocalGroups,
-  });
-  client.writeQuery({
+export const getGroupIds = (type, names, cache) => {
+  const query = type === "local_group" ? LocalGroups : WorkingGroups;
+  const { [type]: groups } = cache.readQuery({
     query,
-    data: { selectedLocalGroups: mapNames(names, groups) },
   });
-  // const d = cache.readQuery({
-  //   query,
-  // });
-  // console.log(d);
+  return mapNames(names, groups).map(({ id }) => id);
 };
 
-const updateLocalGroups = (_, { names }, { cache, client }) => {
+export const updateLocalGroups = (_, { names }, { cache, client }) => {
   const { local_group: groups } = cache.readQuery({
     query: LocalGroups,
   });
   cache.writeQuery({
     query: SelectedLocalGroups,
-    data: { selectedLocalGroups: mapNames(names, groups) },
+    data: { selectedLocalGroupIds: mapNames(names, groups) },
   });
   // console.log(cache.data.data.ROOT_QUERY.selectedLocalGroups);
   getRoles(cache, client);
   return null;
 };
 
-const updateWorkingGroups = (...[, { names }, { cache, client }]) => {
+export const updateWorkingGroups = (...[, { names }, { cache, client }]) => {
   const { working_group: groups } = cache.readQuery({
     query: WorkingGroups,
   });
@@ -57,5 +51,3 @@ const updateWorkingGroups = (...[, { names }, { cache, client }]) => {
   // console.log(cache.data.data.ROOT_QUERY.selectedWorkingGroups);
   return null;
 };
-
-export { updateLocalGroups, updateWorkingGroups, updateLocalGroupsGeneric };

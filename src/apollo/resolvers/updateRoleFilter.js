@@ -1,7 +1,8 @@
 import { GetFilter } from "../gql/role.gql";
+import { getGroupIds } from "./group";
 import gql from "graphql-tag";
 
-export const updateRoleFilter = async (
+export const updateRoleFilter = (
   parent,
   { localGroups, workingGroups, timeCommitment, searchString },
   { cache, client }
@@ -13,10 +14,26 @@ export const updateRoleFilter = async (
   });
 
   if (localGroups) {
-    filter.selectedLocalGroupIds = localGroups;
+    if (localGroups.length) {
+      filter.selectedLocalGroupIds = getGroupIds(
+        "local_group",
+        localGroups,
+        cache
+      );
+    } else {
+      filter.selectedLocalGroupIds = null;
+    }
   }
   if (workingGroups) {
-    filter.selectedWorkingGroupIds = workingGroups;
+    if (workingGroups.length) {
+      filter.selectedWorkingGroupIds = getGroupIds(
+        "working_group",
+        workingGroups,
+        cache
+      );
+    } else {
+      filter.selectedWorkingGroupIds = null;
+    }
   }
   if (timeCommitment) {
     filter.selectedTimeCommitmentMin = timeCommitment[0];
@@ -25,20 +42,11 @@ export const updateRoleFilter = async (
   if (searchString) {
     filter.searchString = `%${searchString}%`;
   }
-  // cache.writeFragment({
-  //   fragment: gql`
-  //     fragment update on RoleData {
-  //       filter
-  //     }
-  //   `,
-  //   data: filter,
-  //   id: "RoleData:filter",
-  // });
 
   filter.id = "filter";
   filter.__typename = "Filter";
 
-  cache.writeQuery({
+  client.writeQuery({
     query: GetFilter,
     data: {
       roleData: {
@@ -51,12 +59,6 @@ export const updateRoleFilter = async (
     },
   });
 
-  const d = cache.readQuery({
-    query: GetFilter,
-  });
-  console.log("retrieved", d);
-
-  // await filtered(parent, {}, { cache, client });
-  console.log("[mutation] updateRoleFilter", filter);
+  // console.log("[mutation] updateRoleFilter", filter);
   return filter;
 };

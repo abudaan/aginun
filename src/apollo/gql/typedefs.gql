@@ -16,8 +16,8 @@ type Range {
 type RoleFilter {
   limit: Int!
   searchString: String!
-  selectedLocalGroups: [Int!]!
-  selectedWorkingGroups: [Int!]!
+  selectedLocalGroupIds: [Int!]!
+  selectedWorkingGroupIds: [Int!]!
   selectedTimeCommitmentMin: Int!
   selectedTimeCommitmentMax: Int!
 }

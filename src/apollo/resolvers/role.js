@@ -91,12 +91,12 @@ const clearRoleFilter = (...[, , { cache, client }]) => {
 
   client.writeQuery({
     query: SelectedLocalGroups,
-    data: { selectedLocalGroups: [] },
+    data: { selectedLocalGroupIds: null },
   });
 
   client.writeQuery({
     query: SelectedWorkingGroups,
-    data: { selectedWorkingGroups: [] },
+    data: { selectedWorkingGroupIds: null },
   });
 
   // getRoles(cache, client);
