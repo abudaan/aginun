@@ -74,9 +74,9 @@
       timeCommitmentRange: [],
       selectedTimeCommitment: [],
     }),
-    beforeCreate: () => {
-      console.log();
-    },
+    // beforeCreate: () => {
+    //   console.log();
+    // },
     apollo: {
       navbarHeight: {
         query: NavbarHeight,

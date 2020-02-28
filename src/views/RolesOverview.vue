@@ -55,7 +55,7 @@
   import RoleCard from "@/components/roles/RoleCard.vue";
   import GridList from "@/components/layout/GridList.vue";
   import RoleFilters from "@/components/roles/RoleFilters.vue";
-  import { GetFilteredRoles, GetFilter, GetRoles } from "@/apollo/gql/role.gql";
+  import { GetFilteredRoles, GetRoles, GetFilter } from "@/apollo/gql/role.gql";
 
   export default {
     name: "RolesOverview",
@@ -69,15 +69,32 @@
     data: () => ({
       isDrawerOpen: null,
       filtered: [],
+      filter: {},
     }),
     apollo: {
+      filter: {
+        query: GetFilter,
+        update: data => {
+          console.log(data);
+          return data.roleData.filter;
+        },
+      },
       filtered: {
+        // query: GetRoles,
         query: GetRoles,
         update: data => {
           console.log(data);
           return data.role;
+          //return data.getRoleData.filtered.roles;
         },
-        // fetchPolicy: "cache-and-network",
+        variables() {
+          const vars = { ...this.filter };
+          delete vars.id;
+          delete vars.__typename;
+          return vars;
+        },
+
+        // fetchPolicy: "cache-only",
       },
     },
     computed: {

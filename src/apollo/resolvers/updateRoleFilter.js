@@ -1,6 +1,6 @@
 import { GetFilter } from "../gql/role.gql";
 import { getGroupIds } from "./group";
-import gql from "graphql-tag";
+// import gql from "graphql-tag";
 
 export const updateRoleFilter = (
   parent,

@@ -1,4 +1,4 @@
-import { GetRoles, GetRoles2, GetFilter } from "../gql/role.gql";
+import { GetRoles, GetRolesPassingVariables, GetFilter } from "../gql/role.gql";
 import gql from "graphql-tag";
 
 const query1 = gql`
@@ -40,7 +40,7 @@ export const filtered = async (
     data: { role: roles },
   } = await client.query({
     // query: GetRoles,
-    query: GetRoles2,
+    query: GetRolesPassingVariables,
     variables: { ...filter },
   });
 
