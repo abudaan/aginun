@@ -42,7 +42,7 @@ cache.writeData({
       filtered: {
         id: "filtered_roles",
         __typename: "FilteredRoles",
-        roles: null,
+        roles: [],
       },
     },
     // taskData: {

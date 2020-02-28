@@ -110,7 +110,7 @@
       timeCommitmentRange: {
         query: GetTimeCommitmentRangeRole,
         update: data => {
-          console.log(data);
+          // console.log(data);
           return data.getRoleData.timeCommitmentRange;
         },
         // update: data => data.getRoleData.timeCommitmentRange,

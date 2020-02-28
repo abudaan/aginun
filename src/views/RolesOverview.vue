@@ -69,22 +69,30 @@
     data: () => ({
       isDrawerOpen: null,
       filtered: [],
+      filter: {},
     }),
     apollo: {
       filter: {
         query: GetFilter,
+        // update: data => data.roleData.filter,
         update: data => {
-          console.log(data);
+          console.log("FILTER UPDATED", data);
+          return data.roleData.filter;
         },
       },
-      // filtered: {
-      //   query: GetFilteredRoles,
-      //   update: data => {
-      //     // console.log(data);
-      //     return data.getRoleData.filtered.roles;
-      //   },
-      //   // update: data => data.getRoleData.filtered.roles,
-      // },
+      filtered: {
+        // query: GetFilteredRoles,
+        query: GetFilteredRoles,
+        update: data => {
+          // console.log(data.getRoleData.filtered.roles);
+          return data.getRoleData.filtered.roles;
+        },
+        // update: data => data.getRoleData.filtered.roles,
+        variables() {
+          console.log("VARIABLES");
+          return this.filter;
+        },
+      },
     },
     computed: {
       isMobile: function() {

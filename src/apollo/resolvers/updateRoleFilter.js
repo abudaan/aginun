@@ -25,7 +25,6 @@ export const updateRoleFilter = async (
   if (searchString) {
     filter.searchString = `%${searchString}%`;
   }
-  console.log("[mutation] updateRoleFilter", filter);
   // cache.writeFragment({
   //   fragment: gql`
   //     fragment update on RoleData {
@@ -35,17 +34,17 @@ export const updateRoleFilter = async (
   //   data: filter,
   //   id: "RoleData:filter",
   // });
-  client.writeQuery({
+
+  filter.id = "filter";
+  filter.__typename = "Filter";
+
+  cache.writeQuery({
     query: GetFilter,
     data: {
       roleData: {
         id: "data",
         __typename: "RoleData",
-        filter: {
-          id: "filter",
-          __typename: "Filter",
-          ...filter,
-        },
+        filter,
       },
     },
   });
@@ -59,5 +58,6 @@ export const updateRoleFilter = async (
   // `;
 
   // await filtered(parent, {}, { cache, client });
+  console.log("[mutation] updateRoleFilter", filter);
   return filter;
 };

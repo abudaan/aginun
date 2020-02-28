@@ -34,8 +34,12 @@ type RoleFilter {
 #   working_group: WorkingGroup!
 # }
 
+type FilteredRoles {
+  roles: [role]!
+}
+
 type RoleData {
-  filtered: [role]!
+  filtered: FilteredRoles!
   timeCommitmentRange: [Int!]!
   filter: RoleFilter
   amount: Int

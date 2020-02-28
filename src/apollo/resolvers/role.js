@@ -4,18 +4,10 @@ import {
   SelectedLocalGroups,
   SelectedWorkingGroups,
   FilteredRoles,
-  GetRoleAmount,
   RoleDetailServer,
   RoleAllInfoServer,
   SelectedTimeCommitment,
-  TimeCommitmentRangeRole,
-  UpdateTimeCommitmentRangeRole,
-  GetRoles,
-  GetRoles2,
-  GetSelectedTimeCommitment,
   GetRoleData,
-  GetFilteredRolesCache,
-  GetFilter,
 } from "../gql/role.gql";
 import gql from "graphql-tag";
 
@@ -24,62 +16,8 @@ const getRoleData = async (parent, variables, { cache, client }, info) => {
   const data = await client.readQuery({
     query: GetRoleData,
   });
-  // console.log("getRoleData", data);
+  console.log("getRoleData", variables, data);
   return data.roleData;
-};
-
-const filtered = async (
-  parent,
-  variables,
-  { cache, client, getCacheKey },
-  info
-) => {
-  const {
-    roleData: { filter },
-  } = client.readQuery({
-    query: GetFilter,
-  });
-
-  delete filter.__typename;
-
-  const {
-    data: { role: roles },
-  } = await client.query({
-    // query: GetRoles,
-    query: GetRoles2,
-    variables: { ...filter },
-  });
-
-  client.writeQuery({
-    query: GetRoleAmount,
-    data: {
-      roleData: {
-        __typename: "RoleData",
-        amount: roles.length,
-      },
-    },
-  });
-
-  client.writeQuery({
-    query: GetFilteredRolesCache,
-    data: {
-      roleData: {
-        __typename: "RoleData",
-        filtered: {
-          __typename: "FilteredRoles",
-          roles,
-        },
-      },
-    },
-  });
-  // const d = cache.readQuery({
-  //   query: GetFilteredRolesCache,
-  // });
-  // console.log("retrieved", d);
-  return {
-    typename: "FilteredRoles",
-    roles,
-  };
 };
 
 const roleDetail = async (_, { id }, { cache, client }) => {
@@ -164,7 +102,7 @@ const clearRoleFilter = (...[, , { cache, client }]) => {
   // getRoles(cache, client);
 };
 
-export { filtered, getRoleData, clearRoleFilter };
+export { getRoleData, clearRoleFilter };
 
 // const role = (parent, variables, { cache, client }) => {
 //   console.log(parent, variables);

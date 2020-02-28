@@ -27,12 +27,12 @@ export const timeCommitmentRange = async (...[, , { cache, client }]) => {
   const data = await client.query({
     query: query1,
   });
-  console.log(data);
+  // console.log(data);
   const range = [
     data.data.role_aggregate.aggregate.min.time_commitment_min,
     data.data.role_aggregate.aggregate.max.time_commitment_max,
   ];
-  console.log("[field] timeCommitmentRange", range, data);
+  // console.log("[field] timeCommitmentRange", range, data);
 
   cache.writeQuery({
     query: query2,

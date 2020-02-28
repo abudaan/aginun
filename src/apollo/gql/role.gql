@@ -88,15 +88,9 @@ query GetFilteredRoles {
     filtered {
       roles {
         ...RoleFragment
+        # id
+        # name
       }
-    }
-  }
-}
-
-query GetFilteredRolesCache {
-  roleData @client {
-    filtered {
-      roles
     }
   }
 }
@@ -106,11 +100,13 @@ query GetRoleData {
     filter {
       ...RoleFilterFragment
     }
-    timeCommitmentRange
     amount
     filtered {
-      roles
+      roles {
+        ...RoleFragment
+      }
     }
+    timeCommitmentRange
   }
 }
 
@@ -120,16 +116,17 @@ query GetTimeCommitmentRangeRole {
   }
 }
 
-query GetRoleAmount {
-  roleData @client {
-    amount
-  }
-}
-
 query GetFilter {
   roleData @client {
     filter {
-      ...RoleFilterFragment
+      # ...RoleFilterFragment
+      id
+      limit
+      searchString
+      selectedLocalGroups
+      selectedWorkingGroups
+      selectedTimeCommitmentMin
+      selectedTimeCommitmentMax
     }
   }
 }
