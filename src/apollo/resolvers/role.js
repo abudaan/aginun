@@ -16,7 +16,7 @@ const getRoleData = async (parent, variables, { cache, client }, info) => {
   const data = await client.readQuery({
     query: GetRoleData,
   });
-  console.log("getRoleData", variables, data);
+  // console.log("getRoleData", variables, data);
   return data.roleData;
 };
 

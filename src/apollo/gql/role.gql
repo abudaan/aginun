@@ -236,3 +236,7 @@ mutation UpdateWorkingGroups($names: [String!]) {
 mutation ClearFilter {
   clearFilter @client
 }
+
+mutation RoleAmount($amount: Int!) {
+  updateRoleAmount(amount: $amount) @client
+}

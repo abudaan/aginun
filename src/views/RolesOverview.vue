@@ -55,7 +55,7 @@
   import RoleCard from "@/components/roles/RoleCard.vue";
   import GridList from "@/components/layout/GridList.vue";
   import RoleFilters from "@/components/roles/RoleFilters.vue";
-  import { GetFilteredRoles, GetRoles, GetFilter } from "@/apollo/gql/role.gql";
+  import { GetRoles, GetFilter, RoleAmount } from "@/apollo/gql/role.gql";
 
   export default {
     name: "RolesOverview",
@@ -74,18 +74,16 @@
     apollo: {
       filter: {
         query: GetFilter,
-        update: data => {
-          console.log(data);
-          return data.roleData.filter;
-        },
+        update: data => data.roleData.filter,
       },
       filtered: {
-        // query: GetRoles,
         query: GetRoles,
-        update: data => {
-          console.log(data);
+        update(data) {
+          this.$apollo.mutate({
+            mutation: RoleAmount,
+            variables: { amount: data.role.length },
+          });
           return data.role;
-          //return data.getRoleData.filtered.roles;
         },
         variables() {
           const vars = { ...this.filter };
@@ -93,9 +91,14 @@
           delete vars.__typename;
           return vars;
         },
-
-        // fetchPolicy: "cache-only",
       },
+      // filtered: {
+      //   query: GetFilteredRoles,
+      //   update: data => {
+      //     console.log(data);
+      //     return data.getRoleData.filtered.roles;
+      //   },
+      // },
     },
     computed: {
       isMobile: function() {

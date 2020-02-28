@@ -1,9 +1,33 @@
 import { GetFilter } from "../gql/role.gql";
-import { getGroupIds } from "./group";
-// import gql from "graphql-tag";
+import { LocalGroups, WorkingGroups } from "../gql/other.gql";
+import { getRoleData } from "./role";
+
+// utility functions that maps the names of the groups in the dropdown boxes in the drawer
+// to their corresponding ids in the database
+const mapNames = (names, groups) => {
+  const matched = names.map(name => {
+    let group;
+    for (let i = 0; i < groups.length; i++) {
+      if (groups[i].name === name) {
+        group = groups[i];
+        break;
+      }
+    }
+    return group;
+  });
+  return matched;
+};
+
+const getGroupIds = (type, names, cache) => {
+  const query = type === "local_group" ? LocalGroups : WorkingGroups;
+  const { [type]: groups } = cache.readQuery({
+    query,
+  });
+  return mapNames(names, groups).map(({ id }) => id);
+};
 
 export const updateRoleFilter = (
-  parent,
+  _,
   { localGroups, workingGroups, timeCommitment, searchString },
   { cache, client }
 ) => {
@@ -59,6 +83,7 @@ export const updateRoleFilter = (
     },
   });
 
+  // await getRoleData(_, {}, { cache, client });
   // console.log("[mutation] updateRoleFilter", filter);
   return filter;
 };

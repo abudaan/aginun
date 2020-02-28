@@ -1,6 +1,10 @@
 import { GetRoles, GetRolesPassingVariables, GetFilter } from "../gql/role.gql";
 import gql from "graphql-tag";
 
+/**
+ *  Can't be used: doesn't re-trigger query for some reason
+ */
+
 const query1 = gql`
   query GetAmountCache {
     roleData @client {
@@ -19,12 +23,7 @@ const query2 = gql`
   }
 `;
 
-export const filtered = async (
-  parent,
-  variables,
-  { cache, client, getCacheKey },
-  info
-) => {
+export const filtered = async (_, variables, { client }) => {
   console.log("FILTERED ROLES", variables);
 
   const {
@@ -39,8 +38,8 @@ export const filtered = async (
   const {
     data: { role: roles },
   } = await client.query({
-    // query: GetRoles,
-    query: GetRolesPassingVariables,
+    query: GetRoles,
+    // query: GetRolesPassingVariables,
     variables: { ...filter },
   });
 

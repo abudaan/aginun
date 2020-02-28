@@ -54,6 +54,7 @@ extend type Mutation {
   updateSearchString(search: String): Boolean
   clearFilter: Boolean
   updateRoleFilter(names: [String!]): Filter
+  updateRoleAmount(amount: Int!): Int
 }
 
 extend type Query {
