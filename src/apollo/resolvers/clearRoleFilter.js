@@ -1,30 +1,30 @@
-import {
-  SearchString,
-  SelectedLocalGroups,
-  SelectedWorkingGroups,
-  SelectedTimeCommitment,
-} from "../gql/role.gql";
+import { GetFilter } from "../gql/role.gql";
 
 export const clearRoleFilter = (...[, , { client }]) => {
-  client.writeQuery({
-    query: SelectedTimeCommitment,
-    data: { selectedTimeCommitment: [0, 40] }, // @todo: fix this!
-  });
+  const filter = {
+    id: "filter",
+    __typename: "Filter",
+    limit: 10,
+    searchString: null,
+    selectedLocalGroupIds: null,
+    selectedWorkingGroupIds: null,
+    selectedTimeCommitmentMin: 0,
+    selectedTimeCommitmentMax: 40,
+  };
 
   client.writeQuery({
-    query: SearchString,
-    data: { searchString: "" },
+    query: GetFilter,
+    data: {
+      roleData: {
+        id: "data",
+        __typename: "RoleData",
+        filter,
+      },
+    },
   });
 
-  client.writeQuery({
-    query: SelectedLocalGroups,
-    data: { selectedLocalGroupIds: null },
-  });
+  // delete filter.id;
+  // delete filter.__typename;
 
-  client.writeQuery({
-    query: SelectedWorkingGroups,
-    data: { selectedWorkingGroupIds: null },
-  });
-
-  // getRoles(cache, client);
+  return filter;
 };

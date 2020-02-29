@@ -42,7 +42,7 @@
                 ({{ filtered.length }} positions found)
               </span>
             </div>
-            <v-btn text color="primary">
+            <v-btn text color="primary" @click="clearFilter">
               Clear filters
             </v-btn>
           </div>
@@ -62,7 +62,12 @@ import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
 import RoleCard from "@/components/roles/RoleCard.vue";
 import GridList from "@/components/layout/GridList.vue";
 import RoleFilters from "@/components/roles/RoleFilters.vue";
-import { GetRoles, GetFilter, RoleAmount } from "@/apollo/gql/role.gql";
+import {
+  GetRoles,
+  GetFilter,
+  RoleAmount,
+  ClearRoleFilter,
+} from "@/apollo/gql/role.gql";
 import NewItemButton from "@/components/NewItemButton";
 import NewItemDialog from "@/components/NewItemDialog";
 
@@ -119,6 +124,11 @@ export default {
     this.isDrawerOpen = !this.isMobile;
   },
   methods: {
+    clearFilter: function() {
+      this.$apollo.mutate({
+        mutation: ClearRoleFilter,
+      });
+    },
     handleCloseDrawer: function() {
       this.isDrawerOpen = false;
     },

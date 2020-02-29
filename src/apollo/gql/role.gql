@@ -16,7 +16,19 @@ fragment RoleFragment on role {
   }
 }
 
+fragment RoleDetailFragment on role {
+  email
+  phone
+  mattermost_id
+  description
+  requirements
+  responsibilities
+  due_date
+  date_added
+}
+
 fragment RoleFilterFragment on RoleFilter {
+  __typename
   id
   limit
   searchString
@@ -85,7 +97,6 @@ query GetFilter {
   roleData @client {
     filter {
       # ...RoleFilterFragment
-      id
       limit
       searchString
       selectedLocalGroupIds
@@ -100,9 +111,7 @@ query GetFilter {
 
 query RoleDetailServer($id: Int!) {
   role(where: { id: { _eq: $id } }) {
-    description
-    contact_details
-    responsibilities
+    ...RoleDetailFragment
   }
 }
 
@@ -110,9 +119,7 @@ query RoleDetailClient($id: Int!) {
   roleData @client {
     roleDetail(id: $id) {
       ...RoleFragment
-      description
-      contact_details
-      responsibilities
+      ...RoleDetailFragment
     }
   }
 }
@@ -120,39 +127,13 @@ query RoleDetailClient($id: Int!) {
 query RoleAllInfoServer($id: Int!) {
   role(where: { id: { _eq: $id } }) {
     ...RoleFragment
-    description
-    contact_details
-    responsibilities
+    ...RoleDetailFragment
   }
 }
 
 query UpdateFilter {
   roleData @client {
     filter
-  }
-}
-
-query GetSelectedTimeCommitment {
-  roleData @client {
-    filter {
-      selectedTimeCommitment
-    }
-  }
-}
-
-query GetSelectedLocalGroups {
-  roleData @client {
-    filter {
-      selectedLocalGroups
-    }
-  }
-}
-
-query GetSelectedWorkingGroups {
-  roleData @client {
-    filter {
-      selectedWorkingGroups
-    }
   }
 }
 
@@ -201,8 +182,8 @@ mutation UpdateWorkingGroups($names: [String!]) {
   updateWorkingGroups(names: $names) @client
 }
 
-mutation ClearFilter {
-  clearFilter @client
+mutation ClearRoleFilter {
+  clearRoleFilter @client
 }
 
 mutation RoleAmount($amount: Int!) {

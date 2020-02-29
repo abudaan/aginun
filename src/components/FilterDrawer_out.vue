@@ -79,170 +79,170 @@
 </template>
 
 <script>
-  import FlexWrapper from "@/components/layout/FlexWrapper.vue";
-  import AutocompleteCustom from "@/components/AutocompleteCustom";
-  import FilterDrawerSection from "./layout/FilterDrawerSection";
-  import {
-    RoleAmount,
-    NavbarHeight,
-    LocalGroups,
-    WorkingGroups,
-    SearchString,
-    SelectedTimeCommitment,
-    BoundsTimeCommitmentRange,
-    UpdateTimeCommitmentRange,
-    UpdateLocalGroups,
-    UpdateWorkingGroups,
-    UpdateSearchString,
-    ClearFilter,
-  } from "@/apollo/gql/role.gql";
+import FlexWrapper from "@/components/layout/FlexWrapper.vue";
+import AutocompleteCustom from "@/components/AutocompleteCustom";
+import FilterDrawerSection from "./layout/FilterDrawerSection";
+import {
+  RoleAmount,
+  NavbarHeight,
+  LocalGroups,
+  WorkingGroups,
+  SearchString,
+  SelectedTimeCommitment,
+  BoundsTimeCommitmentRange,
+  UpdateTimeCommitmentRange,
+  UpdateLocalGroups,
+  UpdateWorkingGroups,
+  UpdateSearchString,
+  ClearFilter,
+} from "@/apollo/gql/role.gql";
 
-  export default {
-    name: "TheFilterDrawer",
-    components: {
-      filterSection: FilterDrawerSection,
-      AutocompleteCustom,
-      FlexWrapper,
+export default {
+  name: "TheFilterDrawer",
+  components: {
+    filterSection: FilterDrawerSection,
+    AutocompleteCustom,
+    FlexWrapper,
+  },
+  props: {
+    value: {
+      required: true,
+      validator: value => typeof value === "boolean" || value === null,
     },
-    props: {
-      value: {
-        required: true,
-        validator: value => typeof value === "boolean" || value === null,
-      },
-      width: {
-        required: true,
-        type: Number,
-        default: 400,
-      },
+    width: {
+      required: true,
+      type: Number,
+      default: 400,
     },
-    // beforeCreate: () => {
-    //   console.log(RoleAmount);
-    // },
-    data: () => ({
-      timeCommitmentRange: [],
-      selectedTimeCommitment: [],
-    }),
-    apollo: {
-      navbarHeight: {
-        query: NavbarHeight,
-        update: data => data.navbarHeight,
-      },
-      searchString: {
-        query: SearchString,
-        update: data => data.searchString,
-      },
-      roleAmount: {
-        query: RoleAmount,
-        update: data => data.roleAmount,
-      },
-      localGroups: {
-        query: LocalGroups,
-        update: data =>
-          data.local_group.map(({ id, name }) => ({ id, text: name })),
-      },
-      workingGroups: {
-        query: WorkingGroups,
-        update: data =>
-          data.working_group.map(({ id, name }) => ({ id, text: name })),
-      },
-      selectedTimeCommitment: {
-        query: SelectedTimeCommitment,
-        update: data => data.selectedTimeCommitment,
-      },
-      timeCommitmentRange: {
-        query: BoundsTimeCommitmentRange,
-        update: function(data) {
-          const range = [
-            data.role_aggregate.aggregate.min.time_commitment_min,
-            data.role_aggregate.aggregate.max.time_commitment_max,
-          ];
-          this.$apollo.mutate({
-            mutation: UpdateTimeCommitmentRange,
-            variables: { range },
-          });
-          return range;
-        },
-      },
+  },
+  // beforeCreate: () => {
+  //   console.log(RoleAmount);
+  // },
+  data: () => ({
+    timeCommitmentRange: [],
+    selectedTimeCommitment: [],
+  }),
+  apollo: {
+    navbarHeight: {
+      query: NavbarHeight,
+      update: data => data.navbarHeight,
     },
-    computed: {
-      drawerStyle: function() {
-        let styles = {};
-        if (!this.$vuetify.breakpoint.smAndDown) {
-          styles.top = this.navbarHeight;
-          styles["max-width"] = this.width + "px";
-        }
-        return styles;
-      },
+    searchString: {
+      query: SearchString,
+      update: data => data.searchString,
     },
-    methods: {
-      clearFilter: function() {
+    roleAmount: {
+      query: RoleAmount,
+      update: data => data.roleAmount,
+    },
+    localGroups: {
+      query: LocalGroups,
+      update: data =>
+        data.local_group.map(({ id, name }) => ({ id, text: name })),
+    },
+    workingGroups: {
+      query: WorkingGroups,
+      update: data =>
+        data.working_group.map(({ id, name }) => ({ id, text: name })),
+    },
+    selectedTimeCommitment: {
+      query: SelectedTimeCommitment,
+      update: data => data.selectedTimeCommitment,
+    },
+    timeCommitmentRange: {
+      query: BoundsTimeCommitmentRange,
+      update: function(data) {
+        const range = [
+          data.role_aggregate.aggregate.min.time_commitment_min,
+          data.role_aggregate.aggregate.max.time_commitment_max,
+        ];
         this.$apollo.mutate({
-          mutation: ClearFilter,
+          mutation: UpdateTimeCommitmentRange,
+          variables: { range },
         });
-      },
-      onSetFilter: function(value, key) {
-        // console.log(key, value);
-        if (key === "localGroup") {
-          this.$apollo.mutate({
-            mutation: UpdateLocalGroups,
-            variables: { names: value },
-          });
-        } else if (key === "workingGroup") {
-          this.$apollo.mutate({
-            mutation: UpdateWorkingGroups,
-            variables: { names: value },
-          });
-        } else if (key === "timeCommitment") {
-          this.$apollo.mutate({
-            mutation: UpdateTimeCommitmentRange,
-            variables: { range: value },
-          });
-        } else if (key === "text") {
-          this.$apollo.mutate({
-            mutation: UpdateSearchString,
-            variables: { search: value },
-          });
-        }
+        return range;
       },
     },
-  };
+  },
+  computed: {
+    drawerStyle: function() {
+      let styles = {};
+      if (!this.$vuetify.breakpoint.smAndDown) {
+        styles.top = this.navbarHeight;
+        styles["max-width"] = this.width + "px";
+      }
+      return styles;
+    },
+  },
+  methods: {
+    clearFilter: function() {
+      this.$apollo.mutate({
+        mutation: ClearFilter,
+      });
+    },
+    onSetFilter: function(value, key) {
+      // console.log(key, value);
+      if (key === "localGroup") {
+        this.$apollo.mutate({
+          mutation: UpdateLocalGroups,
+          variables: { names: value },
+        });
+      } else if (key === "workingGroup") {
+        this.$apollo.mutate({
+          mutation: UpdateWorkingGroups,
+          variables: { names: value },
+        });
+      } else if (key === "timeCommitment") {
+        this.$apollo.mutate({
+          mutation: UpdateTimeCommitmentRange,
+          variables: { range: value },
+        });
+      } else if (key === "text") {
+        this.$apollo.mutate({
+          mutation: UpdateSearchString,
+          variables: { search: value },
+        });
+      }
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-  .drawer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    border-left-style: solid;
-    border-left-width: 1px;
-    z-index: 16;
-    transition: transform 0.3s ease-out;
-    overflow-y: auto;
-    transform: translateX(100%);
-    &.active {
-      transform: translateX(0);
-    }
-    .theme--light & {
-      background: white;
-      border-color: rgba(0, 0, 0, 0.12);
-    }
-    .theme--dark & {
-      background: #121212;
-      border-color: rgba(255, 255, 255, 0.12);
-    }
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  border-left-style: solid;
+  border-left-width: 1px;
+  z-index: 16;
+  transition: transform 0.3s ease-out;
+  overflow-y: auto;
+  transform: translateX(100%);
+  &.active {
+    transform: translateX(0);
   }
+  .theme--light & {
+    background: white;
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+  .theme--dark & {
+    background: #121212;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}
 
-  .bottom-border {
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    .theme--light & {
-      border-color: rgba(0, 0, 0, 0.12);
-    }
-    .theme--dark & {
-      border-color: rgba(255, 255, 255, 0.12);
-    }
+.bottom-border {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  .theme--light & {
+    border-color: rgba(0, 0, 0, 0.12);
   }
+  .theme--dark & {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}
 </style>
