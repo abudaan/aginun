@@ -43,88 +43,88 @@
 </template>
 
 <script>
-  import FlexWrapper from "@/components/layout/FlexWrapper.vue";
-  import AutocompleteCustom from "@/components/AutocompleteCustom";
-  import FilterDrawerSection from "../layout/FilterDrawerSection";
-  import {
-    NavbarHeight,
-    LocalGroups,
-    WorkingGroups,
-  } from "@/apollo/gql/other.gql";
-  import {
-    // queries
-    GetTimeCommitmentRangeRole,
-    GetFilter,
-    // mutations
-    UpdateRoleFilter,
-    ClearFilter,
-  } from "@/apollo/gql/role.gql";
+import FlexWrapper from "@/components/layout/FlexWrapper.vue";
+import AutocompleteCustom from "@/components/AutocompleteCustom";
+import FilterDrawerSection from "../layout/FilterDrawerSection";
+import {
+  NavbarHeight,
+  LocalGroups,
+  WorkingGroups,
+} from "@/apollo/gql/other.gql";
+import {
+  // queries
+  GetTimeCommitmentRangeRole,
+  GetFilter,
+  // mutations
+  UpdateRoleFilter,
+  ClearFilter,
+} from "@/apollo/gql/role.gql";
 
-  export default {
-    name: "RoleFilters",
-    components: {
-      filterSection: FilterDrawerSection,
-      AutocompleteCustom,
-      FlexWrapper,
+export default {
+  name: "RoleFilters",
+  components: {
+    filterSection: FilterDrawerSection,
+    AutocompleteCustom,
+    FlexWrapper,
+  },
+  data: () => ({
+    // extra data field is required until this issue has been fixed:
+    // https://github.com/vuejs/vue-apollo/issues/854
+    timeCommitmentRange: [],
+  }),
+  apollo: {
+    navbarHeight: {
+      query: NavbarHeight,
+      update: data => data.navbarHeight,
     },
-    data: () => ({
-      // extra data field is required until this issue has been fixed:
-      // https://github.com/vuejs/vue-apollo/issues/854
-      timeCommitmentRange: [],
-    }),
-    apollo: {
-      navbarHeight: {
-        query: NavbarHeight,
-        update: data => data.navbarHeight,
-      },
-      filter: {
-        query: GetFilter,
-        update: data => {
-          // console.log("FILTER", data);
-          const {
-            roleData: { filter },
-          } = data;
-          return {
-            ...filter,
-            searchString: filter.searchString
-              ? filter.searchString.replace(/%/g, "")
-              : null,
-            selectedTimeCommitment: [
-              filter.selectedTimeCommitmentMin,
-              filter.selectedTimeCommitmentMax,
-            ],
-          };
-        },
-      },
-      localGroups: {
-        query: LocalGroups,
-        update: data =>
-          data.local_group.map(({ id, name }) => ({ id, text: name })),
-      },
-      workingGroups: {
-        query: WorkingGroups,
-        update: data =>
-          data.working_group.map(({ id, name }) => ({ id, text: name })),
-      },
-      timeCommitmentRange: {
-        query: GetTimeCommitmentRangeRole,
-        update: data => data.getRoleData.timeCommitmentRange,
+    filter: {
+      query: GetFilter,
+      update: data => {
+        // console.log("FILTER", data);
+        const {
+          roleData: { filter },
+        } = data;
+        return {
+          ...filter,
+          searchString: filter.searchString
+            ? filter.searchString.replace(/%/g, "")
+            : null,
+          selectedTimeCommitment: [
+            filter.selectedTimeCommitmentMin,
+            filter.selectedTimeCommitmentMax,
+          ],
+        };
       },
     },
-    methods: {
-      clearFilter: function() {
-        this.$apollo.mutate({
-          mutation: ClearFilter,
-        });
-      },
-      onSetFilter: function(value, key) {
-        this.$apollo.mutate({
-          mutation: UpdateRoleFilter,
-          variables: { [key]: value },
-        });
-      },
+    localGroups: {
+      query: LocalGroups,
+      update: data =>
+        data.local_group.map(({ id, name }) => ({ id, text: name })),
     },
-  };
+    workingGroups: {
+      query: WorkingGroups,
+      update: data =>
+        data.working_group.map(({ id, name }) => ({ id, text: name })),
+    },
+    timeCommitmentRange: {
+      query: GetTimeCommitmentRangeRole,
+      update: data => data.getRoleData.timeCommitmentRange,
+    },
+  },
+  methods: {
+    clearFilter: function() {
+      this.$apollo.mutate({
+        mutation: ClearFilter,
+      });
+    },
+    onSetFilter: function(value, key) {
+      this.$apollo.mutate({
+        mutation: UpdateRoleFilter,
+        variables: { [key]: value },
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

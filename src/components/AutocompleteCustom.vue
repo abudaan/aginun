@@ -22,25 +22,25 @@
 </template>
 
 <script>
-  export default {
-    name: "AutocompleteCustom",
-    props: {
-      items: {
-        type: Array,
-        required: true,
-      },
-      value: {
-        type: Array,
-        required: false,
-        default: () => [],
-      },
-      label: {
-        type: String,
-        required: true,
-      },
+export default {
+  name: "AutocompleteCustom",
+  props: {
+    items: {
+      type: Array,
+      required: true,
     },
-    data: () => ({}),
-  };
+    value: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+  },
+  data: () => ({}),
+};
 </script>
 
 <style lang="scss" scoped></style>

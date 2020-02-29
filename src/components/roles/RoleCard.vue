@@ -27,22 +27,22 @@
 </template>
 
 <script>
-  import DefaultCard from "@/components/surfaces/DefaultCard.vue";
-  export default {
-    name: "RoleCard",
-    components: {
-      DefaultCard,
-    },
-    props: {
-      role: {
-        type: Object,
-        required: true,
-        // might look into more managable prop validation, this might be hard to update when roles get more/less properties.
-        // making components always render, even with missing properties might be okay
-        // (i.e. the time commitment won't show when a role doesn't have a time commitment)
-        // or every property is a seperate prop, but you might have the same problem
+import DefaultCard from "@/components/surfaces/DefaultCard.vue";
+export default {
+  name: "RoleCard",
+  components: {
+    DefaultCard,
+  },
+  props: {
+    role: {
+      type: Object,
+      required: true,
+      // might look into more managable prop validation, this might be hard to update when roles get more/less properties.
+      // making components always render, even with missing properties might be okay
+      // (i.e. the time commitment won't show when a role doesn't have a time commitment)
+      // or every property is a seperate prop, but you might have the same problem
 
-        /*validator: function(obj) {
+      /*validator: function(obj) {
         return (
           has(obj, "id") &&
           Number.isInteger(obj.id) &&
@@ -60,9 +60,9 @@
           Number.isInteger(obj.timeCommitment.max)
         );
       }*/
-      },
     },
-  };
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

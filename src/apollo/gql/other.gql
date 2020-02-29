@@ -18,30 +18,4 @@ query LocalGroups {
   }
 }
 
-query Test($id: Int) {
-  getId @client @export(as: "id")
-  role(where: { id: { _eq: $id } }) {
-    id
-    name
-  }
-}
-
-query Test2 {
-  roleData @client {
-    filter {
-      limit
-    }
-  }
-}
-
-query Test4 {
-  getRoleData @client {
-    timeCommitmentRange {
-      min
-      max
-    }
-  }
-  # datap: roleDatap @client
-}
-
 # mutations

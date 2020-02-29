@@ -10,7 +10,7 @@
       <v-btn
         v-if="this.$vuetify.breakpoint.smAndDown"
         icon
-        @click="$emit('input', false)"
+        @click="$emit('close-drawer', false)"
       >
         <v-icon color="primary">
           mdi-arrow-left
@@ -25,19 +25,25 @@
 </template>
 
 <script>
-  export default {
-    name: "DefaultDrawer",
-  };
+export default {
+  name: "DefaultDrawer",
+};
 </script>
 
 <style lang="scss" scoped>
+.drawer-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 0.5rem;
+}
+
+.theme--dark {
   .drawer-header {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid lightgray;
-    padding: 0.5rem;
+    border-color: rgba(255, 255, 255, 0.12);
   }
-  .drawer-content {
-    padding: 0.5rem;
-  }
+}
+.drawer-content {
+  padding: 0.5rem;
+}
 </style>

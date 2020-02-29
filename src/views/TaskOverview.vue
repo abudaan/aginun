@@ -2,7 +2,7 @@
   <page-with-drawer :is-drawer-open="isDrawerOpen">
     <div class="text-center my-8">
       <h1>
-        Find roles at
+        Find tasks at
         <strong class="xr-title">
           Extinction Rebellion Nederland.
         </strong>
@@ -17,12 +17,7 @@
       </div>
       <v-divider />
     </div>
-    <grid-list
-      v-if="filteredTasks.length > 0"
-      item-width="300px"
-      item-height="200px"
-      gap="2rem"
-    >
+    <grid-list v-if="filteredTasks.length > 0" gap="2rem">
       <task-card v-for="task in filteredTasks" :key="task.id" :task="task" />
     </grid-list>
     <div v-else class="pa-5 text-center">
@@ -30,13 +25,20 @@
       <p>Try removing filters.</p>
     </div>
     <template v-slot:drawer>
-      <default-drawer>
+      <default-drawer @close-drawer="handleCloseDrawer">
         <template #header>
           <div
             class="d-flex justify-space-between align-center"
             style="width:100%;"
           >
-            <span class="font-weight-bold">Search for positions</span>
+            <div class="d-flex flex-column">
+              <span class="font-weight-bold">
+                Search for tasks
+              </span>
+              <span class="font-weight-light">
+                ({{ filteredTasks.length }} tasks found)
+              </span>
+            </div>
             <v-btn text color="primary">
               Clear filters
             </v-btn>
@@ -52,50 +54,53 @@
   </page-with-drawer>
 </template>
 <script>
-  import TaskFilters from "@/components/tasks/TaskFilters.vue";
-  import DefaultDrawer from "@/components/layout/DefaultDrawer.vue";
-  import GridList from "@/components/layout/GridList.vue";
-  import TaskCard from "@/components/tasks/TaskCard.vue";
-  import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
-  import { mapGetters } from "vuex";
-  export default {
-    name: "TasksOverview",
-    components: {
-      TaskFilters,
-      PageWithDrawer,
-      GridList,
-      TaskCard,
-      DefaultDrawer,
+import TaskFilters from "@/components/tasks/TaskFilters.vue";
+import DefaultDrawer from "@/components/layout/DefaultDrawer.vue";
+import GridList from "@/components/layout/GridList.vue";
+import TaskCard from "@/components/tasks/TaskCard.vue";
+import PageWithDrawer from "@/components/layout/PageWithDrawer.vue";
+import { mapGetters } from "vuex";
+export default {
+  name: "TasksOverview",
+  components: {
+    TaskFilters,
+    PageWithDrawer,
+    GridList,
+    TaskCard,
+    DefaultDrawer,
+  },
+  data: () => ({
+    isDrawerOpen: null,
+    selectedFilters: {
+      text: "",
+      localGroup: [],
+      workingGroup: [],
     },
-    data: () => ({
-      isDrawerOpen: null,
-      selectedFilters: {
-        text: "",
-        localGroup: [],
-        workingGroup: [],
-      },
-    }),
-    computed: {
-      ...mapGetters("tasks", ["getByFilters"]),
-      filteredTasks: function() {
-        return this.getByFilters(this.selectedFilters);
-      },
-      isMobile: function() {
-        return this.$vuetify.breakpoint.smAndDown;
-      },
+  }),
+  computed: {
+    ...mapGetters("tasks", ["getByFilters"]),
+    filteredTasks: function() {
+      return this.getByFilters(this.selectedFilters);
     },
-    watch: {
-      isMobile: function() {
-        this.isDrawerOpen = !this.isMobile;
-      },
+    isMobile: function() {
+      return this.$vuetify.breakpoint.smAndDown;
     },
-    created: function() {
+  },
+  watch: {
+    isMobile: function() {
       this.isDrawerOpen = !this.isMobile;
     },
-    methods: {
-      handleSelectFilter: function(value, type) {
-        this.selectedFilters[type] = value;
-      },
+  },
+  created: function() {
+    this.isDrawerOpen = !this.isMobile;
+  },
+  methods: {
+    handleSelectFilter: function(value, type) {
+      this.selectedFilters[type] = value;
     },
-  };
+    handleCloseDrawer: function() {
+      this.isDrawerOpen = false;
+    },
+  },
+};
 </script>
