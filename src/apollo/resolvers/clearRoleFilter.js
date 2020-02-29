@@ -26,5 +26,10 @@ export const clearRoleFilter = (...[, , { client }]) => {
   // delete filter.id;
   // delete filter.__typename;
 
-  return filter;
+  return {
+    searchString: null,
+    selectedTimeCommitment: [0, 40],
+    selectedLocalGroups: null,
+    selectedWorkingGroups: null,
+  };
 };

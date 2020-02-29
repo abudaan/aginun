@@ -56,7 +56,7 @@ import {
 import {
   // queries
   GetTimeCommitmentRangeRole,
-  GetFilter,
+  GetRoleFilter,
   // mutations
   UpdateRoleFilter,
   ClearFilter,
@@ -81,29 +81,8 @@ export default {
       update: data => data.navbarHeight,
     },
     filter: {
-      query: GetFilter,
-      update: data => {
-        // console.log("FILTER", data);
-        const {
-          roleData: { filter },
-        } = data;
-        return {
-          ...filter,
-          searchString: filter.searchString
-            ? filter.searchString.replace(/%/g, "")
-            : null,
-          selectedTimeCommitment: [
-            filter.selectedTimeCommitmentMin,
-            filter.selectedTimeCommitmentMax,
-          ],
-          selectedLocalGroups: filter.selectedLocalGroups
-            ? filter.selectedLocalGroups.map(({ name }) => name)
-            : [],
-          selectedWorkingGroups: filter.selectedWorkingGroups
-            ? filter.selectedWorkingGroups.map(({ name }) => name)
-            : [],
-        };
-      },
+      query: GetRoleFilter,
+      update: data => data.getRoleData.filter,
     },
     localGroups: {
       query: LocalGroups,

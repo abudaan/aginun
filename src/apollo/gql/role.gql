@@ -113,6 +113,17 @@ query GetFilter {
   }
 }
 
+query GetRoleFilter($id: Int!) {
+  getRoleData @client {
+    filter {
+      searchString
+      selectedTimeCommitment
+      selectedLocalGroups
+      selectedWorkingGroups
+    }
+  }
+}
+
 #---------------------------------------------------------------------#
 
 query RoleDetailServer($id: Int!) {
