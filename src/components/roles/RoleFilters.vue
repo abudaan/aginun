@@ -56,6 +56,7 @@ import {
 import {
   // queries
   GetTimeCommitmentRangeRole,
+  GetFilter,
   GetRoleFilter,
   // mutations
   UpdateRoleFilter,
@@ -99,6 +100,15 @@ export default {
       update: data => data.getRoleData.timeCommitmentRange,
     },
   },
+  // created() {
+  //   this.$apollo
+  //     .watchQuery({
+  //       query: GetRoleFilter,
+  //     })
+  //     .subscribe(({ data, loading }) => {
+  //       console.log("WATCH", data);
+  //     });
+  // },
   methods: {
     clearFilter: function() {
       this.$apollo.mutate({
