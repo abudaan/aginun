@@ -29,8 +29,8 @@ cache.writeData({
       filter: {
         id: "filter",
         __typename: "RoleFilter",
-        selectedLocalGroupIds: null,
-        selectedWorkingGroupIds: null,
+        selectedLocalGroups: null,
+        selectedWorkingGroups: null,
         selectedTimeCommitmentMin: 0,
         selectedTimeCommitmentMax: 40,
         // searchString: "%gr%",

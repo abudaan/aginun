@@ -18,12 +18,28 @@ const mapNames = (names, groups) => {
   return matched;
 };
 
-const getGroupIds = (type, names, cache) => {
+export const getGroupData = (type, names, cache) => {
+  const query = type === "local_group" ? LocalGroups : WorkingGroups;
+  const { [type]: groups } = cache.readQuery({
+    query,
+  });
+  return mapNames(names, groups);
+};
+
+export const getGroupIdByName = (type, names, cache) => {
   const query = type === "local_group" ? LocalGroups : WorkingGroups;
   const { [type]: groups } = cache.readQuery({
     query,
   });
   return mapNames(names, groups).map(({ id }) => id);
+};
+
+export const getGroupNameById = (type, names, cache) => {
+  const query = type === "local_group" ? LocalGroups : WorkingGroups;
+  const { [type]: groups } = cache.readQuery({
+    query,
+  });
+  return mapNames(names, groups).map(({ name }) => name);
 };
 
 export const updateRoleFilter = (
@@ -39,24 +55,24 @@ export const updateRoleFilter = (
 
   if (localGroups) {
     if (localGroups.length) {
-      filter.selectedLocalGroupIds = getGroupIds(
+      filter.selectedLocalGroups = getGroupData(
         "local_group",
         localGroups,
         cache
       );
     } else {
-      filter.selectedLocalGroupIds = null;
+      filter.selectedLocalGroups = null;
     }
   }
   if (workingGroups) {
     if (workingGroups.length) {
-      filter.selectedWorkingGroupIds = getGroupIds(
+      filter.selectedWorkingGroups = getGroupData(
         "working_group",
         workingGroups,
         cache
       );
     } else {
-      filter.selectedWorkingGroupIds = null;
+      filter.selectedWorkingGroups = null;
     }
   }
   if (timeCommitment) {

@@ -14,11 +14,13 @@
       </template>
       <flex-wrapper direction="column">
         <autocomplete-custom
+          :value="filter.selectedLocalGroups"
           :items="localGroups"
           label="Local Group"
           @change="id => onSetFilter(id, 'localGroups')"
         />
         <autocomplete-custom
+          :value="filter.selectedWorkingGroups"
           :items="workingGroups"
           label="Working Group"
           @change="id => onSetFilter(id, 'workingGroups')"
@@ -70,6 +72,7 @@ export default {
   data: () => ({
     // extra data field is required until this issue has been fixed:
     // https://github.com/vuejs/vue-apollo/issues/854
+    filter: {},
     timeCommitmentRange: [],
   }),
   apollo: {
@@ -93,6 +96,12 @@ export default {
             filter.selectedTimeCommitmentMin,
             filter.selectedTimeCommitmentMax,
           ],
+          selectedLocalGroups: filter.selectedLocalGroups
+            ? filter.selectedLocalGroups.map(({ name }) => name)
+            : [],
+          selectedWorkingGroups: filter.selectedWorkingGroups
+            ? filter.selectedWorkingGroups.map(({ name }) => name)
+            : [],
         };
       },
     },

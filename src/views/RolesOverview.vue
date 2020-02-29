@@ -103,9 +103,18 @@ export default {
         return data.role;
       },
       variables() {
-        const vars = { ...this.filter };
-        delete vars.id;
-        delete vars.__typename;
+        const vars = {
+          limit: this.filter.limit,
+          searchString: this.filter.searchString,
+          selectedTimeCommitmentMin: this.filter.selectedTimeCommitmentMin,
+          selectedTimeCommitmentMax: this.filter.selectedTimeCommitmentMax,
+          selectedLocalGroupIds: this.filter.selectedLocalGroups
+            ? this.filter.selectedLocalGroups.map(({ id }) => id)
+            : null,
+          selectedWorkingGroupIds: this.filter.selectedWorkingGroups
+            ? this.filter.selectedWorkingGroups.map(({ id }) => id)
+            : null,
+        };
         return vars;
       },
     },

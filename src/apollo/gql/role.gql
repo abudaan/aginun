@@ -32,8 +32,8 @@ fragment RoleFilterFragment on RoleFilter {
   id
   limit
   searchString
-  selectedLocalGroupIds
-  selectedWorkingGroupIds
+  selectedLocalGroups
+  selectedWorkingGroups
   selectedTimeCommitmentMin
   selectedTimeCommitmentMax
 }
@@ -99,8 +99,8 @@ query GetFilter {
       # ...RoleFilterFragment
       limit
       searchString
-      selectedLocalGroupIds
-      selectedWorkingGroupIds
+      selectedLocalGroups
+      selectedWorkingGroups
       selectedTimeCommitmentMin
       selectedTimeCommitmentMax
     }

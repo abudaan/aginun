@@ -6,8 +6,8 @@ export const clearRoleFilter = (...[, , { client }]) => {
     __typename: "Filter",
     limit: 10,
     searchString: null,
-    selectedLocalGroupIds: null,
-    selectedWorkingGroupIds: null,
+    selectedLocalGroups: null,
+    selectedWorkingGroups: null,
     selectedTimeCommitmentMin: 0,
     selectedTimeCommitmentMax: 40,
   };
