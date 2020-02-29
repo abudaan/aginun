@@ -183,7 +183,7 @@ export default {
         return { id: this.$route.params.id };
       },
       update(data) {
-        console.log("ROLE DETAIL", data);
+        // console.log("ROLE DETAIL", data);
         return data.getRoleData.roleDetail;
       },
     },
