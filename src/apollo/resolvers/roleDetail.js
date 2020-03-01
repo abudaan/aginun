@@ -5,14 +5,14 @@ import {
 } from "../gql/role.gql";
 
 const parseResponsibilities = r => {
-  if (r.indexOf("[") === -1) {
+  if (r.indexOf("|") === -1) {
     return r;
   }
   let p = r
-    .replace(/^\[/g, "")
-    .replace(/\]$/g, "")
-    .replace(/"/g, "")
-    .split(",");
+    // .replace(/^\[/g, "")
+    // .replace(/\]$/g, "")
+    // .replace(/"/g, "")
+    .split("|");
   return p;
 };
 
@@ -24,7 +24,6 @@ export const roleDetail = async (_, { id }, { cache, client }) => {
   // });
 
   // let role = roles.roles.filter(r => r.id === parseInt(id, 10))[0];
-  let role = null;
   // if (role) {
   //   const data = await client.query({
   //     query: RoleDetailServer,
@@ -42,7 +41,7 @@ export const roleDetail = async (_, { id }, { cache, client }) => {
     variables: { id },
   });
 
-  role = data.data.role[0];
+  const role = data.data.role[0];
   role.responsibilities = parseResponsibilities(role.responsibilities);
 
   // client.writeQuery({
